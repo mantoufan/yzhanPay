@@ -10,7 +10,7 @@
         }
         .mtf-main {
             height: 100vh;
-            background: #f7f7f7 url(bg.jpg) no-repeat;
+            background: #f7f7f7 url(s/p/bg_landscape.jpg) no-repeat;
             background-size: cover;
         }
         .mtf-brand {
@@ -50,6 +50,14 @@
         }
         .mtf-none {
             display: none;
+        }
+        @media all and (orientation: portrait) {
+            .mtf-brand {
+                right: 0;
+            }
+            .mtf-main {
+                background-image: url(s/p/bg_portrait.jpg);
+            }
         }
     </style>
 </head>
