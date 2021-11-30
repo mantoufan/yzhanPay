@@ -41,9 +41,9 @@ jobs:
           # ftp server
           server: c.y1.os120.com
           # ftp username
-          username: mhjlw
+          username: pay
           # ftp password
-          password: 1991925
+          password: 6Bmc7_3/W
           # Server port to connect to (read your web hosts docs)
           port: 21
           # protocol to deploy with - ftp, ftps, or ftps-legacy
