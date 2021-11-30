@@ -39,7 +39,7 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
           # ftp server
-          server: c.y1.os120.com
+          server: ftp.y5.os120.com
           # ftp username
           username: pay
           # ftp password
