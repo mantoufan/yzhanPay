@@ -49,7 +49,7 @@ jobs:
           # protocol to deploy with - ftp, ftps, or ftps-legacy
           protocol: ftp
           # Folder to upload from, must end with trailing slash /
-          local-dir: ./
+          local-dir: ./dist
           # Path to upload to on the server. Must end with trailing slash /
           server-dir: /
           # Prints which modifications will be made with current config options, but doesnt actually make any changes
