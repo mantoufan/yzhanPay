@@ -1,0 +1,2 @@
+(self.webpackChunkyzhanpay=self.webpackChunkyzhanpay||[]).push([[877],{3887:(e,a,t)=>{"use strict";t.r(a),t.d(a,{default:()=>p});var n=t(7294),c=t(3455),r=t(7569);const p=function(){return n.createElement(c.Z,{dataProvider:(0,r.Z)("https://jsonplaceholder.typicode.com")})}},4654:()=>{}}]);
+//# sourceMappingURL=f694e7da74b162906a54.js.map

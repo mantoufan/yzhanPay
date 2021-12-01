@@ -38,6 +38,7 @@
     "imagemin-webpack-plugin": "^2.4.2",
     "mini-css-extract-plugin": "^2.4.5",
     "react": "^17.0.2",
+    "react-admin": "^3.19.2",
     "react-dom": "^17.0.2",
     "sass": "^1.44.0",
     "sass-loader": "^12.3.0",
@@ -46,5 +47,8 @@
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.6.0",
     "webpack-merge": "^5.8.0"
+  },
+  "dependencies": {
+    "ra-data-json-server": "^3.19.2"
   }
 }

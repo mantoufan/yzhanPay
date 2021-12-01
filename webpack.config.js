@@ -3,7 +3,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const { DefinePlugin } = require('webpack')
-const { webpack } = require('./config')
 
 module.exports = (env, argv) => {
   const MODE = argv.config === 'webpack.config.prod.js' ? 'production' : 'development'
@@ -12,8 +11,7 @@ module.exports = (env, argv) => {
     output: {
       filename: MODE === 'production' ? 'assets/js/bundle.[contenthash].js' : 'assets/js/bundle.js',
       chunkFilename: 'assets/js/[chunkhash].js',
-      path: resolve('dist'),
-      publicPath: MODE === 'production' ? webpack['publicPath'] : '/'
+      path: resolve('dist')
     },
     resolve: {
       extensions: ['.jsx', '.js'],
