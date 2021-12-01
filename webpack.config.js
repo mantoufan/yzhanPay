@@ -55,18 +55,18 @@ module.exports = (env, argv) => {
     },
     devtool: 'source-map',
     plugins: [
-      // new CopyPlugin({
-      //   patterns: [
-      //     {
-      //       from: resolve('src/assets/images'),
-      //       to: resolve('dist/assets/images'),
-      //     },
-			// 		{
-      //       from: resolve('src/api'),
-      //       to: resolve('dist/api'),
-      //     }
-      //   ]
-      // }),
+      new CopyPlugin({
+        patterns: [
+          // {
+          //   from: resolve('src/assets/images'),
+          //   to: resolve('dist/assets/images'),
+          // },
+					{
+            from: resolve('src/api'),
+            to: resolve('dist/api'),
+          }
+        ]
+      }),
       new HtmlWebpackPlugin({
         template: 'src/index.html',
         filename: 'index.html',
