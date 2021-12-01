@@ -1,0 +1,6 @@
+{
+    "require": {
+        "catfan/medoo": "^2.1",
+        "league/omnipay": "^3"
+    }
+}
