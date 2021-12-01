@@ -1,0 +1,50 @@
+{
+  "name": "yzhanpay",
+  "version": "1.0.0",
+  "description": "Y站支付系统，简洁高效的四方聚合支付系统，基于 URL 提供结账、查询、日志接口，容易部署、维护和集成 Y station payment system, a simple and efficient four-party converged payment system, provides urL-based settlement, query, log interface, easy to deploy, maintain and integrate",
+  "main": "dist/bundle.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.prod.js",
+    "start": "webpack-dev-server --open",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@mtf.github.com:mantoufan/yzhanPay.git"
+  },
+  "keywords": [
+    "Payment",
+    "gateway",
+    "converged",
+    "payment",
+    "quadrilateral",
+    "payment"
+  ],
+  "author": "吴小宇 Shon Wu",
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-transform-runtime": "^7.16.4",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.16.0",
+    "babel-loader": "^8.2.3",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^10.0.0",
+    "css-loader": "^6.5.1",
+    "css-minimizer-webpack-plugin": "^3.2.0",
+    "cssnano-preset-advanced": "^5.1.8",
+    "html-loader": "^3.0.1",
+    "html-webpack-plugin": "^5.5.0",
+    "imagemin-webpack-plugin": "^2.4.2",
+    "mini-css-extract-plugin": "^2.4.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "sass": "^1.44.0",
+    "sass-loader": "^12.3.0",
+    "thread-loader": "^3.0.4",
+    "webpack": "^5.64.4",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.6.0",
+    "webpack-merge": "^5.8.0"
+  }
+}
