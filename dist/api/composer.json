@@ -1,0 +1,7 @@
+{
+    "require": {
+        "catfan/medoo": "^2.1",
+        "league/omnipay": "^3",
+        "bramus/router": "~1.6"
+    }
+}
