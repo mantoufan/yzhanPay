@@ -12,7 +12,7 @@ $router->match('POST', '/authenticate', function() {
 	$_name = $_POST['username'];
 	$_password = $_POST['password'];
 	$DB = new Medoo($CONFIG['database']);
-	$data = $DB->select('user', array(
+	$data = $DB->get('user', array(
     'id',
 		'name'
 	), array(
