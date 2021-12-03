@@ -1,1 +1,1 @@
-export const PATH_API = 'https://pay.os120.com/api/?'
+export const PATH_API = 'https://pay.os120.com/api/'
