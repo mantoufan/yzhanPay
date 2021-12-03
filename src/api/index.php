@@ -12,17 +12,14 @@ $router->match('POST', '/authenticate', function() {
 	$_name = $_POST['username'];
 	$_password = $_POST['password'];
 	$DB = new Medoo($CONFIG['database']);
-	$data = $DB->get('user', array(
+	$data = $DB->select('user', array(
     'id',
 		'name'
 	), array(
 		'name' => $_name,
 		'password' => md5($_password . $CONFIG['md5_salt'])
 	));
-	if (empty($data['id'])) {
-		header('Status-Text:woaini');
-		return header('HTTP/1.1 403 Name or password is incorrect');
-	}
+	if (empty($data['id'])) return header('Status: 403');
 	echoJson(array('auth' => JWT::encode(array(
 		'id' => $data['id'],
 		'name' => $data['name']
