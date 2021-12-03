@@ -6,7 +6,7 @@ class PageRouter extends Component {
   constructor(props) {
     super(props)
     this.routes = [
-      { path: '/admin', component: PageAdmin }
+      { path: '*', component: PageAdmin }
     ]
   }
 	
