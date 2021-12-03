@@ -2,6 +2,7 @@
     "require": {
         "catfan/medoo": "^2.1",
         "league/omnipay": "^3",
-        "bramus/router": "~1.6"
+        "bramus/router": "~1.6",
+        "firebase/php-jwt": "^5.5"
     }
 }

@@ -1,6 +1,7 @@
 <?php
 return array(
 	'md5_salt'=>'madfan',
+	'jwt_key'=>'madfan',
 	'database' => array(
 		'database_type' => 'mysql',
 		'database_name' => 'pay',
