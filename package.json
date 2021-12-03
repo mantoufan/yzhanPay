@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --config webpack.config.prod.js",
     "start": "webpack-dev-server --open",
-    "test": "jest"
+    "test": "jest",
+    "deploy": "webpack --config webpack.config.prod.js && git add . && git commit -m \"deploy\" && git push"
   },
   "repository": {
     "type": "git",
