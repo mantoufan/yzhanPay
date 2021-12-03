@@ -19,7 +19,10 @@ $router->match('POST', '/authenticate', function() {
 		'name' => $_name,
 		'password' => md5($_password . $CONFIG['md5_salt'])
 	));
-	if (empty($data['id'])) return header('HTTP/1.1 403 Name or password is incorrect');
+	if (empty($data['id'])) {
+		header('Status-Text:woaini');
+		return header('HTTP/1.1 403 Name or password is incorrect');
+	}
 	echoJson(array('auth' => JWT::encode(array(
 		'id' => $data['id'],
 		'name' => $data['name']
