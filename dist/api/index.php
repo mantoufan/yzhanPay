@@ -8,8 +8,7 @@ $router = new \Bramus\Router\Router();
 
 $router->match('POST', '/authenticate', function() {
 	$CONFIG = include './config.php';
-	$POST = json_encode(file_get_contents('php://input'));
-	print_r($POST);
+	$_POST = json_decode(file_get_contents('php://input'), true);
 	$_name = $POST['username'];
 	$_password = $POST['password'];
 	$DB = new Medoo($CONFIG['database']);
