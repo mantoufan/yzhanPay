@@ -1,4 +1,6 @@
 import { PATH_API } from '@/config'
+import i18nProvider from '@/language/i18nProvider'
+
 export default {
 	login ({ username, password }) {
 		const request = new Request(PATH_API + 'authenticate', {
@@ -9,7 +11,7 @@ export default {
 		return fetch(request)
 			.then(response => {
 				if (response.status < 200 || response.status >= 300) {
-					throw new Error(response.statusText)
+					throw new Error(translate('notification.login.wrong'))
 				}
 				return response.json()
 			})
@@ -17,7 +19,7 @@ export default {
 				localStorage.setItem('auth', JSON.stringify(auth))
 			})
 			.catch(() => {
-				throw new Error('Network error')
+				throw new Error(i18nProvider.translate('notification.login.wrong'))
 			})
 	},
 	checkAuth () {
