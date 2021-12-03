@@ -3,11 +3,11 @@ return array(
 	'md5_salt'=>'madfan',
 	'database' => array(
 		'database_type' => 'mysql',
-		'database_name' => 'name',
-		'server' => 'localhost',
+		'database_name' => 'pay',
+		'server' => '127.0.0.1',
 		'prefix' => 'yzhanpay',
-		'username' => 'your_username',
-		'password' => 'your_password'
+		'username' => 'pay',
+		'password' => '6Bmc7_3/W'
 	)
 );
 ?>
