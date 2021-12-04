@@ -3,13 +3,13 @@ namespace service;
 
 class ConfigService
 {
-    private $config = array();
-    public static function ConfigInit($params = array())
+    private static $config = array();
+    public static function ConfigInit()
     {
-        $this->config = include '../common/config.php';
+        self::$config = include 'common/config.php';
     }
-    public static function ConfigList($params = array())
+    public static function ConfigList()
     {
-        return $this->config;
+        return $this::$config;
     }
 }
