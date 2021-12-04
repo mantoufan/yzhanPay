@@ -1,0 +1,1 @@
+{"version":3,"file":"assets/js/ee333fbe9375cd6696d8.js","mappings":"+IACA,mBAAe,OAAM","sources":["webpack://yzhanpay/./src/pages/Checkout/Checkout.jsx"],"sourcesContent":["import React from 'react'\nexport default () => <div>checkout</div>\n"],"names":[],"sourceRoot":""}

@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkyzhanpay=self.webpackChunkyzhanpay||[]).push([[614],{9614:(e,n,a)=>{a.r(n),a.d(n,{default:()=>u});var t=a(7294);const u=function(){return t.createElement("div",null,"checkout")}}}]);
+//# sourceMappingURL=ee333fbe9375cd6696d8.js.map
