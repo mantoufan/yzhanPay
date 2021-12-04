@@ -10,6 +10,6 @@ class ConfigService
     }
     public static function ConfigList()
     {
-        return $this::$config;
+        return self::$config;
     }
 }
