@@ -1,3 +1,3 @@
 import AsyncComponent from '@components/AsyncComponent/AsyncComponent'
 
-export const PageAdmin = AsyncComponent(() => import('@pages/Admin/Admin'))
+export const PageCheckout = AsyncComponent(() => import('@pages/Checkout/Checkout'))

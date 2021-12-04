@@ -1,5 +1,5 @@
-import { PATH_API } from '@/config'
-import i18nProvider from '@/language/i18nProvider'
+import { PATH_API } from '@common/config'
+import i18nProvider from '@providers/i18nProvider'
 
 export default {
 	login ({ username, password }) {
@@ -28,5 +28,6 @@ export default {
 	logout () {
 		localStorage.removeItem('auth')
 		return Promise.resolve()
-	}
+	},
+	checkError: () => Promise.resolve()
 }

@@ -19,37 +19,40 @@ module.exports = (env, argv) => {
         '@': resolve('src'),
         '@assets': resolve('src/assets'),
         '@components': resolve('src/components'),
-        '@pages': resolve('src/pages')
+        '@pages': resolve('src/pages'),
+        '@common': resolve('src/common'),
+        '@providers': resolve('src/providers')
       }
     },
     module: {
       rules: [
-      {
-        test: /\.html$/,
-        use: ['html-loader']
-      },
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader']
-      },
-      {
-        test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: [
-          'thread-loader',
-          {
-            loader: 'babel-loader?cacheDirectory',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react'],
-              plugins: ['@babel/plugin-transform-runtime']
+        {
+          test: /\.html$/,
+          use: ['html-loader']
+        },
+        {
+          test: /\.css$/,
+          use: [MiniCssExtractPlugin.loader, 'css-loader']
+        },
+        {
+          test: /\.scss$/,
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+        },
+        {
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          use: [
+            'thread-loader',
+            {
+              loader: 'babel-loader?cacheDirectory',
+              options: {
+                presets: ['@babel/preset-env', '@babel/preset-react'],
+                plugins: ['@babel/plugin-transform-runtime']
+              }
             }
-          }
-        ]
-      }],
+          ]
+        }
+      ]
     },
     devtool: 'source-map',
     plugins: [
@@ -59,19 +62,20 @@ module.exports = (env, argv) => {
           //   from: resolve('src/assets/images'),
           //   to: resolve('dist/assets/images'),
           // },
-					{
+          {
             from: resolve('src/api'),
-            to: resolve('dist/api'),
+            to: resolve('dist/api')
           }
         ]
       }),
       new HtmlWebpackPlugin({
         template: 'src/index.html',
-        filename: 'index.html',
+        filename: 'index.html'
         // favicon: resolve('src/favicon.ico'),
       }),
       new MiniCssExtractPlugin({
-        filename: MODE === 'production' ? 'assets/css/style.[contenthash].css' : 'assets/css/style.css',
+        filename:
+          MODE === 'production' ? 'assets/css/style.[contenthash].css' : 'assets/css/style.css'
       }),
       new DefinePlugin({
         MODE: JSON.stringify(MODE)
@@ -79,12 +83,12 @@ module.exports = (env, argv) => {
     ],
     devServer: {
       hot: true,
-			host: 'pay.os120.com',
-			port: 8080,
+      host: 'c.y5.os120.com',
+      port: 8080,
       historyApiFallback: {
         disableDotRule: true
       }
-		},
-		mode: 'development'
+    },
+    mode: 'development'
   }
 }
