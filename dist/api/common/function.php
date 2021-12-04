@@ -22,3 +22,8 @@ function SplAutoLoadRegister()
         return false;
     });
 }
+function AppInit()
+{
+    Cors();
+    SplAutoLoadRegister();
+}

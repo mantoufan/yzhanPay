@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
+require 'vendor/autoload.php';
 include 'function.php';
 AppInit();
 $router = new \Bramus\Router\Router();
