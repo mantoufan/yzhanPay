@@ -25,7 +25,7 @@ class App
         $method = $class[1];
         $controllerPath = explode('/', $class[0]);
         $endPath = ucfirst(array_pop($controllerPath));
-        $router->match('POST', $path, implode('/', $controllerPath) . '/' . $endPath . '@' . $method);
+        $router->match('POST|GET', $path, implode('/', $controllerPath) . '/' . $endPath . '@' . $method);
         return $router;
     }
     public function getParams()

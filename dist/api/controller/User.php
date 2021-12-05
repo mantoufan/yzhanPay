@@ -1,7 +1,6 @@
 <?php
 namespace controller;
 
-use Firebase\JWT\JWT;
 use service\ConfigService;
 use service\UserService;
 
@@ -28,9 +27,12 @@ class User extends Common
         if (empty($data['id'])) {
             return header('Status: 403');
         }
-        Output(array('auth' => JWT::encode(array(
+        Output(array('auth' => UserService::UserEnAuth(array(
             'id' => $data['id'],
             'name' => $data['name'],
-        ), $CONFIG['jwt_key'], 'HS256')));
+        ))));
+    }
+    function list() {
+        UserService::UserCheckLogin();
     }
 }
