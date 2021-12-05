@@ -10,7 +10,7 @@ class RaDataJsonServer
         if (count($pathAr) > 1) {
             $method = end($pathAr);
             if (!empty($method) && !is_numeric($method)) {
-                return $method;
+                return '';
             }
         }
         switch ($_SERVER['REQUEST_METHOD']) {

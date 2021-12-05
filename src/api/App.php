@@ -22,7 +22,10 @@ class App
         }, $path);
         $path = preg_replace('/\/\d+/', '', $path);
         if (!empty($this->dataProvider)) {
-            $path .= '/' . $this->dataProvider->getMethod();
+            $method = $this->dataProvider->getMethod();
+            if (!empty($method)) {
+                $path .= '/' . $this->dataProvider->getMethod();
+            }
         }
         $pathAr = explode('/', $path);
         $method = array_pop($pathAr);
