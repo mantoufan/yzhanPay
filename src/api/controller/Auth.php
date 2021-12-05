@@ -2,7 +2,7 @@
 namespace controller;
 
 use service\AuthService;
-use service\UserService;
+use service\DbService;
 
 class Auth extends Common
 {
@@ -16,7 +16,7 @@ class Auth extends Common
         $POST = getPosts();
         $_name = $post['username'];
         $_password = $post['password'];
-        $data = UserService::UserGet(array(
+        $data = DbService::DbGet(array(
             'field' => array('id', 'name'),
             'where' => array(
                 'name' => $_name,
