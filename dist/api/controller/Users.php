@@ -16,8 +16,8 @@ class Users extends Common
         $data = UserService::UserList(array(
             'field' => array('id', 'name', 'permission'),
             'where' => array(
-                'ORDER' => array($params['sort'] => $params['order']),
-                'LIMIT' => $params['start'] . ',' . ($params['end'] - $params['start']),
+                'ORDER' => array($params['_sort'] => $params['_order']),
+                'LIMIT' => $params['_start'] . ',' . ($params['_end'] - $params['_start']),
             ),
         ));
         header('X-Total-Count:' . $data['total']);
