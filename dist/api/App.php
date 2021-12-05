@@ -6,10 +6,11 @@ use Bramus\Router\Router;
 
 class App
 {
-    public function __construct()
+    public function __construct($params = array())
     {
         Cors();
         SplAutoLoadRegister();
+        $this->dataProvider = !empty($params['dataProvider']) ? $params['dataProvider'] : null;
     }
     public function getRouter()
     {
@@ -20,6 +21,9 @@ class App
         $search = str_replace($dirname, '', $_SERVER['REQUEST_URI']);
         $query = explode('?', $search);
         $path = $query[0];
+        if (!empty($this->dataProvider)) {
+            $path .= '/' . $this->dataProvider->getMethod();
+        }
         $route = preg_replace_callback('/\d+/', function ($s) {
             return '(\d{' . strlen($s[0]) . '})';
         }, $path);

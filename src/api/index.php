@@ -1,4 +1,7 @@
 <?php
 require 'App.php';
-$app = new App();
+require 'extend/RaDataJsonServer.php';
+$app = new App(array(
+    'dataProvider' => new extend\RaDataJsonServer,
+));
 $app->run();
