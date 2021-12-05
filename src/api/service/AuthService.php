@@ -7,12 +7,12 @@ use service\ConfigService;
 
 class AuthService
 {
-    public static function AuthEncode($param = array())
+    public static function AuthEncode($params = array())
     {
         $CONFIG = ConfigService::ConfigList();
         return JWT::encode(array(
-            'id' => $data['id'],
-            'name' => $data['name'],
+            'id' => $params['id'],
+            'name' => $params['name'],
         ), $CONFIG['jwt_key'], 'HS256');
     }
     public static function AuthDecode()

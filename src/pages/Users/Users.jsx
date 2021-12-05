@@ -18,11 +18,7 @@ const UserList = (props) => (
   <List {...props}>
     <Datagrid>
       <TextField source="id" />
-      <TextField source="title" />
-      <DateField source="published_at" />
-      <TextField source="average_note" />
-      <TextField source="views" />
-      <EditButton basePath="/posts" />
+      <TextField source="name" />
     </Datagrid>
   </List>
 )
@@ -30,23 +26,16 @@ const UserEdit = (props) => (
   <Edit title={<PostTitle />} {...props}>
     <SimpleForm>
       <TextInput disabled source="id" />
-      <TextInput source="title" />
-      <TextInput source="teaser" options={{ multiline: true }} />
-      <TextInput multiline source="body" />
-      <DateInput label="Publication date" source="published_at" />
-      <TextInput source="average_note" />
-      <TextInput disabled label="Nb views" source="views" />
+      <TextInput source="name" />
+      <TextInput source="permission" options={{ multiline: true }} />
     </SimpleForm>
   </Edit>
 )
 const UserCreate = (props) => (
   <Create title="Create a Post" {...props}>
     <SimpleForm>
-      <TextInput source="title" />
-      <TextInput source="teaser" options={{ multiline: true }} />
-      <TextInput multiline source="body" />
-      <TextInput label="Publication date" source="published_at" />
-      <TextInput source="average_note" />
+      <TextInput source="name" />
+      <TextInput source="permission" options={{ multiline: true }} />
     </SimpleForm>
   </Create>
 )
