@@ -2,6 +2,7 @@
 namespace controller;
 
 use service\AuthService;
+use service\ConfigService;
 use service\UserService;
 
 class Auth extends Common
