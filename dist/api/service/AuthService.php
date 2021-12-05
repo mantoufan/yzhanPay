@@ -2,6 +2,7 @@
 namespace service;
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use service\ConfigService;
 
 class AuthService
