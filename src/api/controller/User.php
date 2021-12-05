@@ -2,19 +2,19 @@
 namespace controller;
 
 use service\AuthService;
-use service\UserService;
+use service\DbService;
 
 class User extends Common
 {
     public function __construct()
     {
         parent::__construct();
-        UserService::UserCheckLogin();
+        AuthService::AuthCheck();
     }
     public function getList()
     {
         $params = getGets();
-        $data = UserService::UserList(array(
+        $data = DbService::DbList('user', array(
             'field' => array('id', 'name', 'permission'),
             'where' => array(
                 'ORDER' => array($params['_sort'] => $params['_order']),
@@ -26,12 +26,12 @@ class User extends Common
     }
     public function getOne($id)
     {
-        $data = UserService::UserGet(array(
+        outPut(DbService::DbGet('user', array(
             'field' => array('id', 'name', 'permission'),
             'where' => array(
                 'id' => $id,
             ),
-        ));
+        )));
     }
     public function getMany()
     {
@@ -43,16 +43,17 @@ class User extends Common
     public function create()
     {
         $params = getPost();
-        $data = UserService::UserCreate(array(
+        $id = DbService::DbCreate('user', array(
             'data' => array(
                 'name' => $params['name'],
                 'password' => AuthService::AuthPasswordEncode($params['password']),
             ),
         ));
+        outPut(array('id' => $id));
     }
     public function update($id)
     {
-        $data = UserService::UserUpdate(array(
+        $rowsNum = DbService::DbUpdate('user', array(
             'data' => array(
                 'name' => $params['name'],
                 'password' => AuthService::AuthPasswordEncode($params['password']),
@@ -61,13 +62,14 @@ class User extends Common
                 'id' => $id,
             ),
         ));
+        outPut(array('rowsNum' => $rowsNum));
     }
     public function delete($id)
     {
-        $data = UserService::UserDelete(array(
+        outPut(DbService::DbDelete('user', array(
             'where' => array(
                 'id' => $id,
             ),
-        ));
+        )));
     }
 }

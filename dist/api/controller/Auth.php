@@ -4,7 +4,7 @@ namespace controller;
 use service\AuthService;
 use service\UserService;
 
-class Auth extends Common
+class Auth
 {
     public function __construct()
     {

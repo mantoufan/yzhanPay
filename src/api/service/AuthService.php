@@ -29,4 +29,13 @@ class AuthService
         }
         return (array) JWT::decode($auth, new Key($CONFIG['jwt_key'], 'HS256'));
     }
+    public static function AuthCheck()
+    {
+        $user = self::AuthDecode();
+        if (empty($user['id'])) {
+            header('status: 403');
+            exit;
+        }
+        return $user;
+    }
 }

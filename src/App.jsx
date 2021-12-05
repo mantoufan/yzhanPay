@@ -1,15 +1,14 @@
 import React from 'react'
-import { Admin, Resource, fetchUtils, EditGuesser } from 'react-admin'
+import { Admin, Resource, fetchUtils } from 'react-admin'
 import jsonServerProvider from 'ra-data-json-server'
 import authProvider from '@providers/authProvider'
 import i18nProvider from '@providers/i18nProvider'
 import routeProvider from '@providers/routeProvider'
 import { createBrowserHistory as createHistory } from 'history'
 import '@assets/css/common.scss'
-import { PageUser } from '@pages/Pages'
+import { PageRoutes } from '@pages/Pages'
 
 const history = createHistory()
-const { UserIcon, UserList, UserEdit, UserCreate } = PageUser
 const httpClient = (url, options = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: 'application/json' })
@@ -26,7 +25,18 @@ export default () => {
       dataProvider={jsonServerProvider('https://pay.os120.com/api', httpClient)}
       i18nProvider={i18nProvider}
       customRoutes={routeProvider}>
-      <Resource name="user" list={UserList} edit={UserEdit} create={UserCreate} icon={UserIcon} />
+      {PageRoutes.map(({ path, page }) => {
+        const { PageList, PageEdit, PageCreate, PageIcon } = page
+        return (
+          <Resource
+            name={path}
+            list={PageList}
+            edit={PageEdit}
+            create={PageCreate}
+            icon={PageIcon}
+          />
+        )
+      })}
     </Admin>
   )
 }

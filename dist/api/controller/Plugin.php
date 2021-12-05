@@ -4,7 +4,7 @@ namespace controller;
 use service\AuthService;
 use service\DbService;
 
-class User extends Common
+class Plugin extends Common
 {
     public function __construct()
     {
@@ -14,8 +14,8 @@ class User extends Common
     public function getList()
     {
         $params = getGets();
-        $data = DbService::DbList('user', array(
-            'field' => array('id', 'name', 'permission'),
+        $data = DbService::DbList('plugin', array(
+            'field' => array('id'),
             'where' => array(
                 'ORDER' => array($params['_sort'] => $params['_order']),
                 'LIMIT' => $params['_start'] . ',' . ($params['_end'] - $params['_start']),
@@ -26,8 +26,8 @@ class User extends Common
     }
     public function getOne($id)
     {
-        outPut(DbService::DbGet('user', array(
-            'field' => array('id', 'name', 'permission'),
+        outPut(DbService::DbGet('plugin', array(
+            'field' => array('id'),
             'where' => array(
                 'id' => $id,
             ),
@@ -43,20 +43,18 @@ class User extends Common
     public function create()
     {
         $params = getPost();
-        $id = DbService::DbCreate('user', array(
+        $id = DbService::DbCreate('plugin', array(
             'data' => array(
                 'name' => $params['name'],
-                'password' => AuthService::AuthPasswordEncode($params['password']),
             ),
         ));
         outPut(array('id' => $id));
     }
     public function update($id)
     {
-        $rowsNum = DbService::DbUpdate('user', array(
+        $rowsNum = DbService::DbUpdate('plugin', array(
             'data' => array(
                 'name' => $params['name'],
-                'password' => AuthService::AuthPasswordEncode($params['password']),
             ),
             'where' => array(
                 'id' => $id,
@@ -66,7 +64,7 @@ class User extends Common
     }
     public function delete($id)
     {
-        outPut(DbService::DbDelete('user', array(
+        outPut(DbService::DbDelete('plugin', array(
             'where' => array(
                 'id' => $id,
             ),

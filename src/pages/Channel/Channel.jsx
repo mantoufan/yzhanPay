@@ -1,5 +1,5 @@
 import React from 'react'
-import PersonIcon from '@material-ui/icons/Person'
+import DynamicFeedIcon from '@material-ui/icons/DynamicFeed'
 import {
   List,
   Datagrid,
@@ -11,7 +11,7 @@ import {
   TextInput
 } from 'react-admin'
 
-const PageIcon = PersonIcon
+const PageIcon = DynamicFeedIcon
 const PageList = (props) => (
   <List {...props}>
     <Datagrid>

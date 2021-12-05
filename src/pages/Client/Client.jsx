@@ -1,5 +1,5 @@
 import React from 'react'
-import PersonIcon from '@material-ui/icons/Person'
+import DevicesIcon from '@material-ui/icons/Devices'
 import {
   List,
   Datagrid,
@@ -11,7 +11,7 @@ import {
   TextInput
 } from 'react-admin'
 
-const PageIcon = PersonIcon
+const PageIcon = DevicesIcon
 const PageList = (props) => (
   <List {...props}>
     <Datagrid>
