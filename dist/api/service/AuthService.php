@@ -19,6 +19,9 @@ class AuthService
     {
         $auth = str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION']);
         $CONFIG = ConfigService::ConfigList();
+        if (empty($auth)) {
+            return array();
+        }
         return (array) JWT::decode($auth, new Key($CONFIG['jwt_key'], 'HS256'));
     }
 }
