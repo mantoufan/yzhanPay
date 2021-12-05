@@ -26,13 +26,7 @@ export default () => {
       dataProvider={jsonServerProvider('https://pay.os120.com/api', httpClient)}
       i18nProvider={i18nProvider}
       customRoutes={routeProvider}>
-      <Resource
-        name="user"
-        list={UserList}
-        edit={EditGuesser}
-        create={UserCreate}
-        icon={UserIcon}
-      />
+      <Resource name="user" list={UserList} edit={UserEdit} create={UserCreate} icon={UserIcon} />
     </Admin>
   )
 }

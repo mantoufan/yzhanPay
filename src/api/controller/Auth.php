@@ -2,7 +2,6 @@
 namespace controller;
 
 use service\AuthService;
-use service\ConfigService;
 use service\UserService;
 
 class Auth extends Common
@@ -11,17 +10,17 @@ class Auth extends Common
     {
         parent::__construct();
     }
+
     public function login()
     {
         $POST = getPosts();
-        $_name = $POST['username'];
-        $_password = $POST['password'];
-        $CONFIG = ConfigService::ConfigList();
+        $_name = $post['username'];
+        $_password = $post['password'];
         $data = UserService::UserGet(array(
             'field' => array('id', 'name'),
             'where' => array(
                 'name' => $_name,
-                'password' => md5($_password . $CONFIG['md5_salt']),
+                'password' => AuthService::AuthPasswordEncode($_password),
             ),
         ));
         if (empty($data['id'])) {

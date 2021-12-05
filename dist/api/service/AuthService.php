@@ -7,6 +7,11 @@ use service\ConfigService;
 
 class AuthService
 {
+    public static function AuthPasswordEncode($password)
+    {
+        $CONFIG = ConfigService::ConfigList();
+        return md5($password . $CONFIG['md5_salt']);
+    }
     public static function AuthEncode($params = array())
     {
         $CONFIG = ConfigService::ConfigList();

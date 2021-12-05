@@ -26,4 +26,17 @@ class UserService
             'data' => Db::select('user', $params['field'], $params['where']),
         );
     }
+    public static function UserCreate($params = array())
+    {
+        Db::insert('user', $params['data']);
+        return Db::id();
+    }
+    public static function UserUpdate($params = array())
+    {
+        return Db::update('user', $params['data'], $params['where']);
+    }
+    public static function UserDelete($params = array())
+    {
+        return Db::delete('user', $params['where']);
+    }
 }

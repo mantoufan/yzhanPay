@@ -6,11 +6,9 @@ import {
   Edit,
   Create,
   SimpleForm,
-  DateField,
   TextField,
   EditButton,
-  TextInput,
-  DateInput
+  TextInput
 } from 'react-admin'
 
 const UserIcon = PersonIcon
@@ -19,21 +17,24 @@ const UserList = (props) => (
     <Datagrid>
       <TextField source="id" />
       <TextField source="name" />
+      <EditButton />
     </Datagrid>
   </List>
 )
 const UserEdit = (props) => (
-  <Edit title={<PostTitle />} {...props}>
+  <Edit {...props}>
     <SimpleForm>
       <TextInput disabled source="id" />
       <TextInput source="name" />
+      <TextInput source="password" />
     </SimpleForm>
   </Edit>
 )
 const UserCreate = (props) => (
-  <Create title="Create a Post" {...props}>
+  <Create title="Create a User" {...props}>
     <SimpleForm>
       <TextInput source="name" />
+      <TextInput source="password" />
     </SimpleForm>
   </Create>
 )
