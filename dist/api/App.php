@@ -1,7 +1,6 @@
 <?php
 require 'vendor/autoload.php';
 require 'common/function.php';
-$_PARAMS = array('GET', 'POST');
 
 use Bramus\Router\Router;
 
@@ -39,7 +38,6 @@ class App
     }
     public function run()
     {
-        $_PARAMS = $this->getParams();
         $router = $this->getRouter();
         $router->run();
     }
