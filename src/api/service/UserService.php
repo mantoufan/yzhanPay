@@ -1,8 +1,8 @@
 <?php
 namespace service;
 
-use AuthService;
 use model\Db;
+use service\AuthService;
 
 class UserService
 {

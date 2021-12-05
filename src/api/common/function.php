@@ -33,7 +33,7 @@ function getPosts()
 function getPath()
 {
     $dirname = dirname($_SERVER['PHP_SELF']);
-    $search = str_replace($dirname, '', $_SERVER['REQUEST_URI']);
+    $search = str_replace($dirname . '/', '', $_SERVER['REQUEST_URI']);
     $query = explode('?', $search);
     return $query[0];
 }
