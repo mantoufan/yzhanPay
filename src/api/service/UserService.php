@@ -11,6 +11,7 @@ class UserService
         $user = AuthService::AuthDecode();
         if (empty($user['id'])) {
             header('status: 403');
+            exit;
         }
         return $user;
     }
