@@ -21,13 +21,13 @@ class App
         $search = str_replace($dirname, '', $_SERVER['REQUEST_URI']);
         $query = explode('?', $search);
         $path = $query[0];
-        if (!empty($this->dataProvider)) {
-            $path .= '/' . $this->dataProvider->getMethod();
-        }
         $route = preg_replace_callback('/\d+/', function ($s) {
             return '(\d{' . strlen($s[0]) . '})';
         }, $path);
         $path = preg_replace('/\/\d+/', '', $path);
+        if (!empty($this->dataProvider)) {
+            $path .= '/' . $this->dataProvider->getMethod();
+        }
         $pathAr = explode('/', $path);
         $method = array_pop($pathAr);
         $methodAr = explode('-', $method);
