@@ -18,8 +18,11 @@ class UserService
     {
         return Db::get('user', $params['field'], $params['where']);
     }
-    public static function UserList()
+    public static function UserList($params = array())
     {
-
+        return array(
+            'total' => Db::count('user'),
+            'data' => Db::select('user', $params['field'], $params['where']),
+        );
     }
 }
