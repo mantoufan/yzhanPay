@@ -5,7 +5,7 @@ use Medoo\Medoo;
 
 class Db
 {
-    public static function connect($config)
+    public static function connect($config = array())
     {
         return new Medoo(array_merge(include 'common/database.php', $config));
     }
