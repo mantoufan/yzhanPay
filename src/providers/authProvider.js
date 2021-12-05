@@ -3,7 +3,7 @@ import i18nProvider from '@providers/i18nProvider'
 
 export default {
 	login ({ username, password }) {
-		const request = new Request(PATH_API + 'authenticate', {
+		const request = new Request(PATH_API + 'user/authenticate', {
 			method: 'POST',
 			body: JSON.stringify({ username, password }),
 			headers: new Headers({ 'Content-Type': 'application/json' }),

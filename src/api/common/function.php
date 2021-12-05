@@ -22,12 +22,3 @@ function SplAutoLoadRegister()
         return false;
     });
 }
-function AppInit()
-{
-    Cors();
-    SplAutoLoadRegister();
-}
-function GetParam()
-{
-    return json_decode(file_get_contents('php://input'), true);
-}
