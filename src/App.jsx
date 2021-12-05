@@ -1,29 +1,32 @@
 import React from 'react'
-import { Admin, Resource } from 'react-admin'
+import { Admin, Resource, fetchUtils } from 'react-admin'
 import jsonServerProvider from 'ra-data-json-server'
 import authProvider from '@providers/authProvider'
 import i18nProvider from '@providers/i18nProvider'
 import routeProvider from '@providers/routeProvider'
 import { createBrowserHistory as createHistory } from 'history'
 import '@assets/css/common.scss'
+import { PageUsers } from '@pages/Pages'
 
 const history = createHistory()
+const { UserIcon, UserList, UserEdit, UserCreate } = PageUsers
 const httpClient = (url, options = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: 'application/json' })
   }
-  const { token } = JSON.parse(localStorage.getItem('auth'))
-  options.headers.set('Authorization', `Bearer ${token}`)
+  options.headers.set('Authorization', `Bearer ${localStorage.getItem('auth')}`)
   return fetchUtils.fetchJson(url, options)
 }
 
-export default () => (
-  <Admin
-    history={history}
-    authProvider={authProvider}
-    dataProvider={jsonServerProvider('https://jsonplaceholder.typicode.com', httpClient)}
-    i18nProvider={i18nProvider}
-    customRoutes={routeProvider}>
-    <Resource name="index" />
-  </Admin>
-)
+export default () => {
+  return (
+    <Admin
+      history={history}
+      authProvider={authProvider}
+      dataProvider={jsonServerProvider('https://pay.os120.com/api', httpClient)}
+      i18nProvider={i18nProvider}
+      customRoutes={routeProvider}>
+      <Resource name="users" list={UserList} edit={UserEdit} create={UserCreate} icon={UserIcon} />
+    </Admin>
+  )
+}

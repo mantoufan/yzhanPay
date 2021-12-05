@@ -5,14 +5,14 @@ use Firebase\JWT\JWT;
 use service\ConfigService;
 use service\UserService;
 
-class Authenticate extends Common
+class User extends Common
 {
     public function __construct()
     {
         parent::__construct();
     }
 
-    public function checkLogin()
+    public function authenticate()
     {
         $_POST = GetParam();
         $_name = $_POST['username'];

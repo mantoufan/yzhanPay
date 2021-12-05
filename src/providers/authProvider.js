@@ -15,8 +15,8 @@ export default {
 				}
 				return response.json()
 			})
-			.then(auth => {
-				localStorage.setItem('auth', JSON.stringify(auth))
+			.then(json => {
+				localStorage.setItem('auth', json.auth)
 			})
 			.catch(() => {
 				throw new Error(i18nProvider.translate('notification.login.wrong'))
@@ -29,5 +29,6 @@ export default {
 		localStorage.removeItem('auth')
 		return Promise.resolve()
 	},
-	checkError: () => Promise.resolve()
+	checkError: () => Promise.resolve(),
+	getPermissions: params => Promise.resolve(),
 }
