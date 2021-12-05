@@ -1,5 +1,5 @@
 import AsyncComponent from '@components/AsyncComponent/AsyncComponent'
-import Users from '@pages/Users/Users'
+import User from '@pages/User/User'
 
 export const PageCheckout = AsyncComponent(() => import('@pages/Checkout/Checkout'))
-export const PageUsers = Users
+export const PageUser = User

@@ -3,7 +3,7 @@ namespace controller;
 
 use service\UserService;
 
-class Users extends Common
+class User extends Common
 {
     public function __construct()
     {

@@ -27,7 +27,6 @@ const UserEdit = (props) => (
     <SimpleForm>
       <TextInput disabled source="id" />
       <TextInput source="name" />
-      <TextInput source="permission" options={{ multiline: true }} />
     </SimpleForm>
   </Edit>
 )
@@ -35,7 +34,6 @@ const UserCreate = (props) => (
   <Create title="Create a Post" {...props}>
     <SimpleForm>
       <TextInput source="name" />
-      <TextInput source="permission" options={{ multiline: true }} />
     </SimpleForm>
   </Create>
 )
