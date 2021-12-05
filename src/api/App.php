@@ -18,22 +18,24 @@ class App
         $router->setNamespace('controller');
         $router->options('/.*', function () {});
         $dirname = dirname($_SERVER['PHP_SELF']);
-        $search = str_replace($_SERVER['REQUEST_URI'], $dirname, '');
+        $search = str_replace($dirname, '', $_SERVER['REQUEST_URI']);
         $query = explode('?', $search);
         $path = $query[0];
-        $class = explode('@', $path);
-        $method = $class[1];
-        $controllerPath = explode('/', $class[0]);
-        $endPath = ucfirst(array_pop($controllerPath));
-        $router->match('POST|GET', $path, implode('/', $controllerPath) . '/' . $endPath . '@' . $method);
+        $route = preg_replace_callback('/\d+/', function ($s) {
+            return '(\d{' . strlen($s[0]) . '})';
+        }, $path);
+        $path = preg_replace('/\/\d+/', '', $path);
+        $pathAr = explode('/', $path);
+        $method = array_pop($pathAr);
+        $methodAr = explode('-', $method);
+        for ($i = 1; $i < count($methodAr); $i++) {
+            $methodAr[$i] = ucfirst($methodAr[$i]);
+        }
+        $method = implode('', $methodAr);
+        $controller = ucfirst(array_pop($pathAr));
+        $prePath = implode('/', $pathAr);
+        $router->match('POST|GET', $route, ($prePath ? $prePath . '/' : '') . $controller . '@' . $method);
         return $router;
-    }
-    public function getParams()
-    {
-        return array(
-            'GET' => $_GET,
-            'POST' => json_decode(file_get_contents('php://input'), true),
-        );
     }
     public function run()
     {
