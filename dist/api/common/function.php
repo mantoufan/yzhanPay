@@ -30,3 +30,10 @@ function getPosts()
 {
     return json_decode(file_get_contents('php://input'), true);
 }
+function getPath()
+{
+    $dirname = dirname($_SERVER['PHP_SELF']);
+    $search = str_replace($dirname, '', $_SERVER['REQUEST_URI']);
+    $query = explode('?', $search);
+    return $query[0];
+}

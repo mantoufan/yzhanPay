@@ -5,6 +5,10 @@ class RaDataJsonServer
 {
     public static function getMethod()
     {
+        $pathAr = explode('/', getPath());
+        if (count($pathAr) > 1) {
+            return end($pathAr);
+        }
         $method = '';
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':

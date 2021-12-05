@@ -15,12 +15,8 @@ class App
     public function getRouter()
     {
         $router = new \Bramus\Router\Router();
-        $router->setNamespace('controller');
         $router->options('/.*', function () {});
-        $dirname = dirname($_SERVER['PHP_SELF']);
-        $search = str_replace($dirname, '', $_SERVER['REQUEST_URI']);
-        $query = explode('?', $search);
-        $path = $query[0];
+        $path = getPath();
         $route = preg_replace_callback('/\d+/', function ($s) {
             return '(\d{' . strlen($s[0]) . '})';
         }, $path);
@@ -37,6 +33,7 @@ class App
         $method = implode('', $methodAr);
         $controller = ucfirst(array_pop($pathAr));
         $prePath = implode('/', $pathAr);
+        $router->setNamespace('controller');
         $router->match('POST|GET', $route, ($prePath ? $prePath . '/' : '') . $controller . '@' . $method);
         return $router;
     }
