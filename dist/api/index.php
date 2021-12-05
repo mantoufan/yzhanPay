@@ -1,6 +1,6 @@
 <?php
 require 'vendor/autoload.php';
-include 'common/function.php';
+require 'common/function.php';
 AppInit();
 $router = new \Bramus\Router\Router();
 $router->setNamespace('controller');

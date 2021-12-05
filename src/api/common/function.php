@@ -1,5 +1,5 @@
 <?php
-function EchoJson($data)
+function Output($data)
 {
     echo json_encode($data);
 }
@@ -26,4 +26,8 @@ function AppInit()
 {
     Cors();
     SplAutoLoadRegister();
+}
+function GetParam()
+{
+    return json_decode(file_get_contents('php://input'), true);
 }
