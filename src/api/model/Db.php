@@ -12,6 +12,6 @@ class Db
 
     public static function __callStatic($funName, $arguments)
     {
-        return call_user_func_array(self::connect()[$funName], $arguments);
+        return call_user_func_array(self::connect()->$funName, $arguments);
     }
 }
