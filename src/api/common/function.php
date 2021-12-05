@@ -22,3 +22,11 @@ function SplAutoLoadRegister()
         return false;
     });
 }
+function getGets()
+{
+    return $_GET;
+}
+function getPosts()
+{
+    return json_decode(file_get_contents('php://input'), true);
+}

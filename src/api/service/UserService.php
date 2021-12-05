@@ -9,4 +9,8 @@ class UserService
     {
         return Db::get('user', $param['field'], $param['where']);
     }
+    public static function UserList()
+    {
+
+    }
 }

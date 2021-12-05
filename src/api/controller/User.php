@@ -14,9 +14,9 @@ class User extends Common
 
     public function authenticate()
     {
-        $_POST = GetParam();
-        $_name = $_POST['username'];
-        $_password = $_POST['password'];
+        $POST = getPosts();
+        $_name = $POST['username'];
+        $_password = $POST['password'];
         $CONFIG = ConfigService::ConfigList();
         $data = UserService::UserGet(array(
             'field' => array('id', 'name'),
