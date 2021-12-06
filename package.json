@@ -39,6 +39,7 @@
     "html-webpack-plugin": "^5.5.0",
     "imagemin-webpack-plugin": "^2.4.2",
     "mini-css-extract-plugin": "^2.4.5",
+    "query-string": "^7.0.1",
     "ra-data-json-server": "^3.19.2",
     "ra-i18n-polyglot": "^3.19.2",
     "ra-language-chinese": "github:chen4w/ra-language-chinese",

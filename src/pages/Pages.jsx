@@ -7,6 +7,7 @@ import Plugin from '@pages/Plugin/Plugin'
 import User from '@pages/User/User'
 
 export const PageCheckout = AsyncComponent(() => import('@pages/Checkout/Checkout'))
+export const PageDev = AsyncComponent(() => import('@pages/Dev/Dev'))
 export const PageRoutes = [
   { path: 'channel', page: Channel },
   { path: 'client', page: Client },
