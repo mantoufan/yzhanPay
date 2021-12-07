@@ -33,6 +33,7 @@ class Checkout extends Common
 				'out_trade_no' => $_out_trade_no,
 				'total_amount' => $_total_amount,
 				'body' => $_body,
+				'product_code' => 'FAST_INSTANT_TRADE_PAY'
 		])->send();
 		
 		$url = $response->getRedirectUrl();
