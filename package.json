@@ -7,7 +7,7 @@
     "build": "webpack --config webpack.config.prod.js",
     "start": "webpack-dev-server --open",
     "test": "jest",
-    "deploy": "webpack --config webpack.config.prod.js && git add . && git commit -m \"deploy\" && git push && rm -rf dist"
+    "deploy": "webpack --config webpack.config.prod.js && git add . && git commit -m \"deploy\" && git push"
   },
   "repository": {
     "type": "git",
