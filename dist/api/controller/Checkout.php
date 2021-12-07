@@ -3,6 +3,7 @@ namespace controller;
 
 use service\AuthService;
 use service\DbService;
+use Omnipay\Omnipay;
 
 class Checkout extends Common
 {
