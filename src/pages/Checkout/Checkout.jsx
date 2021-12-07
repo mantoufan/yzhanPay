@@ -20,6 +20,7 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import i18nProvider from '@providers/i18nProvider'
+import { PATH_API } from '@common/config'
 const { translate } = i18nProvider
 
 const useQuery = () => {
@@ -64,7 +65,7 @@ export default () => {
         </Toolbar>
       </AppBar>
       <ContainerMedium>
-        <form action="./api/checkout/sumbit" method="POST">
+        <form action={PATH_API + 'checkout/sumbit'} method="POST">
           <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
