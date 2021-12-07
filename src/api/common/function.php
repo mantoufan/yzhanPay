@@ -28,7 +28,7 @@ function getGets()
 }
 function getPosts()
 {
-    return json_decode(file_get_contents('php://input'), true);
+    return $_SERVER['CONTENT_TYPE'] === 'application/json' ? json_decode(file_get_contents('php://input'), true) : $_POST;
 }
 function getPath()
 {

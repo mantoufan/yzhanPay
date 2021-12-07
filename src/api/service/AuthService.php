@@ -38,4 +38,9 @@ class AuthService
         }
         return $user;
     }
+    public static function AuthSign($params, $secret_key = 'bc3a4d13e427ee95f24cb65f24501208a6e0d8be'){
+        $params = array_filter($params);
+        ksort($params);
+        return md5(urldecode(http_build_query($params)) . $secret_key);
+    }
 }

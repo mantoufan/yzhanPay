@@ -31,4 +31,12 @@ class Auth extends Common
             'name' => $data['name'],
         ))));
     }
+
+    public function sign($params = array()) {
+      $params = getGets();
+      $_sign = $params['sign'];
+      unset($params['sign']);
+      $_true_sign = AuthService::AuthSign($params);
+      Output(array('sign' => $_sign,'trueSign' => $_true_sign, 'isMatch' => $_sign === $_true_sign));
+    }
 }
