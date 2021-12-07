@@ -64,7 +64,7 @@ export default () => {
         </Toolbar>
       </AppBar>
       <ContainerMedium>
-        <form action="./api/checkout" method="POST">
+        <form action="./api/checkout/Sumbit" method="POST">
           <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
               <Grid item xs={6}>

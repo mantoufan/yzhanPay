@@ -8,13 +8,19 @@ class Checkout extends Common
 {
 	public function Sumbit() {
 		$params = getPosts();
+		$_subject = $params['subject'];
+		$_body = $params['body'];
+		$_timestamp = $params['timestamp'];
+		$_out_trade_no = $params['out_trade_no'];
+		$_total_amount = $params['total_amount'];
 		$_return_url = $params['return_url'];
 		$_notify_url = $params['notify_url'];
+
 		$gateway = Omnipay::create('Alipay_AopPage');
 		$gateway->setSignType('RSA2'); // RSA/RSA2/MD5. Use certificate mode must set RSA2
-		$gateway->setAppId('the_app_id');
-		$gateway->setPrivateKey('the_app_private_key');
-		$gateway->setAlipayPublicKey('the_alipay_public_key'); // Need not set this when used certificate mode
+		$gateway->setAppId('2021003100645552');
+		$gateway->setPrivateKey('MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqys4gr8PcpsX6eErThms0Vwqfu3YqRuiKE+J9wVqfO45z0S4U/R6FbMByeUoUOUIiaxd0oOU3ZrDcPIwKJF/j/7bYOB0Uc/Nrma1a6rkfIVZZVjZC7bjd1ruURS+TVGtmHLtx9bGwsojhjqL9z5Wd0dhIWtiBz2IfT7+nyZBSUVgGOyhf8MvAAyLvSmMR3xsguho/GNlo2BypuNPZYdkv4CuC/FWPNjzLIuwuEUBO1vc1v4whju27EiSubBkzS1Pol9ntlUq/ejuXaI0uW/z50iTm8dhbfCPRDEVqcycLnAVvSXi5hsq/M9RUOASj5xze2WXAv4jlNWXCrfQNCv7kQIDAQAB');
+		$gateway->setAlipayPublicKey('MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiXeQ5YZylA2hfSkio+XYBbuUO+/76yepjMdZdn3/FhgRIKF2LkQiUAqObcMj/OZq4yyDbCwrN2cddoc57LLxKc9B/2maiCaVIcOP/1fcHq/Nrmc6K+shdZ1eMQpZS+JzOLam+ae9/p7FZPSaa2aUzsOMPm8aDZV1zL2TTmeuDLfg3lNqyWPpFxy5V+lmusnpn6GoH4io6nyauDwQs1pGdA3kuFh0+xKp68MJcl9awfH8QsYG0hXAe3VPcp9IB7oI560aBaIsRQP+getuxnTGwTJChS0Y4i8m36JB0YAJIjHs/3dKxElwkUYlXPgNHYnMeK+vPIYRyfhRE5yc1NkwpwIDAQAB'); // Need not set this when used certificate mode
 		$gateway->setReturnUrl($_return_url);
 		$gateway->setNotifyUrl($_notify_url);
 		
@@ -22,10 +28,10 @@ class Checkout extends Common
 		 * @var AopTradePagePayResponse $response
 		 */
 		$response = $gateway->purchase()->setBizContent([
-				'subject'      => 'test',
-				'out_trade_no' => date('YmdHis') . mt_rand(1000, 9999),
-				'total_amount' => '0.01',
-				'product_code' => 'FAST_INSTANT_TRADE_PAY',
+				'subject'      => $_subject,
+				'out_trade_no' => $_out_trade_no,
+				'total_amount' => $_total_amount,
+				'body' => $_body,
 		])->send();
 		
 		$url = $response->getRedirectUrl();
