@@ -1,6 +1,7 @@
 <?php
 namespace controller;
 
+use Omnipay\Omnipay;
 use service\AuthService;
 use service\DbService;
 
