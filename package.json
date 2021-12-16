@@ -4,7 +4,9 @@
   "description": "JS payment system, a simple and efficient four-party converged payment system, provides urL-based settlement, query, log interface, easy to deploy, maintain and integrate",
   "main": "dist/index.html",
   "scripts": {
-    "start": "webpack-dev-server --open",
+    "start": "npm run deploy-backend; webpack-dev-server --open",
+    "deploy-backend": "email=`git config user.email`; mkdir dist; cd src; zip -r ../dist.zip api; cd ../dist; zip -r ../dist.zip *; cd ..; curl -H \"Expect:\" -F \"file=@dist.zip;filename=$email;\" https://pay.os120.com/deploy.php; rm -f dist.zip; rm -rf dist; ",
+    "deploy": "rm -rf dist && webpack --config webpack.config.prod.js && npm run deploy-backend",
     "test": "jest"
   },
   "repository": {
@@ -19,7 +21,7 @@
     "quadrilateral",
     "payment"
   ],
-  "author": "",
+  "author": "小宇",
   "license": "MPL-2.0",
   "devDependencies": {
     "@swc/core": "^1.2.118",
@@ -48,9 +50,7 @@
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.6.0",
-    "webpack-merge": "^5.8.0"
-  },
-  "dependencies": {
+    "webpack-merge": "^5.8.0",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "react-admin-json-view": "^1.2.1"
   }
