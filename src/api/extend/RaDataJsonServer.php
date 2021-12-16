@@ -7,6 +7,9 @@ class RaDataJsonServer
     {
         $method = '';
         $pathAr = explode('/', getPath());
+        if ($pathAr[0] === 'plugins') {
+            return '';
+        }
         if (count($pathAr) > 1) {
             $method = end($pathAr);
             if (!empty($method) && !is_numeric($method)) {

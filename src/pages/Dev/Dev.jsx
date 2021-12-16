@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import ContainerMedium from '@components/ContainerMedium/ContainerMedium'
 import CopyrightFooter from '@components/CopyrightFooter/CopyrightFooter'
 import theme from '@providers/themeProvider'
@@ -167,23 +167,49 @@ export default () => {
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel2a-content"
             id="panel2a-header">
-            <Typography>Frp</Typography>
+            <Typography>Dev Domain</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <BasicCard>
-              William
+          <BasicCard>
+              China Pay 
               <p>
-                https://w.f.os120.com
+                Dev-env: npm run deploy
+                <br /> 
+                william: <Link href="https://w.p.os120.com" target="_blank">https://w.p.os120.com</Link>
                 <br />
-                ip:42.193.185.220 port:7000
+                linker: <Link href="https://l.p.os120.com" target="_blank">https://l.p.os120.com</Link>
+                <br />
+                Shon: <Link href="https://s.p.os120.com" target="_blank">https://s.p.os120.com</Link>
+                <br />
+                Production env: Auto deloy after git push
+                <br />
+                <Link href="https://pay.os120.com" target="_blank">https://pay.os120.com</Link>
               </p>
             </BasicCard>
             <BasicCard>
-              Linker
+              Frp
               <p>
-                https://l.f.os120.com
-                <br />
                 ip:42.193.185.220 port:7000
+                <br />
+                domain: f.os120.com
+                <br />
+                change subdomain and [htts2http_subdomain] to get your own domain
+                <br />
+                william: 
+                <br />
+                <Link
+                  href="https://drfs.ctcontents.com/file/3312/527600320/e6fb2e/ct/william-frpc.zip"
+                  target="_blank">
+                  frpc.ini & crt Download
+                </Link>
+                <br />
+                linker: 
+                <br />
+                <Link
+                  href="https://drfs.ctcontents.com/file/3312/527600319/8feced/ct/linker-frpc.zip"
+                  target="_blank">
+                  frpc.ini & crt Download
+                </Link>
               </p>
             </BasicCard>
           </AccordionDetails>
@@ -193,12 +219,50 @@ export default () => {
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel2a-content"
             id="panel2a-header">
-            <Typography>Mail</Typography>
+            <Typography>Dev Account</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <BasicCard>
-              post@os120.com
+              Alipay Account
               <p>
+                name: kvjqql0629@sandbox.com
+                <br />
+                psd: 111111
+                <br />
+                pay psd: 111111
+              </p>
+            </BasicCard>
+            <BasicCard>
+              Admin
+              <p>
+                <Link href="/login" target="_blank">
+                  Login Panel
+                </Link>
+                <br />
+                name: admin
+                <br />
+                psd: admin
+              </p>
+            </BasicCard>
+          </AccordionDetails>
+          <AccordionDetails>
+            <BasicCard>
+              Database
+              <p>
+                <Link href="http://c.y5.os120.com:888/phpmyadmin_d68ea9a2f4f1f368/" target="_blank">
+                  Admin Panel
+                </Link>
+                <br />
+                name: pay
+                <br />
+                psd: 6Bmc7_3/W
+              </p>
+            </BasicCard>
+            <BasicCard>
+              Smtp Server
+              <p>
+                host: post@os120.com
+                <br />
                 psd: VqHrqCKMtvGykE7E
                 <br />
                 smtp: smtp.feishu.cn

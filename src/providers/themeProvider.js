@@ -4,11 +4,11 @@ import amber from '@material-ui/core/colors/amber'
 export default createTheme({
   palette: {
     primary: {
-      main: orange[500],
+      main: orange[700],
       contrastText: '#fff'
     },
     secondary: {
-      main: amber[500],
+      main: amber[700],
       contrastText: '#fff'
     }
   }

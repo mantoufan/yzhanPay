@@ -1,4 +1,3 @@
-import React from 'react'
 import { Admin, Resource, fetchUtils, defaultTheme } from 'react-admin'
 import jsonServerProvider from 'ra-data-json-server'
 import authProvider from '@providers/authProvider'
@@ -7,8 +6,10 @@ import routeProvider from '@providers/routeProvider'
 import { createBrowserHistory as createHistory } from 'history'
 import '@assets/css/common.scss'
 import { PageRoutes } from '@pages/Pages'
-import orange from '@material-ui/core/colors/orange'
-import amber from '@material-ui/core/colors/amber'
+import theme from '@providers/themeProvider'
+import { BASE_API } from '@common/config'
+import DocumentTitle from '@components/DocumentTitle/DocumentTitle'
+
 
 const history = createHistory()
 const httpClient = (url, options = {}) => {
@@ -19,22 +20,18 @@ const httpClient = (url, options = {}) => {
   return fetchUtils.fetchJson(url, options)
 }
 
-const myTheme = Object.assign({}, defaultTheme, {
-  palette: {
-    primary: orange,
-    secondary: amber
-  }
-})
+const AdminTheme = Object.assign({}, defaultTheme, theme)
 
 export default () => {
   return (
     <Admin
-      theme={myTheme}
+      theme={AdminTheme}
       history={history}
       authProvider={authProvider}
-      dataProvider={jsonServerProvider('https://pay.os120.com/api', httpClient)}
+      dataProvider={jsonServerProvider(BASE_API, httpClient)}
       i18nProvider={i18nProvider}
-      customRoutes={routeProvider}>
+      customRoutes={routeProvider}
+      disableTelemetry={false}>
       {PageRoutes.map(({ path, page }) => {
         const { PageList, PageEdit, PageCreate, PageIcon } = page
         return (
@@ -48,6 +45,7 @@ export default () => {
           />
         )
       })}
+      <DocumentTitle />
     </Admin>
   )
 }

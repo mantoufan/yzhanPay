@@ -1,5 +1,3 @@
-import React from 'react'
-
 import Box from '@material-ui/core/Box'
 import i18nProvider from '@providers/i18nProvider'
 import { styled } from '@material-ui/core/styles'

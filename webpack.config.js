@@ -1,15 +1,16 @@
 const { resolve } = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CopyPlugin = require('copy-webpack-plugin')
-const { DefinePlugin } = require('webpack')
+const chalk = require('chalk')
+const ProgressBarPlugin = require('progress-bar-webpack-plugin')
+const Dotenv = require('dotenv-webpack')
 
-module.exports = (env, argv) => {
-  const MODE = argv.config === 'webpack.config.prod.js' ? 'production' : 'development'
+module.exports = (_, argv) => {
+  const MODE = argv.config && argv.config.includes('webpack.config.prod.js') ? 'production' : 'development'
   return {
     entry: resolve('src/index.jsx'),
     output: {
-      filename: MODE === 'production' ? 'assets/js/bundle.[contenthash].js' : 'assets/js/bundle.js',
+      filename: `assets/js/[name]${MODE === 'production' ? '.[contenthash]' : ''}.js`,
       chunkFilename: 'assets/js/[chunkhash].js',
       path: resolve('dist')
     },
@@ -41,54 +42,32 @@ module.exports = (env, argv) => {
         {
           test: /\.jsx?$/,
           exclude: /node_modules/,
-          use: [
-            'thread-loader',
-            {
-              loader: 'babel-loader?cacheDirectory',
-              options: {
-                presets: ['@babel/preset-env', '@babel/preset-react'],
-                plugins: ['@babel/plugin-transform-runtime']
-              }
-            }
-          ]
+          use: ['swc-loader'],
         }
       ]
     },
     devtool: 'source-map',
     plugins: [
-      new CopyPlugin({
-        patterns: [
-          // {
-          //   from: resolve('src/assets/images'),
-          //   to: resolve('dist/assets/images'),
-          // },
-          {
-            from: resolve('src/api'),
-            to: resolve('dist/api')
-          }
-        ]
-      }),
+      new Dotenv(),
       new HtmlWebpackPlugin({
         template: 'src/index.html',
         filename: 'index.html'
         // favicon: resolve('src/favicon.ico'),
       }),
       new MiniCssExtractPlugin({
-        filename:
-          MODE === 'production' ? 'assets/css/style.[contenthash].css' : 'assets/css/style.css'
+        filename: `assets/css/[name]${MODE === 'production' ? '.[contenthash]' : ''}.css`
       }),
-      new DefinePlugin({
-        MODE: JSON.stringify(MODE)
+      new ProgressBarPlugin({
+        format: `  :msg [:bar] ${chalk.green.bold(':percent')} (:elapsed s)`
       })
     ],
     devServer: {
-      hot: true,
-      host: 'c.y5.os120.com',
       port: 8080,
       historyApiFallback: {
         disableDotRule: true
       }
     },
-    mode: 'development'
+    mode: 'development',
+    cache: true
   }
 }

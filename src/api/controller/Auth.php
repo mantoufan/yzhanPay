@@ -1,6 +1,7 @@
 <?php
 namespace controller;
 
+use controller\common\Common;
 use service\AuthService;
 use service\DbService;
 
@@ -14,9 +15,9 @@ class Auth extends Common
     public function login()
     {
         $POST = getPosts();
-        $_name = $post['username'];
-        $_password = $post['password'];
-        $data = DbService::DbGet(array(
+        $_name = $POST['username'];
+        $_password = $POST['password'];
+        $data = DbService::DbGet('user', array(
             'field' => array('id', 'name'),
             'where' => array(
                 'name' => $_name,
@@ -32,11 +33,12 @@ class Auth extends Common
         ))));
     }
 
-    public function sign($params = array()) {
-      $params = getGets();
-      $_sign = $params['sign'];
-      unset($params['sign']);
-      $_true_sign = AuthService::AuthSign($params);
-      Output(array('sign' => $_sign,'trueSign' => $_true_sign, 'isMatch' => $_sign === $_true_sign));
+    public function sign($params = array())
+    {
+        $params = getGets();
+        $_sign = $params['sign'];
+        unset($params['sign']);
+        $_true_sign = AuthService::AuthSign($params);
+        Output(array('sign' => $_sign, 'trueSign' => $_true_sign, 'isMatch' => $_sign === $_true_sign));
     }
 }

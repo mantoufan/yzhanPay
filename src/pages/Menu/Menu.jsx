@@ -1,42 +1,34 @@
-import React from 'react'
 import MenuIcon from '@material-ui/icons/Menu'
-import {
-  List,
-  Datagrid,
-  Edit,
-  Create,
-  SimpleForm,
-  TextField,
-  EditButton,
-  TextInput
-} from 'react-admin'
+
+import ListRender from '@components/ConfigRender/ListRender'
+import EditRender from '@components/ConfigRender/EditRender'
+import CreateRender from '@components/ConfigRender/CreateRender'
+
+const CONFIG = {
+  id: {
+    disabled: true,
+    type: 'text',
+  },
+  display_name: {
+    type: 'text',
+  },
+  name: {
+    type: 'text',
+  },
+  path: {
+    type: 'text',
+  }
+}
 
 const PageIcon = MenuIcon
 const PageList = (props) => (
-  <List {...props}>
-    <Datagrid>
-      <TextField source="id" />
-      <TextField source="name" />
-      <EditButton />
-    </Datagrid>
-  </List>
+  <ListRender config={CONFIG} {...props} />
 )
 const PageEdit = (props) => (
-  <Edit {...props}>
-    <SimpleForm>
-      <TextInput disabled source="id" />
-      <TextInput source="name" />
-      <TextInput source="password" />
-    </SimpleForm>
-  </Edit>
+  <EditRender config={CONFIG} {...props} />
 )
 const PageCreate = (props) => (
-  <Create {...props}>
-    <SimpleForm>
-      <TextInput source="name" />
-      <TextInput source="password" />
-    </SimpleForm>
-  </Create>
+  <CreateRender config={CONFIG} {...props} />
 )
 
 export default {

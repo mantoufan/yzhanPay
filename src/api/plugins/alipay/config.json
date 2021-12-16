@@ -1,0 +1,15 @@
+{
+	"name": "alipay",
+	"displayname": "Alipay China",
+	"type": "pay",
+	"payment": "depositcard,alipay",
+	"ability": "checkout",
+	"author": "lokielse",
+	"link": "https://github.com/lokielse",
+	"input": [
+		{ "type":"input", "label":"App ID", "name":"app_id" },
+		{ "type":"input", "label":"App Private Key", "name":"app_private_key" },
+		{ "type":"input", "label":"Alipay Public Key", "name":"app_public_key" },
+		{ "type":"input", "label":"Sign Type", "name":"sign_type" }
+	]
+}

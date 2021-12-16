@@ -9,26 +9,29 @@ class AuthService
 {
     public static function AuthPasswordEncode($password)
     {
-        $CONFIG = ConfigService::ConfigList();
-        return md5($password . $CONFIG['md5_salt']);
+        $CONFIG = ConfigService::ConfigGet();
+        return md5($password . $CONFIG['MD5_SALT']);
     }
+
     public static function AuthEncode($params = array())
     {
-        $CONFIG = ConfigService::ConfigList();
+        $CONFIG = ConfigService::ConfigGet();
         return JWT::encode(array(
             'id' => $params['id'],
             'name' => $params['name'],
-        ), $CONFIG['jwt_key'], 'HS256');
+        ), $CONFIG['JWT_KEY'], 'HS256');
     }
+
     public static function AuthDecode()
     {
         $auth = str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION']);
-        $CONFIG = ConfigService::ConfigList();
+        $CONFIG = ConfigService::ConfigGet();
         if (empty($auth)) {
             return array();
         }
-        return (array) JWT::decode($auth, new Key($CONFIG['jwt_key'], 'HS256'));
+        return (array) JWT::decode($auth, new Key($CONFIG['JWT_KEY'], 'HS256'));
     }
+
     public static function AuthCheck()
     {
         $user = self::AuthDecode();
@@ -38,9 +41,20 @@ class AuthService
         }
         return $user;
     }
-    public static function AuthSign($params, $secret_key = 'bc3a4d13e427ee95f24cb65f24501208a6e0d8be'){
+
+    public static function AuthSign($params, $app_key = 'bc3a4d13e427ee95f24cb65f24501208a6e0d8be')
+    {
         $params = array_filter($params);
         ksort($params);
-        return md5(urldecode(http_build_query($params)) . $secret_key);
+        urldecode(http_build_query($params));
+        return md5(urldecode(http_build_query($params)) . $app_key);
+    }
+
+    public static function AuthSignCheck($params, $app_key = 'bc3a4d13e427ee95f24cb65f24501208a6e0d8be')
+    {
+        $_sign = $params['sign'];
+        unset($params['sign']);
+        $sign = self::AuthSign($params, $app_key);
+        return $_sign === $sign;
     }
 }

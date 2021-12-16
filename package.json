@@ -1,17 +1,15 @@
 {
-  "name": "yzhanpay",
+  "name": "js-pay-gateway",
   "version": "1.0.0",
-  "description": "Y站支付系统，简洁高效的四方聚合支付系统，基于 URL 提供结账、查询、日志接口，容易部署、维护和集成 Y station payment system, a simple and efficient four-party converged payment system, provides urL-based settlement, query, log interface, easy to deploy, maintain and integrate",
-  "main": "dist/bundle.js",
+  "description": "JS payment system, a simple and efficient four-party converged payment system, provides urL-based settlement, query, log interface, easy to deploy, maintain and integrate",
+  "main": "dist/index.html",
   "scripts": {
-    "build": "webpack --config webpack.config.prod.js",
     "start": "webpack-dev-server --open",
-    "test": "jest",
-    "deploy": "webpack --config webpack.config.prod.js && git add . && git commit -m \"deploy\" && git push"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git@mtf.github.com:mantoufan/yzhanPay.git"
+    "url": "git@github.com:Junglescout/china-pay.git"
   },
   "keywords": [
     "Payment",
@@ -21,24 +19,21 @@
     "quadrilateral",
     "payment"
   ],
-  "author": "吴小宇 Shon Wu",
+  "author": "",
   "license": "MPL-2.0",
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/plugin-transform-runtime": "^7.16.4",
-    "@babel/preset-env": "^7.16.4",
-    "@babel/preset-react": "^7.16.0",
-    "babel-loader": "^8.2.3",
-    "clean-webpack-plugin": "^4.0.0",
-    "copy-webpack-plugin": "^7.0.0",
+    "@swc/core": "^1.2.118",
+    "axios": "^0.24.0",
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.2.0",
     "cssnano-preset-advanced": "^5.1.8",
+    "dotenv-webpack": "^7.0.3",
     "history": "^4.10.1",
     "html-loader": "^3.0.1",
     "html-webpack-plugin": "^5.5.0",
     "imagemin-webpack-plugin": "^2.4.2",
     "mini-css-extract-plugin": "^2.4.5",
+    "progress-bar-webpack-plugin": "^2.1.0",
     "query-string": "^7.0.1",
     "ra-data-json-server": "^3.19.2",
     "ra-i18n-polyglot": "^3.19.2",
@@ -49,10 +44,14 @@
     "react-dom": "^17.0.2",
     "sass": "^1.44.0",
     "sass-loader": "^12.3.0",
-    "thread-loader": "^3.0.4",
+    "swc-loader": "^0.1.15",
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.6.0",
     "webpack-merge": "^5.8.0"
+  },
+  "dependencies": {
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "react-admin-json-view": "^1.2.1"
   }
 }

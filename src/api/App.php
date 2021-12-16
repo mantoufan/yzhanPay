@@ -34,10 +34,18 @@ class App
             $methodAr[$i] = ucfirst($methodAr[$i]);
         }
         $method = implode('', $methodAr);
-        $controller = ucfirst(array_pop($pathAr));
-        $prePath = implode('/', $pathAr);
-        $router->setNamespace('controller');
-        $router->match('POST|GET', $route, ($prePath ? $prePath . '/' : '') . $controller . '@' . $method);
+        $controller = array_pop($pathAr);
+        $prePath = implode('\\', $pathAr);
+
+        if ($pathAr[0] === 'plugins') {
+            $controller .= '\\' . ucfirst($controller);
+        } else if ($pathAr[0] === 'open') {
+            $controller = ucfirst($controller);
+        } else {
+            $router->setNamespace('controller');
+            $controller = ucfirst($controller);
+        }
+        $router->match('POST|GET|PUT|DELETE', $route, ($prePath ? $prePath . '\\' : '') . $controller . '@' . $method);
         return $router;
     }
     public function run()

@@ -1,5 +1,6 @@
 <?php
 return array(
-    'md5_salt' => 'madfan',
-    'jwt_key' => 'madfan',
+    'MD5_SALT' => 'madfan',
+    'JWT_KEY' => 'madfan',
+    'API_URL' => 'https://' . $_SERVER['HTTP_HOST'] . '/api',
 );

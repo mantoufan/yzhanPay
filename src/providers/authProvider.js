@@ -1,9 +1,9 @@
-import { PATH_API } from '@common/config'
+import { AUTH_API } from '@common/config'
 import i18nProvider from '@providers/i18nProvider'
 
 export default {
-	login ({ username, password }) {
-		const request = new Request(PATH_API + 'auth/login', {
+	login({ username, password }) {
+		const request = new Request(AUTH_API, {
 			method: 'POST',
 			body: JSON.stringify({ username, password }),
 			headers: new Headers({ 'Content-Type': 'application/json' }),
@@ -22,10 +22,10 @@ export default {
 				throw new Error(i18nProvider.translate('notification.login.wrong'))
 			})
 	},
-	checkAuth () {
+	checkAuth() {
 		return localStorage.getItem('auth') ? Promise.resolve() : Promise.reject()
 	},
-	logout () {
+	logout() {
 		localStorage.removeItem('auth')
 		return Promise.resolve()
 	},

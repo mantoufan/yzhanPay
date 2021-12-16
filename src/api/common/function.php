@@ -3,6 +3,7 @@ function Output($data)
 {
     echo json_encode($data);
 }
+
 function Cors()
 {
     $_ORIGIN = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
@@ -11,6 +12,7 @@ function Cors()
     header('Access-Control-Expose-Headers: *');
     header('Access-Control-Allow-Headers: *');
 }
+
 function SplAutoLoadRegister()
 {
     spl_autoload_register(function ($class) {
@@ -22,18 +24,38 @@ function SplAutoLoadRegister()
         return false;
     });
 }
+
 function getGets()
 {
     return $_GET;
 }
+
 function getPosts()
 {
     return $_SERVER['CONTENT_TYPE'] === 'application/json' ? json_decode(file_get_contents('php://input'), true) : $_POST;
 }
+
+function getParams()
+{
+    return array_merge(getGets(), getPosts());
+}
+
 function getPath()
 {
     $dirname = dirname($_SERVER['PHP_SELF']);
     $search = str_replace($dirname . '/', '', $_SERVER['REQUEST_URI']);
     $query = explode('?', $search);
     return $query[0];
+}
+
+function createTradeNo()
+{
+    list($ms) = explode(' ', microtime());
+    return date('YmdHis') . ($ms * 1000000) . rand(00, 99);
+}
+
+function createAppID()
+{
+    list($ms) = explode(' ', microtime());
+    return date('YmdHis') . floor($ms * 100);
 }
