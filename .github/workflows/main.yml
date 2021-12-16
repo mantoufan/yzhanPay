@@ -39,5 +39,5 @@ jobs:
       - name: Git Config User Email
         run: git config user.email ${{ secrets.GIT_USER_EMAIL }}
 
-      - name: Deploy
+      - name: Npm Deploy
         run: npm run deploy
