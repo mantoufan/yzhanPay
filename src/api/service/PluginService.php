@@ -8,11 +8,6 @@ class PluginService
 
     }
 
-    public static function PluginLoad()
-    {
-
-    }
-
     public static function PluginStatus()
     {
 
