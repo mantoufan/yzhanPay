@@ -9,7 +9,9 @@ class Alipay
 {
     public function getGateway($channel_id)
     {
-        list($channel_config, $global_config) = ChannelService::ChannelConfig($channel_id);
+        $configs = ChannelService::ChannelConfig($channel_id);
+        $channel_config = $configs['channel_config'];
+        $global_config = $configs['global_config'];
         $app_id = $channel_config['app_id'];
         $private_key = $channel_config['private_key'];
         $public_key = $channel_config['public_key'];
