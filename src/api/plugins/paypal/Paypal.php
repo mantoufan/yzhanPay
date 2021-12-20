@@ -1,24 +1,24 @@
 <?php
-namespace plugins\alipay;
+namespace plugins\paypal;
 
-use common\base\Common;
 use Omnipay\Omnipay;
-use plugins\alipay\service\AlipayService;
 use service\ChannelService;
+use plugins\paypal\service\PaypalService;
 
-class Alipay extends Common
+class Paypal
 {
     public function getGateway($channel_id)
     {
         $configs = ChannelService::ChannelConfig($channel_id);
-        $channel_config = $configs['channel_config'];
         $global_config = $configs['global_config'];
-        $app_id = $channel_config['app_id'];
-        $private_key = $channel_config['private_key'];
+        $channel_config = $configs['channel_config'];
+        $API_URL = $global_config['API_URL'];
+        $client_id = $channel_config['client_id'];
+        $secret = $channel_config['secret'];
+        $is_sandbox = $channel_config['is_sandbox'];
         $public_key = $channel_config['public_key'];
         $sign_type = $channel_config['sign_type'];
-        $is_sandbox = $channel_config['is_sandbox'];
-        $API_URL = $global_config['API_URL'];
+        
         $gateway = Omnipay::create('Alipay_AopPage');
         $gateway->setSignType($sign_type);
         $gateway->setAppId($app_id);
@@ -42,12 +42,7 @@ class Alipay extends Common
             'body' => $params['body'],
             'product_code' => 'FAST_INSTANT_TRADE_PAY',
         ])->send();
-        $this->export(array(
-            'status' => 302,
-            'header' => array(
-                'Location' => $response->getRedirectUrl(),
-            ),
-        ));
+        header('Location: ' . $response->getRedirectUrl());
     }
 
     public function sync($channel_id)
@@ -56,13 +51,7 @@ class Alipay extends Common
         $request = $gateway->completePurchase();
         $request->setParams(array_merge($_POST, $_GET));
         $params = $request->getParams();
-        $return_url = AlipayService::sync($params);
-        $this->export(array(
-            'status' => 302,
-            'header' => array(
-                'Location' => $return_url,
-            ),
-        ));
+        AlipayService::sync($params);
     }
 
     public function async($channel_id)
@@ -85,8 +74,6 @@ class Alipay extends Common
             $body = 'fail';
         }
         AlipayService::async($params);
-        $this->export(array(
-            'body' => $body,
-        ));
+        die($body);
     }
 }

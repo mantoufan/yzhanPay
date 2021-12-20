@@ -7,9 +7,10 @@
 	"author": "lokielse",
 	"link": "https://github.com/lokielse",
 	"input": [
-		{ "type":"input", "label":"App ID", "name":"app_id" },
-		{ "type":"input", "label":"App Private Key", "name":"app_private_key" },
-		{ "type":"input", "label":"Alipay Public Key", "name":"app_public_key" },
-		{ "type":"input", "label":"Sign Type", "name":"sign_type" }
+		{ "type":"text", "label":"App ID", "name":"app_id" },
+		{ "type":"text", "label":"App Private Key", "name":"app_private_key" },
+		{ "type":"text", "label":"Alipay Public Key", "name":"app_public_key" },
+		{ "type":"text", "label":"Sign Type", "name":"sign_type" },
+		{ "type":"checkout", "label":"Sandbox", "name":"is_sandbox" }
 	]
 }

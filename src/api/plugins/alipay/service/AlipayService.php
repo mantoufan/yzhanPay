@@ -1,6 +1,7 @@
 <?php
 namespace plugins\alipay\service;
 
+use GuzzleHttp\Client;
 use service\AuthService;
 use service\DbService;
 
@@ -59,7 +60,7 @@ class AlipayService
         $data = self::parseParams($params);
         $return_url = $data['return_url'];
         $params = $data['params'];
-        header('location:' . $return_url . '?' . http_build_query($params));
+        return $return_url . '?' . http_build_query($params);
     }
 
     public static function async($params)

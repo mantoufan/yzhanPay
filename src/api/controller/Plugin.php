@@ -1,7 +1,7 @@
 <?php
 namespace controller;
 
-use controller\common\ReactAdmin;
+use common\base\ReactAdmin;
 
 class Plugin extends ReactAdmin
 {

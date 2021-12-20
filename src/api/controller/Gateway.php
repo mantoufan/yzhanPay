@@ -1,7 +1,7 @@
 <?php
 namespace controller;
 
-use controller\common\Common;
+use common\base\Common;
 use service\AuthService;
 use service\ChannelService;
 use service\DbService;

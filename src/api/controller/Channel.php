@@ -2,7 +2,7 @@
 
 namespace controller;
 
-use controller\common\ReactAdmin;
+use common\base\ReactAdmin;
 
 class Channel extends ReactAdmin
 {

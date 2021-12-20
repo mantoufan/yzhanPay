@@ -1,9 +1,8 @@
 <?php
-function Output($data)
+function outPut($params)
 {
-    echo json_encode($data);
+    echo json_encode($params);
 }
-
 function Cors()
 {
     $_ORIGIN = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';

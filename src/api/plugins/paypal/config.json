@@ -1,0 +1,14 @@
+{
+	"name": "paypal",
+	"displayname": "Paypal",
+	"type": "pay",
+	"payment": "depositcard,paypal",
+	"ability": "checkout,subscription",
+	"author": "lokielse",
+	"link": "https://github.com/lokielse",
+	"input": [
+		{ "type":"text", "label":"Client ID", "name":"client_id" },
+		{ "type":"text", "label":"Secret", "name":"secret" },
+		{ "type":"checkout", "label":"Sandbox", "name":"is_sandbox" }
+	]
+}

@@ -1,14 +1,14 @@
 <?php
 namespace controller;
 
-use controller\common\Common;
+use common\base\Common;
 use service\ChannelService;
 
 class Checkout extends Common
 {
-    public static function channelList()
+    public function channelList()
     {
         $channelList = ChannelService::ChannelList();
-        outPut($channelList);
+        $this->export(array('body' => $channelList));
     }
 }

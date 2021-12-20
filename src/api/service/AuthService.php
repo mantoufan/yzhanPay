@@ -57,4 +57,10 @@ class AuthService
         $sign = self::AuthSign($params, $app_key);
         return $_sign === $sign;
     }
+
+    public static function AuthGetUserId()
+    {
+        $user = self::AuthDecode();
+        return !empty($user['id']) ? $user['id'] : null;
+    }
 }

@@ -1,9 +1,9 @@
 <?php
 
-namespace controller\common;
+namespace common\base;
 
-use service\DbService;
 use service\AuthService;
+use service\DbService;
 
 class ReactAdmin extends Common
 {
@@ -18,12 +18,15 @@ class ReactAdmin extends Common
 
     public function getOne($id)
     {
-        outPut(DbService::DbGet($this->table, array(
-            'field' => $this->fields,
-            'where' => array(
-                'id' => $id,
-            ),
-        )));
+        $this->export(array(
+            'body' => DbService::DbGet($this->table, array(
+                'field' => $this->fields,
+                'where' => array(
+                    'id' => $id,
+                ),
+            )),
+            'disableLogger' => true,
+        ));
     }
 
     public function getList()
@@ -38,7 +41,10 @@ class ReactAdmin extends Common
             'where' => $where,
         ));
         header('X-Total-Count:' . $data['total']);
-        outPut($data['data']);
+        $this->export(array(
+            'body' => $data['data'],
+            'disableLogger' => true,
+        ));
     }
 
     public function getMany()
@@ -57,7 +63,9 @@ class ReactAdmin extends Common
         $id = DbService::DbCreate($this->table, array(
             'data' => $params,
         ));
-        outPut(array('id' => $id));
+        $this->export(array(
+            'body' => array('id' => $id),
+        ));
     }
 
     public function update($id)
@@ -69,15 +77,19 @@ class ReactAdmin extends Common
                 'id' => $id,
             ),
         ));
-        outPut(array('rowsNum' => $rowsNum));
+        $this->export(array(
+            'body' => array('rowsNum' => $rowsNum),
+        ));
     }
 
     public function delete($id)
     {
-        outPut(DbService::DbDelete($this->table, array(
-            'where' => array(
-                'id' => $id,
-            ),
-        )));
+        $this->export(array(
+            'body' => DbService::DbDelete($this->table, array(
+                'where' => array(
+                    'id' => $id,
+                ),
+            )),
+        ));
     }
 }

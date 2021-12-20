@@ -1,17 +1,12 @@
 <?php
 namespace controller;
 
-use controller\common\Common;
+use common\base\Common;
 use service\AuthService;
 use service\DbService;
 
 class Auth extends Common
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function login()
     {
         $POST = getPosts();
@@ -25,12 +20,14 @@ class Auth extends Common
             ),
         ));
         if (empty($data['id'])) {
-            return header('Status: 403');
+            $this->export(array('status' => 403));
         }
-        Output(array('auth' => AuthService::AuthEncode(array(
-            'id' => $data['id'],
-            'name' => $data['name'],
-        ))));
+        $this->export(array(
+            'body' => array('auth' => AuthService::AuthEncode(array(
+                'id' => $data['id'],
+                'name' => $data['name'],
+            ))),
+        ));
     }
 
     public function sign($params = array())
@@ -39,6 +36,6 @@ class Auth extends Common
         $_sign = $params['sign'];
         unset($params['sign']);
         $_true_sign = AuthService::AuthSign($params);
-        Output(array('sign' => $_sign, 'trueSign' => $_true_sign, 'isMatch' => $_sign === $_true_sign));
+        $this->export(array('body' => array('sign' => $_sign, 'trueSign' => $_true_sign, 'isMatch' => $_sign === $_true_sign)));
     }
 }

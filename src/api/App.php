@@ -21,31 +21,33 @@ class App
             return '(\d{' . strlen($s[0]) . '})';
         }, $path);
         $path = preg_replace('/\/\d+/', '', $path);
-        if (!empty($this->dataProvider)) {
-            $method = $this->dataProvider->getMethod();
-            if (!empty($method)) {
-                $path .= '/' . $this->dataProvider->getMethod();
-            }
-        }
+
         $pathAr = explode('/', $path);
-        $method = array_pop($pathAr);
+        $method = !empty($this->dataProvider) ? $this->dataProvider->getMethod() : '';
+        if (empty($method)) {
+            $method = array_pop($pathAr);
+        }
         $methodAr = explode('-', $method);
         for ($i = 1; $i < count($methodAr); $i++) {
             $methodAr[$i] = ucfirst($methodAr[$i]);
         }
         $method = implode('', $methodAr);
+
         $controller = array_pop($pathAr);
         $prePath = implode('\\', $pathAr);
 
         if ($pathAr[0] === 'plugins') {
             $controller .= '\\' . ucfirst($controller);
-        } else if ($pathAr[0] === 'open') {
-            $controller = ucfirst($controller);
         } else {
-            $router->setNamespace('controller');
+            if ($pathAr[0] !== 'open') {
+                $router->setNamespace('controller');
+            }
             $controller = ucfirst($controller);
         }
-        $router->match('POST|GET|PUT|DELETE', $route, ($prePath ? $prePath . '\\' : '') . $controller . '@' . $method);
+
+        $path = ($prePath ? $prePath . '\\' : '') . $controller . '@' . $method;
+        $GLOBALS['method'] = $method;
+        $router->match('POST|GET|PUT|DELETE', $route, $path);
         return $router;
     }
     public function run()

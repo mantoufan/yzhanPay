@@ -9,7 +9,6 @@ import Trade from '@pages/Trade/Trade'
 import Log from '@pages/Log/Log'
 
 export const PageCheckout = AsyncComponent(() => import('@pages/Checkout/Checkout'))
-export const PageDev = AsyncComponent(() => import('@pages/Dev/Dev'))
 export const PageRoutes = [
   { path: 'channel', page: Channel },
   { path: 'client', page: Client },
@@ -18,5 +17,5 @@ export const PageRoutes = [
   { path: 'plugin', page: Plugin },
   { path: 'user', page: User },
   { path: 'trade', page: Trade },
-  { path: 'log', page: Log },
+  { path: 'log', page: Log }
 ]

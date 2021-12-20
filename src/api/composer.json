@@ -5,6 +5,7 @@
         "bramus/router": "~1.6",
         "firebase/php-jwt": "^5.5",
         "mantoufan/omnipay-alipay": "v3.1.2-beta1",
-        "guzzlehttp/guzzle": "^7.4"
+        "guzzlehttp/guzzle": "^7.4",
+        "paypal/rest-api-sdk-php": "^1.14"
     }
 }

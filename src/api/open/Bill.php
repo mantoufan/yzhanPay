@@ -16,10 +16,13 @@ class Bill extends Common
                 'trade_no' => explode(',', $_trade_no),
             ),
         ));
-        Output(array(
-            'code' => 200,
-            'msg' => 'success',
-            'data' => $result['data'],
+        $this->export(array(
+            'body' => array(
+                'code' => 200,
+                'msg' => 'success',
+                'data' => $result['data'],
+            ),
+            'disableLogger' => true,
         ));
     }
 }

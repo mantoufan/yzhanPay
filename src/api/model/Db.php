@@ -5,13 +5,18 @@ use Medoo\Medoo;
 
 class Db
 {
-    public static function connect($config = array())
+    public static $db = null;
+    public static function connect()
     {
-        return new Medoo(array_merge(include 'common/database.php', $config));
+        return new Medoo(include 'common/database.php');
     }
 
     public static function __callStatic($funName, $arguments)
     {
-        return call_user_func_array(array(self::connect(), $funName), $arguments);
+        if (empty(self::$db)) {
+            self::$db = self::connect();
+        }
+
+        return call_user_func_array(array(self::$db, $funName), $arguments);
     }
 }
