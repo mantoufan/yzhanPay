@@ -23,7 +23,14 @@ class App
         $path = preg_replace('/\/\d+/', '', $path);
 
         $pathAr = explode('/', $path);
-        $method = !empty($this->dataProvider) ? $this->dataProvider->getMethod() : '';
+        $dataProvider = $this->dataProvider;
+        if (!empty($dataProvider)) {
+            $test = $dataProvider['test'];
+            $use = $dataProvider['use'];
+            if (preg_match($test, '/' . $path)) {
+                $method = $use->getMethod();
+            }
+        }
         if (empty($method)) {
             $method = array_pop($pathAr);
         }

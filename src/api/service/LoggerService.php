@@ -1,7 +1,6 @@
 <?php
 namespace service;
 
-use service\AuthService;
 use service\DbService;
 
 class LoggerService
@@ -22,10 +21,14 @@ class LoggerService
     {
         $_controller = $params['controller'];
         $_method = $params['method'];
-        $_path = $_SERVER['REQUEST_URI'];
-        $_action = $_SERVER['REQUEST_METHOD'];
-        $_payload = self::stringify($_action !== 'GET' ? getPosts() : '');
-        $_user_id = AuthService::AuthGetUserId();
+        $_path = $params['path'];
+        $_action = $params['action'];
+        $_payload = self::stringify($params['payload']);
+        $_user_id = $params['user_id'];
+        $_app_id = $params['app_id'];
+        $_expect = $params['expect'];
+        $_status = $params['status'];
+        $_timeout = $params['timeout'];
         $this->id = DbService::DbCreate('log', array(
             'data' => array(
                 'path' => $_path,
@@ -34,6 +37,10 @@ class LoggerService
                 'method' => $_method,
                 'payload' => $_payload,
                 'user_id' => $_user_id,
+                'app_id' => $_app_id,
+                'expect' => $_expect,
+                'status' => $_status,
+                'timeout' => $_timeout,
             ),
         ));
     }

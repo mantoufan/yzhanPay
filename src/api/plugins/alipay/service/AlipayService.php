@@ -1,10 +1,10 @@
 <?php
 namespace plugins\alipay\service;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ConnectException;
+use service\AppService;
 use service\AuthService;
 use service\DbService;
+use service\QueueService;
 
 class AlipayService
 {
@@ -75,17 +75,20 @@ class AlipayService
                 'timeout' => 60,
             ),
         );
+        $app_id = $params['app_id'];
+        $user_id = AppService::getUserIdByAppId($app_id);
+        $queueService = new QueueService();
+        $queueService->add(array(
+            'method' => 'notify',
+            'path' => $notify_url,
+            'action' => 'POST',
+            'payload' => $params,
+            'timeout' => 5,
+            'expect' => 'success',
+            'user_id' => $user_id,
+            'app_id' => $app_id,
+        ));
 
-        $client = new Client(array('verify' => false));
-        try {
-            $response = $client->request('POST', $notify_url, array(
-                'form_params' => $params,
-                'timeout' => 3.14,
-            ));
-            $contents = $response->getBody()->getContents();
-        } catch (ConnectException $e) {
-            $contents = 'fail';
-        }
         $trade_no = $params['trade_no'];
         $api_trade_no = $params['api_trade_no'];
         $trade_status = $params['trade_status'];
@@ -95,5 +98,6 @@ class AlipayService
                 'trade_no' => $trade_no,
             ),
         ));
+        return $params;
     }
 }

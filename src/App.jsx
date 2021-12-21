@@ -7,7 +7,7 @@ import { createBrowserHistory as createHistory } from 'history'
 import '@assets/css/common.scss'
 import { PageRoutes } from '@pages/Pages'
 import theme from '@providers/themeProvider'
-import { BASE_API } from '@common/config'
+import { ADMIN_API } from '@common/config'
 import DocumentTitle from '@components/DocumentTitle/DocumentTitle'
 
 
@@ -28,7 +28,7 @@ export default () => {
       theme={AdminTheme}
       history={history}
       authProvider={authProvider}
-      dataProvider={jsonServerProvider(BASE_API, httpClient)}
+      dataProvider={jsonServerProvider(ADMIN_API, httpClient)}
       i18nProvider={i18nProvider}
       customRoutes={routeProvider}
       disableTelemetry={false}>

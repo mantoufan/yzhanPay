@@ -84,9 +84,11 @@ class Alipay extends Common
             $params['trade_status'] = 'TRADE_CLOSED';
             $body = 'fail';
         }
-        AlipayService::async($params);
+        $params = AlipayService::async($params);
+        $app_id = $params['app_id'];
         $this->export(array(
             'body' => $body,
+            'app_id' => $app_id,
         ));
     }
 }

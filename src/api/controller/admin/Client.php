@@ -1,11 +1,10 @@
 <?php
-
-namespace controller;
+namespace controller\admin;
 
 use common\base\ReactAdmin;
 
-class Payment extends ReactAdmin
+class Client extends ReactAdmin
 {
-    protected $table = 'payment';
+    protected $table = 'client';
     protected $fields = array('id', 'display_name', 'name');
 }

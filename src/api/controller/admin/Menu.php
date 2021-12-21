@@ -1,5 +1,5 @@
 <?php
-namespace controller;
+namespace controller\admin;
 
 use common\base\ReactAdmin;
 
