@@ -13,7 +13,7 @@ class QueueService extends LoggerService
     const STATUS_PENDING = 0;
     const STATUS_SUCCESS = 1;
     const STATUS_FAIL = 2;
-    const MAX_TIMES = 9;
+    const MAX_TIMES = 99;
     public function add($params = array())
     {
         $params['controller'] = self::CONTROLLER_NAME;
@@ -59,31 +59,35 @@ class QueueService extends LoggerService
             } catch (RequestException $e) {
                 $contents = Psr7\Message::toString($e->getResponse());
             }
-            DbService::DbUpdate('log', array(
-                'data' => array(
-                    'status' => $contents === $expect ? self::STATUS_SUCCESS : self::STATUS_FAIL,
-                    'res_body' => $contents,
-                ),
-                'where' => array(
-                    'id' => $id,
-                )));
-            if ($contents !== $expect) {
-                if ($times < self::MAX_TIMES) {
-                    DbService::DbCreate('log', array('data' => array(
-                        'method' => $method,
-                        'path' => $path,
-                        'action' => $action,
-                        'payload' => $payload,
-                        'expect' => $expect,
-                        'controller' => self::CONTROLLER_NAME,
-                        'status' => self::STATUS_PENDING,
-                        'user_id' => $user_id,
-                        'app_id' => $app_id,
-                        'timeout' => $timeout,
-                        'times' => $times + 1,
-                    )));
+            DbService::DbAction(function ($db) use ($contents, $expect, $id, $times, $method, $path, $action, $payload, $user_id, $app_id, $timeout) {
+                try {
+                    $db->update('log', array(
+                        'status' => $contents === $expect ? self::STATUS_SUCCESS : self::STATUS_FAIL,
+                        'res_body' => $contents,
+                    ), array(
+                        'id' => $id,
+                    ));
+                    if ($contents !== $expect) {
+                        if ($times < self::MAX_TIMES) {
+                            $db->insert('log', array(
+                                'method' => $method,
+                                'path' => $path,
+                                'action' => $action,
+                                'payload' => $payload,
+                                'expect' => $expect,
+                                'controller' => self::CONTROLLER_NAME,
+                                'status' => self::STATUS_PENDING,
+                                'user_id' => $user_id,
+                                'app_id' => $app_id,
+                                'timeout' => $timeout,
+                                'times' => $times + 1,
+                            ));
+                        }
+                    }
+                } catch (Expection $e) {
+                    return false;
                 }
-            }
+            });
         }
         return array(
             'total' => count($dataList),

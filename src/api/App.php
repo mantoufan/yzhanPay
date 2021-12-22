@@ -12,6 +12,7 @@ class App
         SplAutoLoadRegister();
         $this->dataProvider = !empty($params['dataProvider']) ? $params['dataProvider'] : null;
     }
+
     public function getRouter()
     {
         $router = new \Bramus\Router\Router();
@@ -57,6 +58,7 @@ class App
         $router->match('POST|GET|PUT|DELETE', $route, $path);
         return $router;
     }
+
     public function run()
     {
         $router = $this->getRouter();
