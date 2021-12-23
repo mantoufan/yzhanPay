@@ -7,34 +7,34 @@ use service\ConfigService;
 
 class AuthService
 {
-    public static function AuthPasswordEncode($password)
+    public static function PasswordEncode($password)
     {
-        $CONFIG = ConfigService::ConfigGet();
+        $CONFIG = ConfigService::Get();
         return md5($password . $CONFIG['MD5_SALT']);
     }
 
-    public static function AuthEncode($params = array())
+    public static function Encode($params = array())
     {
-        $CONFIG = ConfigService::ConfigGet();
+        $CONFIG = ConfigService::Get();
         return JWT::encode(array(
             'id' => $params['id'],
             'name' => $params['name'],
         ), $CONFIG['JWT_KEY'], 'HS256');
     }
 
-    public static function AuthDecode()
+    public static function Decode()
     {
         $auth = str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION']);
-        $CONFIG = ConfigService::ConfigGet();
+        $CONFIG = ConfigService::Get();
         if (empty($auth)) {
             return array();
         }
         return (array) JWT::decode($auth, new Key($CONFIG['JWT_KEY'], 'HS256'));
     }
 
-    public static function AuthCheck()
+    public static function Check()
     {
-        $user = self::AuthDecode();
+        $user = self::Decode();
         if (empty($user['id'])) {
             header('status: 403');
             exit;
@@ -42,7 +42,7 @@ class AuthService
         return $user;
     }
 
-    public static function AuthSign($params, $app_key = 'bc3a4d13e427ee95f24cb65f24501208a6e0d8be')
+    public static function Sign($params, $app_key = 'bc3a4d13e427ee95f24cb65f24501208a6e0d8be')
     {
         $params = array_filter($params);
         ksort($params);
@@ -50,17 +50,17 @@ class AuthService
         return md5(urldecode(http_build_query($params)) . $app_key);
     }
 
-    public static function AuthSignCheck($params, $app_key = 'bc3a4d13e427ee95f24cb65f24501208a6e0d8be')
+    public static function SignCheck($params, $app_key = 'bc3a4d13e427ee95f24cb65f24501208a6e0d8be')
     {
         $_sign = $params['sign'];
         unset($params['sign']);
-        $sign = self::AuthSign($params, $app_key);
+        $sign = self::Sign($params, $app_key);
         return $_sign === $sign;
     }
 
-    public static function AuthGetUserId()
+    public static function GetUserId()
     {
-        $user = self::AuthDecode();
+        $user = self::Decode();
         return !empty($user['id']) ? $user['id'] : null;
     }
 }

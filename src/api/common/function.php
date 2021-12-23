@@ -46,15 +46,3 @@ function getPath()
     $query = explode('?', $search);
     return $query[0];
 }
-
-function createTradeNo()
-{
-    list($ms) = explode(' ', microtime());
-    return date('YmdHis') . ($ms * 1000000) . rand(00, 99);
-}
-
-function createAppID()
-{
-    list($ms) = explode(' ', microtime());
-    return date('YmdHis') . floor($ms * 100);
-}

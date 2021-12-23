@@ -6,12 +6,12 @@ use model\Db;
 class DbService
 {
 
-    public static function DbGet($table, $params = array())
+    public static function Get($table, $params = array())
     {
         return Db::get($table, $params['field'], $params['where']);
     }
 
-    public static function DbList($table, $params = array())
+    public static function GetAll($table, $params = array())
     {
         return array(
             'total' => Db::count($table),
@@ -19,24 +19,29 @@ class DbService
         );
     }
 
-    public static function DbCreate($table, $params = array())
+    public static function Create($table, $params = array())
     {
         Db::insert($table, $params['data']);
         return Db::id();
     }
 
-    public static function DbUpdate($table, $params = array())
+    public static function Update($table, $params = array())
     {
         return Db::update($table, $params['data'], $params['where']);
     }
 
-    public static function DbDelete($table, $params = array())
+    public static function Delete($table, $params = array())
     {
         return Db::delete($table, $params['where']);
     }
 
-    public static function DbAction($action)
+    public static function Action($action)
     {
         return Db::action($action);
+    }
+
+    public static function Log()
+    {
+        return Db::log();
     }
 }

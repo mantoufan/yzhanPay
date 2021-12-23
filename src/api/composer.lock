@@ -4,8 +4,60 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "300f641a1b99d7eec76efb57e643306c",
+    "content-hash": "bf9322d50171e6fbfcf74a69c80025db",
     "packages": [
+        {
+            "name": "andreimosman/paypal-subscriptions-sdk",
+            "version": "v1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/andreimosman/Paypal-Subscriptions-PHP-SDK.git",
+                "reference": "f2129efe7e86c5a32eda0c643650da4a148854e4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/andreimosman/Paypal-Subscriptions-PHP-SDK/zipball/f2129efe7e86c5a32eda0c643650da4a148854e4",
+                "reference": "f2129efe7e86c5a32eda0c643650da4a148854e4",
+                "shasum": ""
+            },
+            "require": {
+                "paypal/paypal-checkout-sdk": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PayPalSubscriptionsSdk": "lib/"
+                },
+                "psr-4": {
+                    "PayPalSubscriptionsSdk\\": "lib/PayPalSubscriptionsSdk"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Andrei de Oliveira Mosman",
+                    "homepage": "https://github.com/andreimosman/Paypal-Subscriptions-PHP-SDK/contributors"
+                }
+            ],
+            "description": "PHP SDK for PayPal's Subscriptions API",
+            "homepage": "https://github.com/andreimosman/Paypal-Subscriptions-PHP-SDK",
+            "keywords": [
+                "catalog",
+                "payments",
+                "paypal",
+                "products",
+                "rest",
+                "sdk"
+            ],
+            "support": {
+                "issues": "https://github.com/andreimosman/Paypal-Subscriptions-PHP-SDK/issues",
+                "source": "https://github.com/andreimosman/Paypal-Subscriptions-PHP-SDK/tree/v1.0.6"
+            },
+            "time": "2021-07-06T14:45:26+00:00"
+        },
         {
             "name": "bramus/router",
             "version": "1.6.1",
@@ -882,58 +934,99 @@
             "time": "2021-06-05T11:36:12+00:00"
         },
         {
-            "name": "paypal/rest-api-sdk-php",
-            "version": "1.14.0",
+            "name": "paypal/paypal-checkout-sdk",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/paypal/PayPal-PHP-SDK.git",
-                "reference": "72e2f2466975bf128a31e02b15110180f059fc04"
+                "url": "https://github.com/paypal/Checkout-PHP-SDK.git",
+                "reference": "19992ce7051ff9e47e643f28abb8cc1b3e5f1812"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paypal/PayPal-PHP-SDK/zipball/72e2f2466975bf128a31e02b15110180f059fc04",
-                "reference": "72e2f2466975bf128a31e02b15110180f059fc04",
+                "url": "https://api.github.com/repos/paypal/Checkout-PHP-SDK/zipball/19992ce7051ff9e47e643f28abb8cc1b3e5f1812",
+                "reference": "19992ce7051ff9e47e643f28abb8cc1b3e5f1812",
                 "shasum": ""
             },
             "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": ">=5.3.0",
-                "psr/log": "^1.0.0"
+                "paypal/paypalhttp": "1.0.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.35"
+                "phpunit/phpunit": "^5.7"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "PayPal": "lib/"
+                "psr-4": {
+                    "PayPalCheckoutSdk\\": "lib/PayPalCheckoutSdk",
+                    "Sample\\": "samples/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "Apache-2.0"
+                "https://github.com/paypal/Checkout-PHP-SDK/blob/master/LICENSE"
             ],
             "authors": [
                 {
                     "name": "PayPal",
-                    "homepage": "https://github.com/paypal/rest-api-sdk-php/contributors"
+                    "homepage": "https://github.com/paypal/Checkout-PHP-SDK/contributors"
                 }
             ],
-            "description": "PayPal's PHP SDK for REST APIs",
-            "homepage": "http://paypal.github.io/PayPal-PHP-SDK/",
+            "description": "PayPal's PHP SDK for Checkout REST APIs",
+            "homepage": "http://github.com/paypal/Checkout-PHP-SDK/",
             "keywords": [
+                "checkout",
+                "orders",
                 "payments",
                 "paypal",
                 "rest",
                 "sdk"
             ],
             "support": {
-                "issues": "https://github.com/paypal/PayPal-PHP-SDK/issues",
-                "source": "https://github.com/paypal/PayPal-PHP-SDK/tree/master"
+                "source": "https://github.com/paypal/Checkout-PHP-SDK/tree/1.0.2"
             },
-            "abandoned": true,
-            "time": "2019-01-04T20:04:25+00:00"
+            "time": "2021-09-21T20:57:38+00:00"
+        },
+        {
+            "name": "paypal/paypalhttp",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paypal/paypalhttp_php.git",
+                "reference": "7b09c89c80828e842c79230e7f156b61fbb68d25"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paypal/paypalhttp_php/zipball/7b09c89c80828e842c79230e7f156b61fbb68d25",
+                "reference": "7b09c89c80828e842c79230e7f156b61fbb68d25",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7",
+                "wiremock-php/wiremock-php": "1.43.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PayPalHttp\\": "lib/PayPalHttp"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PayPal",
+                    "homepage": "https://github.com/paypal/paypalhttp_php/contributors"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/paypal/paypalhttp_php/issues",
+                "source": "https://github.com/paypal/paypalhttp_php/tree/1.0.1"
+            },
+            "time": "2021-09-14T21:35:26+00:00"
         },
         {
             "name": "php-http/discovery",
@@ -1471,56 +1564,6 @@
                 "source": "https://github.com/php-fig/http-message/tree/master"
             },
             "time": "2016-08-06T14:39:51+00:00"
-        },
-        {
-            "name": "psr/log",
-            "version": "1.1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/log.git",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Psr\\Log\\": "Psr/Log/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "https://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for logging libraries",
-            "homepage": "https://github.com/php-fig/log",
-            "keywords": [
-                "log",
-                "psr",
-                "psr-3"
-            ],
-            "support": {
-                "source": "https://github.com/php-fig/log/tree/1.1.4"
-            },
-            "time": "2021-05-03T11:20:27+00:00"
         },
         {
             "name": "ralouphie/getallheaders",

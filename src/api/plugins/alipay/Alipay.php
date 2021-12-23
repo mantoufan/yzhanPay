@@ -3,29 +3,31 @@ namespace plugins\alipay;
 
 use common\base\Common;
 use Omnipay\Omnipay;
-use plugins\alipay\service\AlipayService;
-use service\ChannelService;
+use service\plugin\pay\CheckoutService;
+use service\plugin\PluginService;
 
 class Alipay extends Common
 {
     public function getGateway($channel_id)
     {
-        $configs = ChannelService::ChannelConfig($channel_id);
-        $channel_config = $configs['channel_config'];
-        $global_config = $configs['global_config'];
-        $app_id = $channel_config['app_id'];
-        $private_key = $channel_config['private_key'];
-        $public_key = $channel_config['public_key'];
-        $sign_type = $channel_config['sign_type'];
-        $is_sandbox = $channel_config['is_sandbox'];
-        $API_URL = $global_config['API_URL'];
+        $config = PluginService::GetChannelConfig($channel_id);
+        if (empty($config)) {
+            $this->export(array('status' => 403));
+        }
+        $app_id = $config['app_id'];
+        $private_key = $config['private_key'];
+        $public_key = $config['public_key'];
+        $sign_type = $config['sign_type'];
+        $is_sandbox = $config['is_sandbox'];
+        $return_url = PluginService::GetReturnUrl('alipay', $channel_id);
+        $notify_url = PluginService::GetNotifyUrl('alipay', $channel_id);
         $gateway = Omnipay::create('Alipay_AopPage');
         $gateway->setSignType($sign_type);
         $gateway->setAppId($app_id);
         $gateway->setPrivateKey($private_key);
         $gateway->setAlipayPublicKey($public_key);
-        $gateway->setReturnUrl($API_URL . '/plugins/alipay/sync/' . $channel_id);
-        $gateway->setNotifyUrl($API_URL . '/plugins/alipay/async/' . $channel_id);
+        $gateway->setReturnUrl($return_url);
+        $gateway->setNotifyUrl($notify_url);
         if ($is_sandbox) {
             $gateway->sandbox();
         }
@@ -56,7 +58,10 @@ class Alipay extends Common
         $request = $gateway->completePurchase();
         $request->setParams(array_merge($_POST, $_GET));
         $params = $request->getParams();
-        $return_url = AlipayService::sync($params);
+        $return_url = CheckoutService::GetReturnUrl($params);
+        if (empty($return_url)) {
+            $this->export(array('status' => 403));
+        }
         $this->export(array(
             'status' => 302,
             'header' => array(
@@ -74,18 +79,18 @@ class Alipay extends Common
         try {
             $response = $request->send();
             if ($response->isPaid()) {
-                $params['trade_status'] = 'TRADE_SUCCESS';
+                $params['trade_status'] = TRADE_STATUS['TRADE_SUCCESS'];
                 $body = 'success';
             } else {
-                $params['trade_status'] = 'WAIT_BUYER_PAY';
+                $params['trade_status'] = TRADE_STATUS['WAIT_BUYER_PAY'];
                 $body = 'fail';
             }
         } catch (Exception $e) {
-            $params['trade_status'] = 'TRADE_CLOSED';
+            $params['trade_status'] = TRADE_STATUS['TRADE_CLOSED'];
             $body = 'fail';
         }
-        $params = AlipayService::async($params);
-        $app_id = $params['app_id'];
+        $params = CheckoutService::getNotifyParams($params);
+        $app_id = empty($params) ? 0 : $params['app_id'];
         $this->export(array(
             'body' => $body,
             'app_id' => $app_id,

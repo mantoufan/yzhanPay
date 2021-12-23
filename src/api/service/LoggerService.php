@@ -29,7 +29,7 @@ class LoggerService
         $_expect = $params['expect'];
         $_status = $params['status'];
         $_timeout = $params['timeout'];
-        $this->id = DbService::DbCreate('log', array(
+        $this->id = DbService::Create('log', array(
             'data' => array(
                 'path' => $_path,
                 'action' => $_action,
@@ -48,7 +48,7 @@ class LoggerService
     public function res($params = array('status' => 200, 'header' => '', 'body' => ''))
     {
         $id = $this->id;
-        DbService::DbUpdate('log', array(
+        DbService::Update('log', array(
             'data' => array(
                 'res_status' => $params['status'],
                 'res_header' => self::stringify($params['header']),

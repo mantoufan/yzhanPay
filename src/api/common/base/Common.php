@@ -15,8 +15,12 @@ class Common
         $_path = $_SERVER['REQUEST_URI'];
         $_action = $_SERVER['REQUEST_METHOD'];
         $_payload = $_action !== 'GET' ? getPosts() : '';
-        $_user_id = AuthService::AuthGetUserId();
+        $_user_id = AuthService::GetUserId();
         $this->logger->log(array(
+            'path' => $_path,
+            'action' => $_action,
+            'payload' => $_payload,
+            'user_id' => $_user_id,
             'controller' => get_class($this),
             'method' => $GLOBALS['method'],
         ));

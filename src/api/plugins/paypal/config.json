@@ -1,5 +1,6 @@
 {
 	"name": "paypal",
+	"version": "1.0.0",
 	"displayname": "Paypal",
 	"type": "pay",
 	"payment": "depositcard,paypal",
@@ -10,5 +11,11 @@
 		{ "type":"text", "label":"Client ID", "name":"client_id" },
 		{ "type":"text", "label":"Secret", "name":"secret" },
 		{ "type":"checkout", "label":"Sandbox", "name":"is_sandbox" }
-	]
+	],
+	"composer": {
+		"require": {
+			"paypal/paypal-checkout-sdk": "^1.0",
+			"andreimosman/paypal-subscriptions-sdk": "^1.0"
+		}
+	}
 }

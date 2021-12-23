@@ -13,7 +13,7 @@ class QueueService extends LoggerService
     const STATUS_PENDING = 0;
     const STATUS_SUCCESS = 1;
     const STATUS_FAIL = 2;
-    const MAX_TIMES = 99;
+    const MAX_TIMES = 9;
     public function add($params = array())
     {
         $params['controller'] = self::CONTROLLER_NAME;
@@ -21,10 +21,10 @@ class QueueService extends LoggerService
         $this->log($params);
     }
 
-    public static function run($params = array('limit' => 5))
+    public static function Run($params = array('limit' => 5))
     {
         $_limit = empty($params['limit']) ? 5 : $params['limit'];
-        $result = DbService::DbList('log', array(
+        $result = DbService::GetAll('log', array(
             'field' => array('id', 'path', 'action', 'payload', 'method', 'expect', 'user_id', 'app_id', 'timeout', 'times'),
             'where' => array(
                 'controller' => self::CONTROLLER_NAME,
@@ -59,7 +59,7 @@ class QueueService extends LoggerService
             } catch (RequestException $e) {
                 $contents = Psr7\Message::toString($e->getResponse());
             }
-            DbService::DbAction(function ($db) use ($contents, $expect, $id, $times, $method, $path, $action, $payload, $user_id, $app_id, $timeout) {
+            DbService::Action(function ($db) use ($contents, $expect, $id, $times, $method, $path, $action, $payload, $user_id, $app_id, $timeout) {
                 try {
                     $db->update('log', array(
                         'status' => $contents === $expect ? self::STATUS_SUCCESS : self::STATUS_FAIL,

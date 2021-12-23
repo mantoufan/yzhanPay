@@ -6,6 +6,7 @@
         "firebase/php-jwt": "^5.5",
         "mantoufan/omnipay-alipay": "v3.1.2-beta1",
         "guzzlehttp/guzzle": "^7.4",
-        "paypal/rest-api-sdk-php": "^1.14"
+        "paypal/paypal-checkout-sdk": "^1.0",
+        "andreimosman/paypal-subscriptions-sdk": "^1.0"
     }
 }

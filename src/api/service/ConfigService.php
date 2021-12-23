@@ -3,7 +3,7 @@ namespace service;
 
 class ConfigService
 {
-    public static function ConfigGet()
+    public static function Get()
     {
         return include 'common/config.php';
     }

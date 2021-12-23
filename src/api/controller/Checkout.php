@@ -8,7 +8,7 @@ class Checkout extends Common
 {
     public function channelList()
     {
-        $channelList = ChannelService::ChannelList();
+        $channelList = ChannelService::ListEnabled();
         $this->export(array('body' => $channelList));
     }
 }

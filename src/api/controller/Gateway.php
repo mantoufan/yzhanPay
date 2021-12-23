@@ -5,6 +5,7 @@ use common\base\Common;
 use service\AuthService;
 use service\ChannelService;
 use service\DbService;
+use service\TradeService;
 
 class Gateway extends Common
 {
@@ -13,17 +14,17 @@ class Gateway extends Common
         $params = getPosts();
         $_app_id = $params['app_id'];
         $_channel_id = $params['channel_id'];
-        $channel = ChannelService::ChannelGet($_channel_id);
+        $channel = ChannelService::GetById($_channel_id);
         $channel_enabled = $channel['enabled'];
         unset($params['channel_id']);
-        $data = DbService::DbGet('app', array(
+        $data = DbService::Get('app', array(
             'field' => array('app_key'),
             'where' => array(
                 'app_id' => $_app_id,
             ),
         ));
         $app_key = $data['app_key'];
-        if (empty($channel_enabled) || !AuthService::AuthSignCheck($params, $app_key)) {
+        if (empty($channel_enabled) || !AuthService::SignCheck($params, $app_key)) {
             header('status: 403');
             exit('403');
         }
@@ -35,9 +36,9 @@ class Gateway extends Common
         $_return_url = $params['return_url'];
         $_notify_url = $params['notify_url'];
 
-        $trade_no = createTradeNo();
+        $trade_no = TradeService::CreateNo();
         $params['trade_no'] = $trade_no;
-        DbService::DbCreate('trade', array(
+        DbService::Create('trade', array(
             'data' => array(
                 'trade_no' => $trade_no,
                 'out_trade_no' => $_out_trade_no,

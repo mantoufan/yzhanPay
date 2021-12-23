@@ -13,13 +13,13 @@ class ReactAdmin extends Common
     public function __construct()
     {
         parent::__construct();
-        AuthService::AuthCheck();
+        AuthService::Check();
     }
 
     public function getOne($id)
     {
         $this->export(array(
-            'body' => DbService::DbGet($this->table, array(
+            'body' => DbService::Get($this->table, array(
                 'field' => $this->fields,
                 'where' => array(
                     'id' => $id,
@@ -36,7 +36,7 @@ class ReactAdmin extends Common
             'ORDER' => array($params['_sort'] => $params['_order']),
             'LIMIT' => $params['_start'] . ',' . ($params['_end'] - $params['_start']),
         );
-        $data = DbService::DbList($this->table, array(
+        $data = DbService::GetAll($this->table, array(
             'field' => $this->fields,
             'where' => $where,
         ));
@@ -60,7 +60,7 @@ class ReactAdmin extends Common
     public function create()
     {
         $params = getPosts();
-        $id = DbService::DbCreate($this->table, array(
+        $id = DbService::Create($this->table, array(
             'data' => $params,
         ));
         $this->export(array(
@@ -71,7 +71,7 @@ class ReactAdmin extends Common
     public function update($id)
     {
         $data = getPosts();
-        $rowsNum = DbService::DbUpdate($this->table, array(
+        $rowsNum = DbService::Update($this->table, array(
             'data' => $data,
             'where' => array(
                 'id' => $id,
@@ -85,7 +85,7 @@ class ReactAdmin extends Common
     public function delete($id)
     {
         $this->export(array(
-            'body' => DbService::DbDelete($this->table, array(
+            'body' => DbService::Delete($this->table, array(
                 'where' => array(
                     'id' => $id,
                 ),

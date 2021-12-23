@@ -14,7 +14,7 @@ class User extends ReactAdmin
         $params = getPosts();
         parent::create(array(
             'name' => $params['name'],
-            'password' => AuthService::AuthPasswordEncode($params['password']),
+            'password' => AuthService::PasswordEncode($params['password']),
         ));
     }
     public function update($id)
@@ -22,7 +22,7 @@ class User extends ReactAdmin
         $params = getPosts();
         parent::update($id, array(
             'name' => $params['name'],
-            'password' => AuthService::AuthPasswordEncode($params['password']),
+            'password' => AuthService::PasswordEncode($params['password']),
         ));
     }
 }

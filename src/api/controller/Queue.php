@@ -8,7 +8,7 @@ class Queue extends Common
 {
     public function run($limit)
     {
-        $data = QueueService::run(
+        $data = QueueService::Run(
             array(
                 'limit' => $limit,
             )

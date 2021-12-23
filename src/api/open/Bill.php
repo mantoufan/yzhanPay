@@ -9,7 +9,7 @@ class Bill extends Common
         $params = getParams();
         $_app_id = $params['app_id'];
         $_trade_no = $params['trade_no'];
-        $result = DbService::DbList('trade', array(
+        $result = DbService::GetAll('trade', array(
             'field' => '*',
             'where' => array(
                 'app_id' => $_app_id,

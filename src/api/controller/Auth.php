@@ -12,18 +12,18 @@ class Auth extends Common
         $POST = getPosts();
         $_name = $POST['username'];
         $_password = $POST['password'];
-        $data = DbService::DbGet('user', array(
+        $data = DbService::Get('user', array(
             'field' => array('id', 'name'),
             'where' => array(
                 'name' => $_name,
-                'password' => AuthService::AuthPasswordEncode($_password),
+                'password' => AuthService::PasswordEncode($_password),
             ),
         ));
         if (empty($data['id'])) {
             $this->export(array('status' => 403));
         }
         $this->export(array(
-            'body' => array('auth' => AuthService::AuthEncode(array(
+            'body' => array('auth' => AuthService::Encode(array(
                 'id' => $data['id'],
                 'name' => $data['name'],
             ))),
@@ -35,7 +35,7 @@ class Auth extends Common
         $params = getGets();
         $_sign = $params['sign'];
         unset($params['sign']);
-        $_true_sign = AuthService::AuthSign($params);
+        $_true_sign = AuthService::Sign($params);
         $this->export(array('body' => array('sign' => $_sign, 'trueSign' => $_true_sign, 'isMatch' => $_sign === $_true_sign)));
     }
 }

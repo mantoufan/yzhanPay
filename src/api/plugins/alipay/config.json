@@ -1,5 +1,6 @@
 {
 	"name": "alipay",
+	"version": "1.0.0",
 	"displayname": "Alipay China",
 	"type": "pay",
 	"payment": "depositcard,alipay",
@@ -12,5 +13,11 @@
 		{ "type":"text", "label":"Alipay Public Key", "name":"app_public_key" },
 		{ "type":"text", "label":"Sign Type", "name":"sign_type" },
 		{ "type":"checkout", "label":"Sandbox", "name":"is_sandbox" }
-	]
+	],
+	"composer": {
+		"require": {
+			"league/omnipay": "^3",
+			"mantoufan/omnipay-alipay": "v3.1.2-beta1"
+		}
+	}
 }

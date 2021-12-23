@@ -1,6 +1,7 @@
 <?php
 require 'vendor/autoload.php';
 require 'common/function.php';
+require 'common/const.php';
 
 use Bramus\Router\Router;
 
