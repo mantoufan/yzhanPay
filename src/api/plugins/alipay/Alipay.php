@@ -14,21 +14,14 @@ class Alipay extends Common
         if (empty($config)) {
             $this->export(array('status' => 403));
         }
-        $app_id = $config['app_id'];
-        $private_key = $config['private_key'];
-        $public_key = $config['public_key'];
-        $sign_type = $config['sign_type'];
-        $is_sandbox = $config['is_sandbox'];
-        $return_url = PluginService::GetReturnUrl('alipay', $channel_id);
-        $notify_url = PluginService::GetNotifyUrl('alipay', $channel_id);
         $gateway = Omnipay::create('Alipay_AopPage');
-        $gateway->setSignType($sign_type);
-        $gateway->setAppId($app_id);
-        $gateway->setPrivateKey($private_key);
-        $gateway->setAlipayPublicKey($public_key);
-        $gateway->setReturnUrl($return_url);
-        $gateway->setNotifyUrl($notify_url);
-        if ($is_sandbox) {
+        $gateway->setAppId($config['app_id']);
+        $gateway->setPrivateKey($config['private_key']);
+        $gateway->setAlipayPublicKey($config['public_key']);
+        $gateway->setSignType($config['sign_type']);
+        $gateway->setReturnUrl(PluginService::GetReturnUrl('alipay', $channel_id));
+        $gateway->setNotifyUrl(PluginService::GetNotifyUrl('alipay', $channel_id));
+        if ($config['is_sandbox']) {
             $gateway->sandbox();
         }
         return $gateway;

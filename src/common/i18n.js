@@ -52,7 +52,7 @@ export default {
       price: '价格',
       totalAmount: '总金额',
       paymentChannel:'请选择您的支付渠道',
-      mindRate:'能麻烦您对我们网站上使用感受给予评价吗？',
+      mindRate:'能麻烦您对网站的使用感受给予评价吗？',
       othercost:'汇率费用',
       totalTitle:"账单总结"
     }

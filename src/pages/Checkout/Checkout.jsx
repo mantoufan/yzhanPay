@@ -64,7 +64,7 @@ const CustomContainerMedium = styled(ContainerMedium)(({ theme }) => ({
   maxWidth: 850,
   width: '45vw',
   minWidth: 600,
-  marginTop: '-18vh'
+  marginTop: '-28vh'
 }))
 const CustomMenuButton = styled(IconButton)(({ theme }) => ({
   marginRight: theme.spacing(2),

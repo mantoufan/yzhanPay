@@ -8,16 +8,16 @@ class ChannelService
     public static function GetById($channel_id)
     {
         return DbService::Get('channel', array(
-            'field' => array('config [JSON]', 'plugin', 'client', 'enabled'),
+            'field' => array('config [JSON]', 'plugin', 'client', 'active'),
             'where' => array('id' => $channel_id),
         ));
     }
 
-    public static function ListEnabled()
+    public static function ListActive()
     {
         $data = DbService::GetAll('channel', array(
             'field' => array('id', 'display_name'),
-            'where' => array('enabled' => 1),
+            'where' => array('active' => 1),
         ));
         return $data['data'];
     }

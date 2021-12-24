@@ -2,7 +2,10 @@
 namespace plugins\paypal;
 
 use common\base\Common;
-use Omnipay\Omnipay;
+use PayPalCheckoutSdk\Core\PayPalHttpClient;
+use PayPalCheckoutSdk\Core\ProductionEnvironment;
+use PayPalCheckoutSdk\Core\SandboxEnvironment;
+use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use service\plugin\pay\CheckoutService;
 use service\plugin\PluginService;
 
@@ -14,42 +17,58 @@ class Paypal extends Common
         if (empty($config)) {
             $this->export(array('status' => 403));
         }
-        $app_id = $config['app_id'];
-        $private_key = $config['private_key'];
-        $public_key = $config['public_key'];
-        $sign_type = $config['sign_type'];
-        $is_sandbox = $config['is_sandbox'];
-        $return_url = PluginService::GetReturnUrl('alipay', $channel_id);
-        $notify_url = PluginService::GetNotifyUrl('alipay', $channel_id);
-        $gateway = Omnipay::create('Alipay_AopPage');
-        $gateway->setSignType($sign_type);
-        $gateway->setAppId($app_id);
-        $gateway->setPrivateKey($private_key);
-        $gateway->setAlipayPublicKey($public_key);
-        $gateway->setReturnUrl($return_url);
-        $gateway->setNotifyUrl($notify_url);
-        if ($is_sandbox) {
-            $gateway->sandbox();
+        if ($config['is_sandbox']) {
+            $environment = new SandboxEnvironment($config['client_id'], $config['secret']);
+        } else {
+            $environment = new ProductionEnvironment($config['client_id'], $config['secret']);
         }
-        return $gateway;
+        return new PayPalHttpClient($environment);
     }
 
     public function submit($channel_id, $params)
     {
         $gateway = $this->getGateway($channel_id);
-        $response = $gateway->purchase()->setBizContent([
-            'subject' => $params['subject'],
-            'out_trade_no' => $params['trade_no'],
-            'total_amount' => $params['total_amount'],
-            'body' => $params['body'],
-            'product_code' => 'FAST_INSTANT_TRADE_PAY',
-        ])->send();
-        $this->export(array(
-            'status' => 302,
-            'header' => array(
-                'Location' => $response->getRedirectUrl(),
+        $request = new OrdersCreateRequest();
+        $request->prefer('return=representation');
+        $request->body = array(
+            "intent" => 'CAPTURE',
+            "purchase_units" => array(array(
+                'reference_id' => $params['trade_no'],
+                'amount' => array(
+                    'value' => $params['total_amount'],
+                    'currency_code' => 'USD',
+                ),
+                'item' => [
+                    array(
+                        0 => array(
+                            'name' => $params['subject'],
+                            'description' => $params['body'],
+                        ),
+                    ),
+                ],
+            )),
+            'application_context' => array(
+                'cancel_url' => PluginService::GetCancelUrl('alipay', $channel_id),
+                'return_url' => PluginService::GetReturnUrl('alipay', $channel_id),
             ),
-        ));
+        );
+        try {
+            $response = $gateway->execute($request);
+            if ($response->statusCode === 201) {
+                $links = $response->result->links;
+                var_dump($links);
+                $approve_link = $links[1]->href;
+                $this->export(array(
+                    'status' => 302,
+                    'header' => array(
+                        'Location' => $approve_link,
+                    ),
+                ));
+            }
+        } catch (HttpException $ex) {
+            echo $ex->statusCode;
+            print_r($ex->getMessage());
+        }
     }
 
     public function sync($channel_id)
