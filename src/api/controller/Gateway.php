@@ -30,7 +30,7 @@ class Gateway extends Common
         }
         $_subject = $params['subject'];
         $_body = $params['body'];
-        $_timestamp = $params['timestamp'];
+        $_request_time = $params['request_time'];
         $_out_trade_no = $params['out_trade_no'];
         $_total_amount = $params['total_amount'];
         $_return_url = $params['return_url'];
@@ -44,7 +44,7 @@ class Gateway extends Common
                 'out_trade_no' => $_out_trade_no,
                 'subject' => $_subject,
                 'total_amount' => $_total_amount,
-                'timestamp' => $_timestamp,
+                'request_time' => $_request_time,
                 'return_url' => $_return_url,
                 'notify_url' => $_notify_url,
                 'body' => $_body,
