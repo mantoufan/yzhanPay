@@ -15,7 +15,7 @@ export default {
       copyright: 'Copyright'
     },
     checkout: {
-      checkout: 'Checkout',
+      title: 'Checkout',
       orderInfo: 'Order Info',
       appName: 'App Name',
       outTradeNo: 'Out Trade No',
@@ -23,10 +23,15 @@ export default {
       description: 'Description',
       price: 'Price',
       totalAmount: 'Total',
-      paymentChannel:'Please select your payment channel',
+      channel:'Please select your payment channel',
       mindRate:'Mind giving a rate to your experience on our site',
       othercost:'Exchange Rate Fee',
-      totalTitle:"Here's your Total"
+      totalTitle:"Here's your Total",
+      ability: {
+        question: 'Please select your payment method',
+        checkout: 'Checkout',
+        subscribe: 'Subscribe',
+      }
     }
   }),
   zh: Object.assign(Chinese, {
@@ -42,7 +47,7 @@ export default {
       copyright: '版权所有'
     },
     checkout: {
-      checkout: '结账',
+      title: '结账',
       orderInfo: '订单信息',
       appName: '应用名称',
       orderInfo: '订单信息',
@@ -51,10 +56,15 @@ export default {
       description: '商品描述',
       price: '价格',
       totalAmount: '总金额',
-      paymentChannel:'请选择您的支付渠道',
+      channel:'请选择您的支付渠道',
       mindRate:'能麻烦您对网站的使用感受给予评价吗？',
       othercost:'汇率费用',
-      totalTitle:"账单总结"
+      totalTitle:"账单总结",
+      ability: {
+        question: '请选择你的付款方式',
+        checkout: '单次付款',
+        subscribe: '订阅',
+      }
     }
   })
 }

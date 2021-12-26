@@ -11,11 +11,11 @@ class Gateway extends Common
 {
     public function sumbit()
     {
-        $params = getPosts();
+        $params = getParams();
         $_app_id = $params['app_id'];
         $_channel_id = $params['channel_id'];
         $channel = ChannelService::GetById($_channel_id);
-        $channel_enabled = $channel['enabled'];
+        $channel_active = $channel['active'];
         unset($params['channel_id']);
         $data = DbService::Get('app', array(
             'field' => array('app_key'),
@@ -24,7 +24,7 @@ class Gateway extends Common
             ),
         ));
         $app_key = $data['app_key'];
-        if (empty($channel_enabled) || !AuthService::SignCheck($params, $app_key)) {
+        if (empty($channel_active) || !AuthService::SignCheck($params, $app_key)) {
             header('status: 403');
             exit('403');
         }

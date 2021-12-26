@@ -13,11 +13,16 @@ class ChannelService
         ));
     }
 
-    public static function ListActive()
+    public static function GetAll($params = array())
     {
+        if (!empty($params['where'])) {
+            if (!empty($params['where']['ability'])) {
+                $params['where']['ability'] = DbService::Raw('FIND_IN_SET(\'' . $params['where']['ability'] . '\', `ability`)');
+            }
+        }
         $data = DbService::GetAll('channel', array(
-            'field' => array('id', 'display_name'),
-            'where' => array('active' => 1),
+            'field' => $params['field'],
+            'where' => array_filter($params['where']),
         ));
         return $data['data'];
     }

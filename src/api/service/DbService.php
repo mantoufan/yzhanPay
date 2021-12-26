@@ -44,4 +44,9 @@ class DbService
     {
         return Db::log();
     }
+
+    public static function Raw($str)
+    {
+        return Db::raw($str);
+    }
 }

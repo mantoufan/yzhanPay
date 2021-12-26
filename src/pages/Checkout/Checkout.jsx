@@ -8,8 +8,8 @@ import { ThemeProvider, styled } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
-import Fab from '@material-ui/core/Fab';
-import Divider from '@material-ui/core/Divider';
+import Fab from '@material-ui/core/Fab'
+import Divider from '@material-ui/core/Divider'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -19,23 +19,24 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import IconButton from '@material-ui/core/IconButton';
-import Popover from '@material-ui/core/Popover';
-import Rating from '@material-ui/lab/Rating';
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
-import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
-import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
-import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltOutlined';
-import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
-import CheckIcon from '@material-ui/icons/Check';
+import IconButton from '@material-ui/core/IconButton'
+import Popover from '@material-ui/core/Popover'
+import Rating from '@material-ui/lab/Rating'
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied'
+import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied'
+import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied'
+import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltOutlined'
+import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied'
+import CheckIcon from '@material-ui/icons/Check'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
-import ContactSupportIcon from '@material-ui/icons/ContactSupport';
-import PhoneIcon from '@material-ui/icons/Phone';
+import ContactSupportIcon from '@material-ui/icons/ContactSupport'
+import PhoneIcon from '@material-ui/icons/Phone'
 
 import i18nProvider from '@providers/i18nProvider'
 import { GATEWAY_SUMBIT_API, CHECKOUT_API } from '@common/config'
-import axios from 'axios'
+import { fetchUtils } from 'react-admin'
+
 const { translate } = i18nProvider
 
 const useQuery = () => {
@@ -45,7 +46,7 @@ const useQuery = () => {
 
 const PadPaper = styled(Paper)({
   padding: '12px',
-  '& fieldset': { width: '100%' },
+  '& fieldset': { width: '100%' }
 })
 const TextFieldHidden = styled(TextField)({
   display: 'none'
@@ -54,7 +55,7 @@ const CustomToolbar = styled(Toolbar)(({ theme }) => ({
   minHeight: '30vh',
   alignItems: 'flex-start',
   paddingTop: theme.spacing(1),
-  paddingBottom: theme.spacing(2),
+  paddingBottom: theme.spacing(2)
 }))
 const CustomToolbarTitle = styled(Typography)(({ theme }) => ({
   flexGrow: 1,
@@ -67,7 +68,7 @@ const CustomContainerMedium = styled(ContainerMedium)(({ theme }) => ({
   marginTop: '-28vh'
 }))
 const CustomMenuButton = styled(IconButton)(({ theme }) => ({
-  marginRight: theme.spacing(2),
+  marginRight: theme.spacing(2)
 }))
 const CustomMiddleBar = styled(PadPaper)(({ theme }) => ({
   minHeight: 56,
@@ -94,7 +95,7 @@ const CustomBottomPadPaper = styled(PadPaper)(({ theme }) => ({
     marginBottom: theme.spacing(2),
     width: '60%',
     textAlign: 'center'
-  },
+  }
 }))
 const CustomTopPadPaper = styled(PadPaper)(({ theme }) => ({
   position: 'relative',
@@ -105,57 +106,57 @@ const CustomTopPadPaper = styled(PadPaper)(({ theme }) => ({
   justifyContent: 'center',
   padding: theme.spacing(2),
   paddingTop: theme.spacing(4),
-  paddingBottom: theme.spacing(4),
+  paddingBottom: theme.spacing(4)
 }))
 const CustomFab = styled(Fab)(({ theme }) => ({
   position: 'absolute',
   bottom: 0,
   right: theme.spacing(4),
-  transform: 'translateY(50%)',
+  transform: 'translateY(50%)'
 }))
 const RowBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'space-between',
-  padding: theme.spacing(1),
+  padding: theme.spacing(1)
 }))
 
 const CustomRatingIcons = {
   1: {
-    icon: <SentimentVeryDissatisfiedIcon fontSize='large' />,
-    label: 'Very Dissatisfied',
+    icon: <SentimentVeryDissatisfiedIcon fontSize="large" />,
+    label: 'Very Dissatisfied'
   },
   2: {
-    icon: <SentimentDissatisfiedIcon fontSize='large' />,
-    label: 'Dissatisfied',
+    icon: <SentimentDissatisfiedIcon fontSize="large" />,
+    label: 'Dissatisfied'
   },
   3: {
-    icon: <SentimentSatisfiedIcon fontSize='large' />,
-    label: 'Neutral',
+    icon: <SentimentSatisfiedIcon fontSize="large" />,
+    label: 'Neutral'
   },
   4: {
-    icon: <SentimentSatisfiedAltIcon fontSize='large' />,
-    label: 'Satisfied',
+    icon: <SentimentSatisfiedAltIcon fontSize="large" />,
+    label: 'Satisfied'
   },
   5: {
-    icon: <SentimentVerySatisfiedIcon fontSize='large' />,
-    label: 'Very Satisfied',
-  },
-};
+    icon: <SentimentVerySatisfiedIcon fontSize="large" />,
+    label: 'Very Satisfied'
+  }
+}
 
 function HelperPopper() {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null)
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
-  const open = Boolean(anchorEl);
-  const id = open ? 'transitions-popover' : undefined;
+  const open = Boolean(anchorEl)
+  const id = open ? 'transitions-popover' : undefined
 
   return (
     <Fragment>
@@ -169,59 +170,63 @@ function HelperPopper() {
         onClose={handleClose}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'right',
+          horizontal: 'right'
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right',
+          horizontal: 'right'
         }}>
         <Paper>
           <RowBox>
             <PhoneIcon />
-            <Typography style={{ marginLeft: 8 }} variant='subtitle1'>
+            <Typography style={{ marginLeft: 8 }} variant="subtitle1">
               400-000-000
             </Typography>
           </RowBox>
         </Paper>
       </Popover>
     </Fragment>
-  );
+  )
 }
 
 function RatingIconContainer(props) {
-  const { value, ...other } = props;
-  return <span {...other}>{CustomRatingIcons[value].icon}</span>;
+  const { value, ...other } = props
+  return <span {...other}>{CustomRatingIcons[value].icon}</span>
 }
-
 
 export default () => {
   const query = useQuery()
-  const [value, setValue] = useState('alipay')
+  const [abilities, setAbilities] = useState([])
   const [channels, setChannels] = useState([])
-  const handleChange = (event) => setValue(event.target.value)
-  const getAppName = () => {
-    const AppIdMap = { "2021122412586601": "JungleScout" }
-    return AppIdMap[query?.app_id]
-  }
+  const handleChange = (event) => updateAbilities(channels, event.target.value)
+  const updateAbilities = (channels, id) =>
+    setAbilities(channels.find((channel) => channel.id === id).ability.split(','))
 
   useEffect(() => {
-    document.title = `Checkout ${getAppName()} | Payment Gateway`
-    axios.get(CHECKOUT_API + '/channel-list').then(response => setChannels(response?.data || []))
+    fetchUtils
+      .fetchJson(
+        qs.stringifyUrl({
+          url: CHECKOUT_API + '/app-info',
+          query: Object.assign({ app_id: query.app_id }, JSON.parse(query.channel || null))
+        })
+      )
+      .then(
+        (response) => (
+          setChannels(response?.json?.channel_list || []),
+          updateAbilities(response?.json?.channel_list || [], response.json?.channel_list[0].id),
+          (document.title = translate('checkout.title') + '_' + response?.json?.app?.display_name)
+        )
+      )
   }, [])
 
   return (
     <ThemeProvider theme={theme}>
       <AppBar position="static">
         <CustomToolbar>
-          <CustomMenuButton
-            edge="start"
-            color="inherit"
-          >
+          <CustomMenuButton edge="start" color="inherit">
             <AccountBalanceWalletIcon />
           </CustomMenuButton>
-          <CustomToolbarTitle variant="h5">
-            {translate('checkout.checkout')}
-          </CustomToolbarTitle>
+          <CustomToolbarTitle variant="h5">{translate('checkout.title')}</CustomToolbarTitle>
 
           <HelperPopper />
           <IconButton aria-label="user" color="inherit">
@@ -230,9 +235,7 @@ export default () => {
         </CustomToolbar>
       </AppBar>
       <CustomContainerMedium>
-        <form
-          action={GATEWAY_SUMBIT_API}
-          method="POST">
+        <form action={GATEWAY_SUMBIT_API} method="POST">
           <Box>
             <CustomTopPadPaper>
               <FormControl component="fieldset">
@@ -288,48 +291,30 @@ export default () => {
                   />
                 ) : null}
                 <RowBox component="div" m={1} style={{ marginBottom: theme.spacing(4) }}>
-                  <Typography variant='h4'>
-                    {translate('checkout.totalTitle')}
-                  </Typography>
+                  <Typography variant="h4">{translate('checkout.totalTitle')}</Typography>
                 </RowBox>
                 <RowBox component="div" m={1}>
                   <div>
-                    <Typography variant='h6'>
-                      {query.subject}
-                    </Typography>
-                    {query.body && <Typography variant='subtitle1'>
-                      {query.body}
-                    </Typography>}
+                    <Typography variant="h6">{query.subject}</Typography>
+                    {query.body && <Typography variant="subtitle1">{query.body}</Typography>}
                   </div>
-                  <Typography variant='subtitle2'>
-                    ￥ {query.total_amount}
-                  </Typography>
+                  <Typography variant="subtitle2">￥ {query.total_amount}</Typography>
                 </RowBox>
                 <Divider />
                 <RowBox component="div" m={1}>
-                  <Typography variant='caption'>
-                    {translate('checkout.othercost')}
-                  </Typography>
-                  <Typography variant='caption'>
-                    ￥ 0
-                  </Typography>
+                  <Typography variant="caption">{translate('checkout.othercost')}</Typography>
+                  <Typography variant="caption">￥ 0</Typography>
                 </RowBox>
               </FormControl>
             </CustomTopPadPaper>
             <CustomMiddleBar>
-              <Typography variant='h4'>
-                {translate('checkout.totalAmount')}
-              </Typography>
-              <Typography variant='h4'>
-                ￥{query.total_amount}
-              </Typography>
+              <Typography variant="h4">{translate('checkout.totalAmount')}</Typography>
+              <Typography variant="h4">￥{query.total_amount}</Typography>
             </CustomMiddleBar>
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <CustomBottomPadPaper>
-                  <Typography component="legend">
-                    {translate('checkout.mindRate')}
-                  </Typography>
+                  <Typography component="legend">{translate('checkout.mindRate')}</Typography>
                   <Rating
                     name="rating"
                     defaultValue={0}
@@ -352,23 +337,47 @@ export default () => {
                     />
                   </FormControl>
                   <FormControl component="fieldset">
-                    <Typography style={{ marginBottom: theme.spacing(2) }} component="legend">
-                      {translate('checkout.paymentChannel')}
-                    </Typography>
-                    <RadioGroup
-                      aria-label="position"
-                      name="channel_id"
-                      defaultValue="end"
-                      value={value}
-                      onChange={handleChange}>
-                      {channels.map(({id, display_name})=> (<FormControlLabel
-                        value={id}
-                        control={<Radio color="primary" />}
-                        label={display_name}
-                      />))}
-                    </RadioGroup>
+                    {channels.length ? (
+                      <>
+                        <Typography style={{ marginBottom: theme.spacing(1) }} component="legend">
+                          {translate('checkout.channel')}
+                        </Typography>
+                        <RadioGroup
+                          aria-label="position"
+                          name="channel_id"
+                          onChange={handleChange}
+                          defaultValue={channels[0]?.id}>
+                          {channels.map(({ id, display_name }) => (
+                            <FormControlLabel
+                              value={id}
+                              control={<Radio color="primary" />}
+                              label={display_name}
+                            />
+                          ))}
+                        </RadioGroup>
+                      </>
+                    ) : null}
+                    {abilities.length ? (
+                      <>
+                        <Typography style={{ marginBottom: theme.spacing(1) }} component="legend">
+                          {translate('checkout.ability.question')}
+                        </Typography>
+                        <RadioGroup
+                          aria-label="position"
+                          name="ability"
+                          defaultValue={abilities[0]}>
+                          {abilities.map((ability) => (
+                            <FormControlLabel
+                              value={ability}
+                              control={<Radio color="primary" />}
+                              label={translate('checkout.ability.' + ability)}
+                            />
+                          ))}
+                        </RadioGroup>
+                      </>
+                    ) : null}
                   </FormControl>
-                  <CustomFab type='submit' color="primary" aria-label="submit">
+                  <CustomFab type="submit" color="primary" aria-label="submit">
                     <CheckIcon />
                   </CustomFab>
                 </CustomBottomPadPaper>

@@ -21,4 +21,12 @@ class AppService
         ));
         return $data['user_id'];
     }
+
+    public static function Get($params)
+    {
+        return DbService::Get('app', array(
+            'field' => $params['field'],
+            'where' => $params['where'],
+        ));
+    }
 }
