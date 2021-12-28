@@ -5,7 +5,9 @@ use common\base\Common;
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
 use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Core\SandboxEnvironment;
+use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
+use service\DbService;
 use service\plugin\pay\CheckoutService;
 use service\plugin\PluginService;
 
@@ -17,7 +19,7 @@ class Paypal extends Common
         if (empty($config)) {
             $this->export(array('status' => 403));
         }
-        if ($config['is_sandbox']) {
+        if ($config['env'] === 'sandbox') {
             $environment = new SandboxEnvironment($config['client_id'], $config['secret']);
         } else {
             $environment = new ProductionEnvironment($config['client_id'], $config['secret']);
@@ -48,15 +50,18 @@ class Paypal extends Common
                 ],
             )),
             'application_context' => array(
-                'cancel_url' => PluginService::GetCancelUrl('alipay', $channel_id),
-                'return_url' => PluginService::GetReturnUrl('alipay', $channel_id),
+                'cancel_url' => PluginService::GetCancelUrl('paypal', $channel_id),
+                'return_url' => PluginService::GetReturnUrl('paypal', $channel_id),
             ),
         );
         try {
             $response = $gateway->execute($request);
             if ($response->statusCode === 201) {
+                DbService::Update('trade', array(
+                    'data' => array('api_trade_no' => $response->result->id),
+                    'where' => array('trade_no' => $params['trade_no'], 'app_id' => $params['app_id']),
+                ));
                 $links = $response->result->links;
-                var_dump($links);
                 $approve_link = $links[1]->href;
                 $this->export(array(
                     'status' => 302,
@@ -74,10 +79,30 @@ class Paypal extends Common
     public function sync($channel_id)
     {
         $gateway = $this->getGateway($channel_id);
-        $request = $gateway->completePurchase();
-        $request->setParams(array_merge($_POST, $_GET));
-        $params = $request->getParams();
-        $return_url = CheckoutService::GetReturnUrl($params);
+        $params = getGets();
+        $_token = $params['token'];
+        $_PayerID = $params['PayerID'];
+        unset($params['token']);
+        unset($params['PayerID']);
+        $request = new OrdersCaptureRequest($_token);
+        $request->prefer('return=representation');
+        try {
+            $response = $gateway->execute($request);
+            if ($response->result->status === 'COMPLETED') {
+                $params['trade_status'] = TRADE_STATUS['TRADE_SUCCESS'];
+                $body = '';
+            } else {
+                $params['trade_status'] = TRADE_STATUS['TRADE_CLOSED'];
+                $body = $response->result;
+            }
+        } catch (HttpException $e) {
+            $params['trade_status'] = TRADE_STATUS['TRADE_CLOSED'];
+            $body = $e->getMessage();
+        }
+        $params['api_trade_no'] = $_token;
+        $params['api_customer_id'] = $_PayerID;
+        CheckoutService::getNotifyParams($channel_id, $params);
+        $return_url = CheckoutService::GetReturnUrl($channel_id, $params);
         if (empty($return_url)) {
             $this->export(array('status' => 403));
         }
@@ -86,33 +111,7 @@ class Paypal extends Common
             'header' => array(
                 'Location' => $return_url,
             ),
-        ));
-    }
-
-    public function async($channel_id)
-    {
-        $gateway = $this->getGateway($channel_id);
-        $request = $gateway->completePurchase();
-        $request->setParams(array_merge($_POST, $_GET));
-        $params = $request->getParams();
-        try {
-            $response = $request->send();
-            if ($response->isPaid()) {
-                $params['trade_status'] = TRADE_STATUS['TRADE_SUCCESS'];
-                $body = 'success';
-            } else {
-                $params['trade_status'] = TRADE_STATUS['WAIT_BUYER_PAY'];
-                $body = 'fail';
-            }
-        } catch (Exception $e) {
-            $params['trade_status'] = TRADE_STATUS['TRADE_CLOSED'];
-            $body = 'fail';
-        }
-        $params = CheckoutService::getNotifyParams($params);
-        $app_id = empty($params) ? 0 : $params['app_id'];
-        $this->export(array(
             'body' => $body,
-            'app_id' => $app_id,
         ));
     }
 }

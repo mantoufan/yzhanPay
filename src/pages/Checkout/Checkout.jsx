@@ -198,6 +198,7 @@ export default () => {
   const query = useQuery()
   const [abilities, setAbilities] = useState([])
   const [channels, setChannels] = useState([])
+  const [products, setProducts] = useState([])
   const handleChange = (event) => updateAbilities(channels, event.target.value)
   const updateAbilities = (channels, id) =>
     setAbilities(channels.find((channel) => channel.id === id).ability.split(','))
@@ -207,13 +208,14 @@ export default () => {
       .fetchJson(
         qs.stringifyUrl({
           url: CHECKOUT_API + '/app-info',
-          query: Object.assign({ app_id: query.app_id }, JSON.parse(query.channel || null))
+          query: Object.assign({ app_id: query.app_id, products: query.products }, JSON.parse(query.channel || null))
         })
       )
       .then(
         (response) => (
           setChannels(response?.json?.channel_list || []),
           updateAbilities(response?.json?.channel_list || [], response.json?.channel_list[0].id),
+          setProducts(response?.json?.products || []),
           (document.title = translate('checkout.title') + '_' + response?.json?.app?.display_name)
         )
       )
@@ -259,9 +261,9 @@ export default () => {
                   InputProps={{
                     readOnly: true
                   }}
-                  name="subject"
-                  label={translate('checkout.subject')}
-                  defaultValue={query.subject}
+                  name="products"
+                  label={translate('checkout.product')}
+                  defaultValue={query.products}
                 />
                 <TextFieldHidden
                   name="return_url"
@@ -274,9 +276,14 @@ export default () => {
                   defaultValue={query.notify_url}
                 />
                 <TextFieldHidden
-                  name="timestamp"
-                  label="Timestamp"
-                  defaultValue={query.timestamp}
+                  name="cancel_url"
+                  label="Cancel Url"
+                  defaultValue={query.cancel_url}
+                />
+                <TextFieldHidden
+                  name="request_time"
+                  label="Request Time"
+                  defaultValue={query.request_time}
                 />
                 <TextFieldHidden name="sign" label="Sign" defaultValue={query.sign} />
                 {query.body ? (
@@ -293,23 +300,23 @@ export default () => {
                 <RowBox component="div" m={1} style={{ marginBottom: theme.spacing(4) }}>
                   <Typography variant="h4">{translate('checkout.totalTitle')}</Typography>
                 </RowBox>
-                <RowBox component="div" m={1}>
+                {products.length ? products.map(product=>(<RowBox component="div" m={1}>
                   <div>
-                    <Typography variant="h6">{query.subject}</Typography>
-                    {query.body && <Typography variant="subtitle1">{query.body}</Typography>}
+                    <Typography variant="h6">{product.name}</Typography>
+                    {query.description && <Typography variant="subtitle1">{product.description}</Typography>}
                   </div>
-                  <Typography variant="subtitle2">￥ {query.total_amount}</Typography>
-                </RowBox>
+                  <Typography variant="subtitle2">{product.plan.currency} {product.plan.amount}</Typography>
+                </RowBox>)) : null}
                 <Divider />
                 <RowBox component="div" m={1}>
                   <Typography variant="caption">{translate('checkout.othercost')}</Typography>
-                  <Typography variant="caption">￥ 0</Typography>
+                  <Typography variant="caption">{query.currency} 0</Typography>
                 </RowBox>
               </FormControl>
             </CustomTopPadPaper>
             <CustomMiddleBar>
               <Typography variant="h4">{translate('checkout.totalAmount')}</Typography>
-              <Typography variant="h4">￥{query.total_amount}</Typography>
+              <Typography variant="h4">{query.currency} {query.total_amount}</Typography>
             </CustomMiddleBar>
             <Grid container spacing={2}>
               <Grid item xs={6}>
