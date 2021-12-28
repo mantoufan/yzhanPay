@@ -7,6 +7,7 @@ use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
+use PayPalSubscriptionsSdk\Catalog\ProductsCreateRequest;
 use service\DbService;
 use service\plugin\pay\CheckoutService;
 use service\plugin\PluginService;
@@ -27,7 +28,7 @@ class Paypal extends Common
         return new PayPalHttpClient($environment);
     }
 
-    public function submit($channel_id, $params)
+    public function checkout($channel_id, $params)
     {
         $gateway = $this->getGateway($channel_id);
         $request = new OrdersCreateRequest();
@@ -76,6 +77,11 @@ class Paypal extends Common
         }
     }
 
+    public function subscribe($channel_id, $params)
+    {
+        $gateway = $this->getGateway($channel_id);
+    }
+
     public function sync($channel_id)
     {
         $gateway = $this->getGateway($channel_id);
@@ -113,5 +119,21 @@ class Paypal extends Common
             ),
             'body' => $body,
         ));
+    }
+
+    public function createProduct($channel_id, $params)
+    {
+        $gateway = $this->getGateway($channel_id);
+        $request = new ProductsCreateRequest();
+        $params['plan'] = json_decode($params['product'], true);
+        $request->setData($params['product']);
+
+        try {
+            $response = $gateway->execute($request);
+            print_r($response);
+        } catch (HttpException $ex) {
+            echo $ex->statusCode;
+            print_r($ex->getMessage());
+        }
     }
 }

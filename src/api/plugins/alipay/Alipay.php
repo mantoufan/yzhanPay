@@ -27,7 +27,7 @@ class Alipay extends Common
         return $gateway;
     }
 
-    public function submit($channel_id, $params)
+    public function checkout($channel_id, $params)
     {
         $gateway = $this->getGateway($channel_id);
         $response = $gateway->purchase()->setBizContent([
