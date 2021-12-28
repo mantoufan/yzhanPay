@@ -7,42 +7,36 @@ import CreateRender from '@components/ConfigRender/CreateRender'
 const CONFIG = {
   id: {
     disabled: true,
-    type: 'text',
+    type: 'text'
   },
   path: {
-    type: 'text',
+    type: 'text'
   },
   method: {
-    type: 'text',
+    type: 'text'
   },
   controller: {
-    type: 'text',
+    type: 'text'
   },
   action: {
-    type: 'text',
+    type: 'text'
   },
   payload: {
-    type: 'text',
+    type: 'text'
   },
   user_id: {
-    type: 'text',
+    type: 'text'
   },
   add_time: {
-    type: 'text',
-  },
+    type: 'text'
+  }
 }
 
 const PageIcon = AssignmentIcon
-const PageList = (props) => (
-  <ListRender config={CONFIG} {...props} />
-)
+const PageList = (props) => <ListRender config={CONFIG} {...props} />
 
-const PageEdit = (props) => (
-  <EditRender config={CONFIG} {...props} />
-)
-const PageCreate = (props) => (
-  <CreateRender config={CONFIG} {...props} />
-)
+const PageEdit = (props) => <EditRender config={CONFIG} {...props} />
+const PageCreate = (props) => <CreateRender config={CONFIG} {...props} />
 
 export default {
   PageIcon,

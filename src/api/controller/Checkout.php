@@ -1,11 +1,11 @@
 <?php
 namespace controller;
 
-use common\base\Common;
+use common\base\Trade;
 use service\AppService;
 use service\ChannelService;
 
-class Checkout extends Common
+class Checkout extends Trade
 {
     public function appInfo()
     {
@@ -17,11 +17,22 @@ class Checkout extends Common
                 'app_id' => $_app_id,
             ),
         ));
+        $app_display_name = $data['display_name'];
+        $_products = json_decode($params['products'], true);
+        $data = $this->getProducts($_products, $_app_id, true);
+        $total_amount = $data['total_amount'];
+        $subject = $data['subject'];
+        $body = $data['body'];
+        $products = $data['products'];
         $this->export(array('body' => array(
             'app' => array(
-                'display_name' => $data['display_name'],
+                'display_name' => $app_display_name,
             ),
             'channel_list' => $this->channelList(),
+            'products' => $products,
+            'total_amount' => $total_amount,
+            'subject' => $subject,
+            'body' => $body,
         )));
     }
 

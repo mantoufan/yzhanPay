@@ -21,7 +21,7 @@ class Alipay extends Common
         $gateway->setSignType($config['sign_type']);
         $gateway->setReturnUrl(PluginService::GetReturnUrl('alipay', $channel_id));
         $gateway->setNotifyUrl(PluginService::GetNotifyUrl('alipay', $channel_id));
-        if ($config['is_sandbox']) {
+        if ($config['env'] === 'sandbox') {
             $gateway->sandbox();
         }
         return $gateway;
@@ -51,7 +51,12 @@ class Alipay extends Common
         $request = $gateway->completePurchase();
         $request->setParams(array_merge($_POST, $_GET));
         $params = $request->getParams();
-        $return_url = CheckoutService::GetReturnUrl($params);
+        $_out_trade_no = $params['out_trade_no'];
+        unset($params['out_trade_no']);
+        $_trade_no = $params['trade_no'];
+        $params['trade_no'] = $_out_trade_no;
+        $params['api_trade_no'] = $_trade_no;
+        $return_url = CheckoutService::GetReturnUrl($channel_id, $params);
         if (empty($return_url)) {
             $this->export(array('status' => 403));
         }
@@ -82,7 +87,12 @@ class Alipay extends Common
             $params['trade_status'] = TRADE_STATUS['TRADE_CLOSED'];
             $body = 'fail';
         }
-        $params = CheckoutService::getNotifyParams($params);
+        $_out_trade_no = $params['out_trade_no'];
+        unset($params['out_trade_no']);
+        $_trade_no = $params['trade_no'];
+        $params['trade_no'] = $_out_trade_no;
+        $params['api_trade_no'] = $_trade_no;
+        $params = CheckoutService::getNotifyParams($channel_id, $params);
         $app_id = empty($params) ? 0 : $params['app_id'];
         $this->export(array(
             'body' => $body,

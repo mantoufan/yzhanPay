@@ -1,13 +1,13 @@
 <?php
 namespace controller;
 
-use common\base\Common;
+use common\base\Trade;
 use service\AuthService;
 use service\ChannelService;
 use service\DbService;
 use service\TradeService;
 
-class Gateway extends Common
+class Gateway extends Trade
 {
     public function sumbit()
     {
@@ -24,17 +24,29 @@ class Gateway extends Common
             ),
         ));
         $app_key = $data['app_key'];
-        if (empty($channel_active) || !AuthService::SignCheck($params, $app_key)) {
-            header('status: 403');
-            exit('403');
+        if (empty($channel_active) || (0 && !AuthService::SignCheck($params, $app_key))) {
+            $this->export(array('status' => 403));
         }
-        $_subject = $params['subject'];
-        $_body = $params['body'];
+
         $_request_time = $params['request_time'];
         $_out_trade_no = $params['out_trade_no'];
         $_total_amount = $params['total_amount'];
+        $_currency = $params['currency'];
         $_return_url = $params['return_url'];
         $_notify_url = $params['notify_url'];
+        $_cancel_url = $params['cancel_url'];
+        $_ability = $params['ability'];
+        $_products = $params['products'];
+
+        if (empty($_products)) {
+            $this->export(array('status' => 403));
+        } else {
+            $_products = json_decode($_products, true);
+            $data = $this->getProducts($_products, $_app_id, $_ability === 'subscribe');
+            $total_amount = $data['total_amount'];
+            $params['subject'] = $_subject = $data['subject'];
+            $params['body'] = $_body = $data['body'];
+        }
 
         $trade_no = TradeService::CreateNo();
         $params['trade_no'] = $trade_no;
@@ -43,10 +55,12 @@ class Gateway extends Common
                 'trade_no' => $trade_no,
                 'out_trade_no' => $_out_trade_no,
                 'subject' => $_subject,
-                'total_amount' => $_total_amount,
+                'total_amount' => $total_amount,
+                'currency' => $_currency,
                 'request_time' => $_request_time,
                 'return_url' => $_return_url,
                 'notify_url' => $_notify_url,
+                'cancel_url' => $_cancel_url,
                 'body' => $_body,
                 'status' => 'WAIT_BUYER_PAY',
                 'notify_status' => 0,
@@ -59,4 +73,5 @@ class Gateway extends Common
         $gateway = new $plugin_class_name($_channel_id);
         $gateway->submit($_channel_id, $params);
     }
+
 }

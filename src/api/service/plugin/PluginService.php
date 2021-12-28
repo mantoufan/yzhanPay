@@ -8,7 +8,7 @@ class PluginService
     public static function GetChannelConfig($channel_id)
     {
         $channel = ChannelService::GetById($channel_id);
-        return empty($channel) ? null : $channel['config'];
+        return empty($channel) ? null : array_merge(array('env' => $channel['env']), $channel['config']);
     }
 
     private static function GetDir()

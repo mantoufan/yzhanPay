@@ -6,39 +6,33 @@ import CreateRender from '@components/ConfigRender/CreateRender'
 const CONFIG = {
   id: {
     disabled: true,
-    type: 'text',
+    type: 'text'
   },
   display_name: {
-    type: 'text',
+    type: 'text'
   },
   plugin: {
-    type: 'text',
+    type: 'text'
   },
   config: {
     type: 'json',
     jsonString: true,
     reactJsonOptions: {
-      collapsed: true,
+      collapsed: true
     }
   },
   client: {
-    type: 'text',
+    type: 'text'
   },
-  enabled: {
-    type: 'number',
+  active: {
+    type: 'number'
   }
 }
 
 const PageIcon = DynamicFeedIcon
-const PageList = (props) => (
-  <ListRender config={CONFIG} {...props} />
-)
-const PageEdit = (props) => (
-  <EditRender config={CONFIG} {...props} />
-)
-const PageCreate = (props) => (
-  <CreateRender config={CONFIG} {...props} />
-)
+const PageList = (props) => <ListRender config={CONFIG} {...props} />
+const PageEdit = (props) => <EditRender config={CONFIG} {...props} />
+const PageCreate = (props) => <CreateRender config={CONFIG} {...props} />
 
 export default {
   PageIcon,

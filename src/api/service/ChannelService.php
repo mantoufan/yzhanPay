@@ -8,7 +8,7 @@ class ChannelService
     public static function GetById($channel_id)
     {
         return DbService::Get('channel', array(
-            'field' => array('config [JSON]', 'plugin', 'client', 'active'),
+            'field' => array('config [JSON]', 'plugin', 'client', 'active', 'env'),
             'where' => array('id' => $channel_id),
         ));
     }
