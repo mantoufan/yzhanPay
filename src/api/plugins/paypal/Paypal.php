@@ -80,6 +80,7 @@ class Paypal extends Common
     public function subscribe($channel_id, $params)
     {
         $gateway = $this->getGateway($channel_id);
+
     }
 
     public function sync($channel_id)
