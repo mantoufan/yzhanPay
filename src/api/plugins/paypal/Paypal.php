@@ -8,6 +8,8 @@ use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalSubscriptionsSdk\Catalog\ProductsCreateRequest;
+use PayPalSubscriptionsSdk\Plans\PlansCreateRequest;
+use PayPalSubscriptionsSdk\Subscriptions\SubscriptionsCreateRequest;
 use service\DbService;
 use service\plugin\pay\CheckoutService;
 use service\plugin\PluginService;
@@ -80,12 +82,30 @@ class Paypal extends Common
     public function subscribe($channel_id, $params)
     {
         $gateway = $this->getGateway($channel_id);
-
-    }
-
-    private function createProduct($gateway, $products) {
-        unset($products['plan']);
-        unset($products[''])
+        $products = json_decode($params['product'], true);
+        $plans = array();
+        $customers = array();
+        $products = array_map(function ($product) use (&$plans, &$customers) {
+            $plans[] = $product['plan'];
+            $customers[] = $product['customer'];
+            unset($product['plan']);
+            unset($product['customer']);
+            return $product;
+        }, $products);
+        $res_products = $this->createProducts($gateway, $products);
+        $plans = array_map(function ($res_product, $plan) {
+            $plan['product_id'] = $res_product['id'];
+            return $plan;
+        }, $res_products, $plans);
+        $res_plans = $this->createPlans($gateway, $plans);
+        $subscriptions = array();
+        array_map(function ($res_plan, $customer) use (&$subscriptions) {
+            $subscriptions[] = array(
+                'plan_id' => $res_plan['id'],
+                'subscriber' => $customer,
+            );
+        }, $res_plans, $customers);
+        $this->createSubscriptions($gateway, $subscriptions);
     }
 
     public function sync($channel_id)
@@ -127,16 +147,36 @@ class Paypal extends Common
         ));
     }
 
-    public function createProduct($channel_id, $params)
+    public function createProducts($gateway, $products)
     {
-        $gateway = $this->getGateway($channel_id);
         $request = new ProductsCreateRequest();
-        $params['plan'] = json_decode($params['product'], true);
-        $request->setData($params['product']);
-
+        $request->setData($products);
         try {
-            $response = $gateway->execute($request);
-            print_r($response);
+            return $gateway->execute($request);
+        } catch (HttpException $ex) {
+            echo $ex->statusCode;
+            print_r($ex->getMessage());
+        }
+    }
+
+    public function createPlans($gateway, $plans)
+    {
+        $request = new PlansCreateRequest();
+        $request->setData($plans);
+        try {
+            return $gateway->execute($request);
+        } catch (HttpException $ex) {
+            echo $ex->statusCode;
+            print_r($ex->getMessage());
+        }
+    }
+
+    public function createSubscriptions($gateway, $subscriptions)
+    {
+        $request = new SubscriptionsCreateRequest();
+        $request->setData($subscriptions);
+        try {
+            return $gateway->execute($request);
         } catch (HttpException $ex) {
             echo $ex->statusCode;
             print_r($ex->getMessage());

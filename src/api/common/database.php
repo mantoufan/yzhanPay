@@ -5,5 +5,5 @@ return array(
     'server' => '127.0.0.1',
     'prefix' => 'yzhanpay_',
     'username' => 'pay',
-    'password' => '6Bmc7_3/W',
+    'password' => '6Bmc7_5_Y',
 );
