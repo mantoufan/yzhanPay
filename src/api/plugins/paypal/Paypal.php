@@ -83,6 +83,11 @@ class Paypal extends Common
 
     }
 
+    private function createProduct($gateway, $products) {
+        unset($products['plan']);
+        unset($products[''])
+    }
+
     public function sync($channel_id)
     {
         $gateway = $this->getGateway($channel_id);
