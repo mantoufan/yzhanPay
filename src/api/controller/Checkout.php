@@ -11,6 +11,7 @@ class Checkout extends Trade
     {
         $params = getGets();
         $_app_id = $params['app_id'];
+        $_currency = $params['currency'];
         $data = AppService::Get(array(
             'field' => array('display_name'),
             'where' => array(
@@ -19,7 +20,10 @@ class Checkout extends Trade
         ));
         $app_display_name = $data['display_name'];
         $_products = json_decode($params['products'], true);
-        $data = $this->getProducts($_products, $_app_id, true);
+        $data = $this->getProducts($_products, array(
+            'app_id' => $_app_id,
+            'currency' => $_currency,
+        ), true);
         $total_amount = $data['total_amount'];
         $subject = $data['subject'];
         $body = $data['body'];
@@ -31,6 +35,7 @@ class Checkout extends Trade
             'channel_list' => $this->channelList(),
             'products' => $products,
             'total_amount' => $total_amount,
+            'currency' => $_currency,
             'subject' => $subject,
             'body' => $body,
         )));

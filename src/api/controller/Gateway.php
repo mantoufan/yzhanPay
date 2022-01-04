@@ -41,7 +41,10 @@ class Gateway extends Trade
             $this->export(array('status' => 403));
         } else {
             $_products = json_decode($_products, true);
-            $data = $this->getProducts($_products, $_app_id, $_ability === 'subscribe');
+            $data = $this->getProducts($_products, array(
+                'app_id' => $_app_id,
+                'currency' => $_currency,
+            ), $_ability === 'subscribe');
             $total_amount = $data['total_amount'];
             $params['subject'] = $data['subject'];
             $params['body'] = $data['body'];
@@ -62,7 +65,7 @@ class Gateway extends Trade
                 $_body = $params['body'];
                 $_product_id = $_plan_id = $_customer_id = null;
             }
-            $params['trade_nos'][] = TradeService::Create('trade', array(
+            $params['trade_nos'][] = TradeService::Create(array(
                 'data' => array(
                     'out_trade_no' => $_out_trade_no,
                     'subject' => $_subject,

@@ -335,12 +335,27 @@ export default () => {
                   <FormControl component="fieldset">
                     <TextFieldHidden
                       InputProps={{
-                        readOnly: true,
-                        startAdornment: <InputAdornment position="start">￥</InputAdornment>
+                        readOnly: true
                       }}
                       name="total_amount"
                       label={translate('checkout.totalAmount')}
                       defaultValue={query.total_amount}
+                    />
+                    <TextFieldHidden
+                      InputProps={{
+                        readOnly: true
+                      }}
+                      name="currency"
+                      label={translate('checkout.currency')}
+                      defaultValue={query.currency}
+                    />
+                     <TextFieldHidden
+                      InputProps={{
+                        readOnly: true
+                      }}
+                      name="auto_renew"
+                      label={translate('checkout.auto_renew')}
+                      defaultValue={query.auto_renew}
                     />
                   </FormControl>
                   <FormControl component="fieldset">

@@ -31,7 +31,9 @@ export default {
         question: 'Please select your payment method',
         checkout: 'Checkout',
         subscribe: 'Subscribe',
-      }
+      },
+      currency: 'Currency',
+      auto_renew: 'Auto Renew',
     }
   }),
   zh: Object.assign(Chinese, {
@@ -64,7 +66,9 @@ export default {
         question: '请选择你的付款方式',
         checkout: '单次付款',
         subscribe: '订阅',
-      }
+      },
+      currency: '货币',
+      auto_renew: '续费',
     }
   })
 }

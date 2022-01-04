@@ -13,7 +13,7 @@ class PlanService
     public static function GetById($id)
     {
         return DbService::Get('plan', array(
-            'field' => array('id', 'currency', 'amount', 'interval', 'interval_count', 'add_time', 'update_time', 'app_id'),
+            'field' => array('id', 'currency', 'amount', 'interval_unit', 'interval_count', 'add_time', 'update_time', 'app_id', 'status'),
             'where' => array(
                 'id' => $id,
             ),

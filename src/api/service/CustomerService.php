@@ -13,7 +13,7 @@ class CustomerService
     public static function GetById($id)
     {
         return DbService::Get('customer', array(
-            'field' => array('id', 'name', 'description', 'email', 'area_code', 'phone', 'add_time', 'update_time', 'app_id'),
+            'field' => array('id', 'first_name', 'last_name', 'description', 'email', 'area_code', 'phone', 'add_time', 'update_time', 'app_id'),
             'where' => array(
                 'id' => $id,
             ),

@@ -30,6 +30,48 @@ class Paypal extends Common
         return new PayPalHttpClient($environment);
     }
 
+    public function getParamsByType($params, $type)
+    {
+        switch ($type) {
+            case 'product':
+                return array(
+                    'name' => $params['name'],
+                    'description' => $params['description'],
+                    'type' => $params['type'],
+                    'category' => $params['category'],
+                    'image_url' => $params['image_url'],
+                    'home_url' => $params['url'],
+                );
+            case 'plan':
+                return array(
+                    'name' => $params['name'],
+                    'status' => $params['status'],
+                    'description' => $params['description'],
+                    'billing_cycles' => array(
+                        'frequency' => array(
+                            'interval_unit' => $params['interval_unit'],
+                            'interval_count' => $params['interval_count'],
+                        ),
+                        'pricing_scheme' => array(
+                            'fixed_price' => array(
+                                'value' => $params['amount'],
+                                'currency_code' => $params['currency'],
+                            ),
+                        ),
+                    ),
+                    'payment_preferences' => array(
+                        'auto_bill_outstanding' => !!$params['auto_renew'],
+                    ),
+                );
+            case 'customer':
+                return array(
+                    'name' => array('given_name' => $params['first_name'], 'surname' => $params['last_name']),
+                    'email_address' => $params['email'],
+                    'phone' => $params['phone'],
+                );
+        }
+    }
+
     public function checkout($channel_id, $params)
     {
         $gateway = $this->getGateway($channel_id);
@@ -82,26 +124,29 @@ class Paypal extends Common
     public function subscribe($channel_id, $params)
     {
         $gateway = $this->getGateway($channel_id);
-        $products = json_decode($params['product'], true);
+        $products = $params['products'];
         $plans = array();
         $customers = array();
         $products = array_map(function ($product) use (&$plans, &$customers) {
-            $plans[] = $product['plan'];
-            $customers[] = $product['customer'];
+            $plans[] = $this->getParamsByType($product['plan'], 'plan');
+            $customers[] = $this->getParamsByType($product['customer'], 'customer');
             unset($product['plan']);
             unset($product['customer']);
-            return $product;
+            return $this->getParamsByType($product, 'product');
         }, $products);
         $res_products = $this->createProducts($gateway, $products);
         $plans = array_map(function ($res_product, $plan) {
-            $plan['product_id'] = $res_product['id'];
+            $plan['product_id'] = $res_product->result->id;
             return $plan;
         }, $res_products, $plans);
+        var_dump('plans', $plans);
+        exit;
         $res_plans = $this->createPlans($gateway, $plans);
+        var_dump('res_plans', $res_plans);
         $subscriptions = array();
         array_map(function ($res_plan, $customer) use (&$subscriptions) {
             $subscriptions[] = array(
-                'plan_id' => $res_plan['id'],
+                'plan_id' => $res_plan->result->id,
                 'subscriber' => $customer,
             );
         }, $res_plans, $customers);
@@ -149,37 +194,55 @@ class Paypal extends Common
 
     public function createProducts($gateway, $products)
     {
-        $request = new ProductsCreateRequest();
-        $request->setData($products);
-        try {
-            return $gateway->execute($request);
-        } catch (HttpException $ex) {
-            echo $ex->statusCode;
-            print_r($ex->getMessage());
+        $res = array();
+        foreach ($products as $product) {
+            $request = new ProductsCreateRequest();
+            $request->setData($product);
+            try {
+                $res[] = $gateway->execute($request);
+            } catch (HttpException $e) {
+                $res[] = array(
+                    'statusCode' => $e->statusCode,
+                    'message' => $e->getMessage(),
+                );
+            }
         }
+        return $res;
     }
 
     public function createPlans($gateway, $plans)
     {
-        $request = new PlansCreateRequest();
-        $request->setData($plans);
-        try {
-            return $gateway->execute($request);
-        } catch (HttpException $ex) {
-            echo $ex->statusCode;
-            print_r($ex->getMessage());
+        $res = array();
+        foreach ($plans as $plan) {
+            $request = new PlansCreateRequest();
+            $request->setData($plan);
+            try {
+                $res[] = $gateway->execute($request);
+            } catch (HttpException $e) {
+                $res[] = array(
+                    'statusCode' => $e->statusCode,
+                    'message' => $e->getMessage(),
+                );
+            }
         }
+        return $res;
     }
 
     public function createSubscriptions($gateway, $subscriptions)
     {
-        $request = new SubscriptionsCreateRequest();
-        $request->setData($subscriptions);
-        try {
-            return $gateway->execute($request);
-        } catch (HttpException $ex) {
-            echo $ex->statusCode;
-            print_r($ex->getMessage());
+        $res = array();
+        foreach ($subscriptions as $subscription) {
+            $request = new SubscriptionsCreateRequest();
+            $request->setData($subscription);
+            try {
+                $res[] = $gateway->execute($request);
+            } catch (HttpException $e) {
+                $res[] = array(
+                    'statusCode' => $e->statusCode,
+                    'message' => $e->getMessage(),
+                );
+            }
         }
+        return $res;
     }
 }

@@ -3,12 +3,12 @@ namespace common\base;
 
 class Trade extends Common
 {
-    public function getProducts($products, $app_id, $read_only = false)
+    public function getProducts($products, $global_data, $read_only = false)
     {
         $total_amount = 0;
         $subjects = array();
         $bodys = array();
-        $products = array_map(function ($product) use ($app_id, $read_only, &$total_amount) {
+        $products = array_map(function ($product) use ($global_data, $read_only, &$total_amount) {
             $total_amount += $product['amount'];
             $subjects[] = $prodcut['name'];
             $bodys[] = $prodcut['description'];
@@ -16,9 +16,14 @@ class Trade extends Common
             $customer = $product['customer'];
             unset($product['plan']);
             unset($product['customer']);
+            $app_id = $global_data['app_id'];
+            $currency = $global_data['currency'];
             $product['app_id'] = $app_id;
             $product = $this->getByParams('service\ProductService', $product, $read_only);
+            $plan['app_id'] = $app_id;
+            $plan['currency'] = $currency;
             $product['plan'] = $this->getByParams('service\PlanService', $plan, $read_only);
+            $customer['app_id'] = $app_id;
             $product['customer'] = $this->getByParams('service\CustomerService', $customer, $read_only);
             return $product;
         }, $products);
