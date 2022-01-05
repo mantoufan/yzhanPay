@@ -29,64 +29,64 @@ class Gateway extends Trade
         }
         $_request_time = $params['request_time'];
         $_out_trade_no = $params['out_trade_no'];
-        $_total_amount = $params['total_amount'];
-        $_currency = $params['currency'];
         $_return_url = $params['return_url'];
         $_notify_url = $params['notify_url'];
         $_cancel_url = $params['cancel_url'];
         $_ability = $params['ability'];
-        $_products = $params['products'];
+        $_product = $params['product'];
+        $_plan = $params['plan'];
+        $_customer = $params['customer'];
 
-        if (empty($_products)) {
+        if (empty($_product)) {
             $this->export(array('status' => 403));
         } else {
-            $_products = json_decode($_products, true);
-            $data = $this->getProducts($_products, array(
-                'app_id' => $_app_id,
-                'currency' => $_currency,
-            ), $_ability === 'subscribe');
-            $total_amount = $data['total_amount'];
-            $params['subject'] = $data['subject'];
-            $params['body'] = $data['body'];
-            $params['products'] = $data['products'];
+            $_product = json_decode($_product, true);
+            $_subject = $_product['name'];
+            $_body = $_product['description'];
         }
 
-        $params['trade_nos'] = array();
-        $total = $_ability === 'subscribe' ? count($params['products']) : 1;
-        for ($i = 0; $i < $total; $i++) {
-            if ($_ability === 'subscribe') {
-                $_subject = $params['products'][$i]['name'];
-                $_body = $params['products'][$i]['description'];
-                $_product_id = $params['products'][$i]['id'];
-                $_plan_id = $params['products'][$i]['plan']['id'];
-                $_customer_id = $params['products'][$i]['customer']['id'];
+        if ($_ability === 'subscribe') {
+            $params['product'] = $this->getProduct($_product, $_app_id, $_ability !== 'subscribe');
+            $_product_id = $params['product']['id'];
+            $params['plan'] = $this->getProduct(json_decode($_plan, true), $_app_id, $_ability !== 'subscribe');
+            $_plan_id = $params['plan']['id'];
+            $params['customer'] = $this->getProduct(json_decode($_customer, true), $_app_id, $_ability !== 'subscribe');
+            $_customer_id = $params['customer']['id'];
+            $billing_cycles_first = $params['plan']['billing_cycles'][0];
+            if ($billing_cycles_first['tenure_type'] === 'TRIAL') {
+                $_total_amount = 0;
             } else {
-                $_subject = $params['subject'];
-                $_body = $params['body'];
-                $_product_id = $_plan_id = $_customer_id = null;
+                $_total_amount = $billing_cycles_first['pricing_scheme']['fixed_price']['value'];
             }
-            $params['trade_nos'][] = TradeService::Create(array(
-                'data' => array(
-                    'out_trade_no' => $_out_trade_no,
-                    'subject' => $_subject,
-                    'total_amount' => $total_amount,
-                    'currency' => $_currency,
-                    'request_time' => $_request_time,
-                    'return_url' => $_return_url,
-                    'notify_url' => $_notify_url,
-                    'cancel_url' => $_cancel_url,
-                    'body' => $_body,
-                    'status' => 'WAIT_BUYER_PAY',
-                    'notify_status' => 0,
-                    'channel_id' => $_channel_id,
-                    'app_id' => $_app_id,
-                    'product_id' => $_product_id,
-                    'plan_id' => $_plan_id,
-                    'customer_id' => $_customer_id,
-                ),
-            ));
+            $_currency = $billing_cycles_first['pricing_scheme']['fixed_price']['currency_code'];
+        } else {
+            $_total_amount = $params['total_amount'];
+            $_currency = $params['currency'];
+            $_product_id = $_plan_id = $_customer_id = null;
         }
-        $params['trade_no'] = $params['trade_nos'][0];
+
+        $params['trade_no'] = TradeService::Create(array(
+            'data' => array(
+                'out_trade_no' => $_out_trade_no,
+                'subject' => $_subject,
+                'total_amount' => $_total_amount,
+                'currency' => $_currency,
+                'request_time' => $_request_time,
+                'return_url' => $_return_url,
+                'notify_url' => $_notify_url,
+                'cancel_url' => $_cancel_url,
+                'body' => $_body,
+                'status' => 'WAIT_BUYER_PAY',
+                'notify_status' => 0,
+                'channel_id' => $_channel_id,
+                'app_id' => $_app_id,
+                'product_id' => $_product_id,
+                'plan_id' => $_plan_id,
+                'customer_id' => $_customer_id,
+            ),
+        ));
+        var_dump(DbService::Log());
+        exit;
         $channel_plugin = $channel['plugin'];
         $plugin_class_name = 'plugins\\' . $channel_plugin . '\\' . ucfirst($channel_plugin);
         $gateway = new $plugin_class_name($_channel_id);

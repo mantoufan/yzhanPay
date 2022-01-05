@@ -198,7 +198,8 @@ export default () => {
   const query = useQuery()
   const [abilities, setAbilities] = useState([])
   const [channels, setChannels] = useState([])
-  const [products, setProducts] = useState([])
+  const [product, setProduct] = useState(null)
+
   const handleChange = (event) => updateAbilities(channels, event.target.value)
   const updateAbilities = (channels, id) =>
     setAbilities(channels.find((channel) => channel.id === id).ability.split(','))
@@ -208,14 +209,14 @@ export default () => {
       .fetchJson(
         qs.stringifyUrl({
           url: CHECKOUT_API + '/app-info',
-          query: Object.assign({ app_id: query.app_id, products: query.products }, JSON.parse(query.channel || null))
+          query: Object.assign({ app_id: query.app_id, product: query.product  }, JSON.parse(query.channel || null))
         })
       )
       .then(
         (response) => (
           setChannels(response?.json?.channel_list || []),
           updateAbilities(response?.json?.channel_list || [], response.json?.channel_list[0].id),
-          setProducts(response?.json?.products || []),
+          setProduct(response?.json?.product || []),
           (document.title = translate('checkout.title') + '_' + response?.json?.app?.display_name)
         )
       )
@@ -229,7 +230,6 @@ export default () => {
             <AccountBalanceWalletIcon />
           </CustomMenuButton>
           <CustomToolbarTitle variant="h5">{translate('checkout.title')}</CustomToolbarTitle>
-
           <HelperPopper />
           <IconButton aria-label="user" color="inherit">
             <AccountCircleIcon />
@@ -261,9 +261,23 @@ export default () => {
                   InputProps={{
                     readOnly: true
                   }}
-                  name="products"
+                  name="product"
                   label={translate('checkout.product')}
-                  defaultValue={query.products}
+                  defaultValue={query.product}
+                />
+                <TextFieldHidden
+                  InputProps={{
+                    readOnly: true
+                  }}
+                  name="plan"
+                  defaultValue={query.plan}
+                />
+                <TextFieldHidden
+                  InputProps={{
+                    readOnly: true
+                  }}
+                  name="customer"
+                  defaultValue={query.customer}
                 />
                 <TextFieldHidden
                   name="return_url"
@@ -285,6 +299,11 @@ export default () => {
                   label="Request Time"
                   defaultValue={query.request_time}
                 />
+                <TextFieldHidden
+                  name="currency"
+                  label="Currency"
+                  defaultValue={query.currency}
+                />
                 <TextFieldHidden name="sign" label="Sign" defaultValue={query.sign} />
                 {query.body ? (
                   <TextFieldHidden
@@ -297,26 +316,35 @@ export default () => {
                     defaultValue={query.body}
                   />
                 ) : null}
-                <RowBox component="div" m={1} style={{ marginBottom: theme.spacing(4) }}>
+                <RowBox component="div" m={1}>
                   <Typography variant="h4">{translate('checkout.totalTitle')}</Typography>
                 </RowBox>
-                {products.length ? products.map(product=>(<RowBox component="div" m={1}>
-                  <div>
-                    <Typography variant="h6">{product.name}</Typography>
-                    {query.description && <Typography variant="subtitle1">{product.description}</Typography>}
-                  </div>
-                  <Typography variant="subtitle2">{product.plan.currency} {product.plan.amount}</Typography>
-                </RowBox>)) : null}
-                <Divider />
                 <RowBox component="div" m={1}>
-                  <Typography variant="caption">{translate('checkout.othercost')}</Typography>
-                  <Typography variant="caption">{query.currency} 0</Typography>
+                  <div>
+                    <Typography variant="h4">{product?.name}</Typography>
+                    {product?.description && <Typography variant="subtitle1">{product.description}</Typography>}
+                  </div>
                 </RowBox>
+                {product?.list?.map(({name, description})=>(<RowBox component="div" m={1}>
+                  <div>
+                    <Typography variant="h6">{name}</Typography>
+                    {description && <Typography variant="subtitle1">{description}</Typography>}
+                  </div>
+                </RowBox>))}
+                <Divider />
               </FormControl>
             </CustomTopPadPaper>
             <CustomMiddleBar>
               <Typography variant="h4">{translate('checkout.totalAmount')}</Typography>
-              <Typography variant="h4">{query.currency} {query.total_amount}</Typography>
+              <Typography variant="h4">
+              <RowBox component="div" m={1}>
+                  <div>
+                     {query.plan ? 
+                     JSON.parse(query.plan).billing_cycles.map(({frequency, pricing_scheme: {fixed_price}}) => fixed_price.value + ' ' + translate('currency.' + fixed_price.currency_code) + ' / ' + frequency.interval_count + ' ' + translate('time.' + frequency.interval_unit)) : 
+                     query.total_amount + ' ' + translate('currency.' + query.currency)}
+                  </div>
+                </RowBox>
+                </Typography>
             </CustomMiddleBar>
             <Grid container spacing={2}>
               <Grid item xs={6}>
@@ -332,32 +360,6 @@ export default () => {
               </Grid>
               <Grid item xs={6}>
                 <CustomBottomPadPaper>
-                  <FormControl component="fieldset">
-                    <TextFieldHidden
-                      InputProps={{
-                        readOnly: true
-                      }}
-                      name="total_amount"
-                      label={translate('checkout.totalAmount')}
-                      defaultValue={query.total_amount}
-                    />
-                    <TextFieldHidden
-                      InputProps={{
-                        readOnly: true
-                      }}
-                      name="currency"
-                      label={translate('checkout.currency')}
-                      defaultValue={query.currency}
-                    />
-                     <TextFieldHidden
-                      InputProps={{
-                        readOnly: true
-                      }}
-                      name="auto_renew"
-                      label={translate('checkout.auto_renew')}
-                      defaultValue={query.auto_renew}
-                    />
-                  </FormControl>
                   <FormControl component="fieldset">
                     {channels.length ? (
                       <>

@@ -18,26 +18,13 @@ class Checkout extends Trade
                 'app_id' => $_app_id,
             ),
         ));
-        $app_display_name = $data['display_name'];
-        $_products = json_decode($params['products'], true);
-        $data = $this->getProducts($_products, array(
-            'app_id' => $_app_id,
-            'currency' => $_currency,
-        ), true);
-        $total_amount = $data['total_amount'];
-        $subject = $data['subject'];
-        $body = $data['body'];
-        $products = $data['products'];
+        $_product = json_decode($params['product'], true);
         $this->export(array('body' => array(
             'app' => array(
-                'display_name' => $app_display_name,
+                'display_name' => $data['display_name'],
             ),
             'channel_list' => $this->channelList(),
-            'products' => $products,
-            'total_amount' => $total_amount,
-            'currency' => $_currency,
-            'subject' => $subject,
-            'body' => $body,
+            'product' => $this->getProduct($_product, $_app_id, true),
         )));
     }
 

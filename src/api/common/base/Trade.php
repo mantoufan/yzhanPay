@@ -3,31 +3,22 @@ namespace common\base;
 
 class Trade extends Common
 {
-    public function getProducts($products, $global_data, $read_only = false)
+    public function getProduct($product, $app_id, $read_only = false)
     {
-        $total_amount = 0;
-        $subjects = array();
-        $bodys = array();
-        $products = array_map(function ($product) use ($global_data, $read_only, &$total_amount) {
-            $total_amount += $product['amount'];
-            $subjects[] = $prodcut['name'];
-            $bodys[] = $prodcut['description'];
-            $plan = $product['plan'];
-            $customer = $product['customer'];
-            unset($product['plan']);
-            unset($product['customer']);
-            $app_id = $global_data['app_id'];
-            $currency = $global_data['currency'];
-            $product['app_id'] = $app_id;
-            $product = $this->getByParams('service\ProductService', $product, $read_only);
-            $plan['app_id'] = $app_id;
-            $plan['currency'] = $currency;
-            $product['plan'] = $this->getByParams('service\PlanService', $plan, $read_only);
-            $customer['app_id'] = $app_id;
-            $product['customer'] = $this->getByParams('service\CustomerService', $customer, $read_only);
-            return $product;
-        }, $products);
-        return array('subject' => mb_strimwidth(implode(',', $subjects), 0, 250, '...'), 'body' => mb_strimwidth(implode(',', $bodys), 0, 250, '...'), 'total_amount' => $total_amount, 'products' => $products);
+        $product['app_id'] = $app_id;
+        return $this->getByParams('service\ProductService', $product, $read_only);
+    }
+
+    public function getPlan($plan, $app_id, $read_only = false)
+    {
+        $plan['app_id'] = $app_id;
+        return $this->getByParams('service\PlanService', $plan, $read_only);
+    }
+
+    public function getCustomer($customer, $app_id, $read_only = false)
+    {
+        $customer['app_id'] = $app_id;
+        return $this->getByParams('service\CustomerService', $customer, $read_only);
     }
 
     private function getByParams($service, $params, $read_only = false)

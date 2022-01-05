@@ -46,3 +46,13 @@ function getPath()
     $query = explode('?', $search);
     return $query[0];
 }
+
+function arrayFind($array, Closure $closure)
+{
+    foreach ($array as $key => $value) {
+        if ($closure($value, $key)) {
+            return $value;
+        }
+    }
+    return;
+}

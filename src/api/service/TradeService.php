@@ -21,4 +21,12 @@ class TradeService
         ));
         return $trade_no;
     }
+
+    public static function Update($params)
+    {
+        return DbService::Update('trade', array(
+            'data' => $params['data'],
+            'where' => $params['where'],
+        ));
+    }
 }

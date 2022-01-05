@@ -9,10 +9,11 @@ use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalSubscriptionsSdk\Catalog\ProductsCreateRequest;
 use PayPalSubscriptionsSdk\Plans\PlansCreateRequest;
+use PayPalSubscriptionsSdk\Subscriptions\SubscriptionsCaptureRequest;
 use PayPalSubscriptionsSdk\Subscriptions\SubscriptionsCreateRequest;
-use service\DbService;
 use service\plugin\pay\CheckoutService;
 use service\plugin\PluginService;
+use service\PlanService;
 
 class Paypal extends Common
 {
@@ -45,23 +46,10 @@ class Paypal extends Common
             case 'plan':
                 return array(
                     'name' => $params['name'],
-                    'status' => $params['status'],
                     'description' => $params['description'],
-                    'billing_cycles' => array(
-                        'frequency' => array(
-                            'interval_unit' => $params['interval_unit'],
-                            'interval_count' => $params['interval_count'],
-                        ),
-                        'pricing_scheme' => array(
-                            'fixed_price' => array(
-                                'value' => $params['amount'],
-                                'currency_code' => $params['currency'],
-                            ),
-                        ),
-                    ),
-                    'payment_preferences' => array(
-                        'auto_bill_outstanding' => !!$params['auto_renew'],
-                    ),
+                    'status' => $params['status'],
+                    'billing_cycles' => $params['billing_cycles'],
+                    'payment_preferences' => $params['payment_preferences'],
                 );
             case 'customer':
                 return array(
@@ -102,7 +90,7 @@ class Paypal extends Common
         try {
             $response = $gateway->execute($request);
             if ($response->statusCode === 201) {
-                DbService::Update('trade', array(
+                TradeService::Update(array(
                     'data' => array('api_trade_no' => $response->result->id),
                     'where' => array('trade_no' => $params['trade_no'], 'app_id' => $params['app_id']),
                 ));
@@ -124,33 +112,44 @@ class Paypal extends Common
     public function subscribe($channel_id, $params)
     {
         $gateway = $this->getGateway($channel_id);
-        $products = $params['products'];
-        $plans = array();
-        $customers = array();
-        $products = array_map(function ($product) use (&$plans, &$customers) {
-            $plans[] = $this->getParamsByType($product['plan'], 'plan');
-            $customers[] = $this->getParamsByType($product['customer'], 'customer');
-            unset($product['plan']);
-            unset($product['customer']);
-            return $this->getParamsByType($product, 'product');
-        }, $products);
-        $res_products = $this->createProducts($gateway, $products);
-        $plans = array_map(function ($res_product, $plan) {
-            $plan['product_id'] = $res_product->result->id;
-            return $plan;
-        }, $res_products, $plans);
-        var_dump('plans', $plans);
-        exit;
-        $res_plans = $this->createPlans($gateway, $plans);
-        var_dump('res_plans', $res_plans);
-        $subscriptions = array();
-        array_map(function ($res_plan, $customer) use (&$subscriptions) {
-            $subscriptions[] = array(
-                'plan_id' => $res_plan->result->id,
-                'subscriber' => $customer,
-            );
-        }, $res_plans, $customers);
-        $this->createSubscriptions($gateway, $subscriptions);
+        $product = $this->getParamsByType($params['product'], 'product');
+        $plan = $this->getParamsByType($params['plan'], 'plan');
+        $customer = $this->getParamsByType($params['customer'], 'customer');
+        $res_product = $this->createProduct($gateway, $product);
+        $plan['product_id'] = $res_product->result->id;
+        $res_plan = $this->createPlan($gateway, $plan);
+        $subscription = array(
+            'plan_id' => $res_plan->result->id,
+            'subscriber' => $customer,
+            'application_context' => array(
+                'cancel_url' => PluginService::GetCancelUrl('paypal', $channel_id),
+                'return_url' => PluginService::GetReturnUrl('paypal', $channel_id, true),
+            ),
+        );
+        $response = $this->createSubscription($gateway, $subscription);
+        if ($response->statusCode === 201) {
+            $api_subscription_id = $response->result->id;
+            $api_plan_id = $response->result->plan_id;
+            $api_customer_id = $response->result->subscriber->payer_id;
+            TradeService::Update(array(
+                'data' => array('api_subscription_id' => $api_subscription_id, 'api_plan_id' => $api_plan_id, 'api_customer_id' => $api_customer_id),
+                'where' => array('trade_no' => $params['trade_no'], 'app_id' => $params['app_id']),
+            ));
+            $link = arrayFind($res_subscription->result->links, function ($link) {
+                return $link->rel === 'approve';
+            });
+            $return_url = $link->href;
+        }
+        if (empty($return_url)) {
+            $this->export(array('status' => 403));
+        }
+        $this->export(array(
+            'status' => 302,
+            'header' => array(
+                'Location' => $return_url,
+            ),
+            'body' => $body,
+        ));
     }
 
     public function sync($channel_id)
@@ -192,57 +191,75 @@ class Paypal extends Common
         ));
     }
 
-    public function createProducts($gateway, $products)
+    public function syncSubscribe($channel_id)
     {
-        $res = array();
-        foreach ($products as $product) {
-            $request = new ProductsCreateRequest();
-            $request->setData($product);
-            try {
-                $res[] = $gateway->execute($request);
-            } catch (HttpException $e) {
-                $res[] = array(
-                    'statusCode' => $e->statusCode,
-                    'message' => $e->getMessage(),
-                );
-            }
-        }
-        return $res;
+        $gateway = $this->getGateway($channel_id);
+        $params = getGets();
+        $_subscription_id = $params['subscription_id'];
+        $_token = $params['token'];
+        TradeService::Update(array(
+            'data' => array('api_trade_no' => $_token),
+            'where' => array('api_subscription_id' => $_subscription_id, 'channel_id' => $channel_id),
+        ));
     }
 
-    public function createPlans($gateway, $plans)
+    public function createProduct($gateway, $product)
     {
-        $res = array();
-        foreach ($plans as $plan) {
-            $request = new PlansCreateRequest();
-            $request->setData($plan);
-            try {
-                $res[] = $gateway->execute($request);
-            } catch (HttpException $e) {
-                $res[] = array(
-                    'statusCode' => $e->statusCode,
-                    'message' => $e->getMessage(),
-                );
-            }
+        $request = new ProductsCreateRequest();
+        $request->setData($product);
+        try {
+            return $gateway->execute($request);
+        } catch (HttpException $e) {
+            return array(
+                'statusCode' => $e->statusCode,
+                'message' => $e->getMessage(),
+            );
         }
-        return $res;
     }
 
-    public function createSubscriptions($gateway, $subscriptions)
+    public function createPlan($gateway, $plan)
     {
-        $res = array();
-        foreach ($subscriptions as $subscription) {
-            $request = new SubscriptionsCreateRequest();
-            $request->setData($subscription);
-            try {
-                $res[] = $gateway->execute($request);
-            } catch (HttpException $e) {
-                $res[] = array(
-                    'statusCode' => $e->statusCode,
-                    'message' => $e->getMessage(),
-                );
-            }
+        $request = new PlansCreateRequest();
+        $request->setData($plan);
+        try {
+            return $gateway->execute($request);
+        } catch (HttpException $e) {
+            return array(
+                'statusCode' => $e->statusCode,
+                'message' => $e->getMessage(),
+            );
         }
-        return $res;
+    }
+
+    public function createSubscription($gateway, $subscription)
+    {
+        $request = new SubscriptionsCreateRequest();
+        $request->setData($subscription);
+        try {
+            return $gateway->execute($request);
+        } catch (HttpException $e) {
+            return array(
+                'statusCode' => $e->statusCode,
+                'message' => $e->getMessage(),
+            );
+        }
+    }
+
+    public function captureSubscription($gateway, $subscription_id, $plan_id)
+    {
+        PlanService::GetById($plan_id);
+        $extraCharge = array(
+            'note' => 'Charging as the balance reached the limit',
+            'capture_type' => 'OUTSTANDING_BALANCE',
+            'amount' => [
+                'currency_code' => 'USD',
+                'value' => '100',
+            ],
+        );
+
+        $request = new SubscriptionsCaptureRequest($subscription_id);
+        $request->setData($extraCharge);
+
+        SubscriptionsCaptureRequest();
     }
 }

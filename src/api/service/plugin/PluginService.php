@@ -16,9 +16,9 @@ class PluginService
         return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/gateway'));
     }
 
-    public static function GetReturnUrl($plugin_name, $channel_id)
+    public static function GetReturnUrl($plugin_name, $channel_id, $is_subscribe)
     {
-        return self::getDir() . '/plugins/' . $plugin_name . '/sync/' . $channel_id;
+        return self::getDir() . '/plugins/' . $plugin_name . '/sync' . ($is_subscribe ? '-subscribe' : '') . '/' . $channel_id;
     }
 
     public static function GetNotifyUrl($plugin_name, $channel_id)

@@ -13,7 +13,7 @@ class ProductService
     public static function GetById($id)
     {
         return DbService::Get('product', array(
-            'field' => array('id', 'name', 'description', 'type', 'category', 'image_url', 'url', 'add_time', 'update_time', 'app_id'),
+            'field' => array('id', 'name', 'description', 'type', 'category', 'image_url', 'url', 'add_time', 'update_time', 'app_id', 'list'),
             'where' => array(
                 'id' => $id,
             ),
