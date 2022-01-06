@@ -89,6 +89,7 @@ class Paypal extends Common
         );
         try {
             $response = $gateway->execute($request);
+            exit(503);
             if ($response->statusCode === 201) {
                 BillService::UpdateTrade(array(
                     'data' => array('api_trade_no' => $response->result->id),

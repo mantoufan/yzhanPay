@@ -42,8 +42,8 @@ class Gateway extends Trade
             $this->export(array('status' => 403));
         } else {
             $_product = json_decode($_product, true);
-            $_subject = $_product['name'];
-            $_body = $_product['description'];
+            $_subject = $params['subject'] = $_product['name'];
+            $_body = $params['body'] = $_product['description'];
         }
 
         if ($_ability === 'subscribe') {
@@ -82,8 +82,6 @@ class Gateway extends Trade
                 'customer_id' => $_customer_id,
             ),
         ));
-        var_dump(DbService::Log());
-        exit;
         $channel_plugin = $channel['plugin'];
         $plugin_class_name = 'plugins\\' . $channel_plugin . '\\' . ucfirst($channel_plugin);
         $gateway = new $plugin_class_name($_channel_id);

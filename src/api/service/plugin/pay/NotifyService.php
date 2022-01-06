@@ -33,7 +33,7 @@ class NotifyService
         return array(
             'return_url' => $data['return_url'],
             'notify_url' => $data['notify_url'],
-            'notify_params' => $params,
+            'params' => $params,
         );
     }
 
@@ -41,7 +41,7 @@ class NotifyService
     {
         $return_url = $notify_params['return_url'];
         $params = $notify_params['params'];
-        return $return_url . '?' . http_build_query($notify_params);
+        return $return_url . '?' . http_build_query($params);
     }
 
     public static function Notify($notify_params)

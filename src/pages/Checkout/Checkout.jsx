@@ -304,6 +304,11 @@ export default () => {
                   label="Currency"
                   defaultValue={query.currency}
                 />
+                <TextFieldHidden
+                  name="total_amount"
+                  label="Total Amount"
+                  defaultValue={query.total_amount}
+                />
                 <TextFieldHidden name="sign" label="Sign" defaultValue={query.sign} />
                 {query.body ? (
                   <TextFieldHidden
