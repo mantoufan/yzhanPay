@@ -5,6 +5,7 @@ use common\base\Trade;
 use service\AuthService;
 use service\ChannelService;
 use service\DbService;
+use service\plugin\pay\BillService;
 use service\TradeService;
 
 class Gateway extends Trade
@@ -52,13 +53,9 @@ class Gateway extends Trade
             $_plan_id = $params['plan']['id'];
             $params['customer'] = $this->getProduct(json_decode($_customer, true), $_app_id, $_ability !== 'subscribe');
             $_customer_id = $params['customer']['id'];
-            $billing_cycles_first = $params['plan']['billing_cycles'][0];
-            if ($billing_cycles_first['tenure_type'] === 'TRIAL') {
-                $_total_amount = 0;
-            } else {
-                $_total_amount = $billing_cycles_first['pricing_scheme']['fixed_price']['value'];
-            }
-            $_currency = $billing_cycles_first['pricing_scheme']['fixed_price']['currency_code'];
+            $billing_cycles_first = BillService::GetBillingCyclesFirst($params['plan']['billing_cycles']);
+            $_total_amount = $billing_cycles_first['amount'];
+            $_currency = $billing_cycles_first['currency'];
         } else {
             $_total_amount = $params['total_amount'];
             $_currency = $params['currency'];

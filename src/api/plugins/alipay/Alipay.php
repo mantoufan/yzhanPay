@@ -3,7 +3,8 @@ namespace plugins\alipay;
 
 use common\base\Common;
 use Omnipay\Omnipay;
-use service\plugin\pay\CheckoutService;
+use service\plugin\pay\BillService;
+use service\plugin\pay\NotifyService;
 use service\plugin\PluginService;
 
 class Alipay extends Common
@@ -51,12 +52,20 @@ class Alipay extends Common
         $request = $gateway->completePurchase();
         $request->setParams(array_merge($_POST, $_GET));
         $params = $request->getParams();
-        $_out_trade_no = $params['out_trade_no'];
-        unset($params['out_trade_no']);
-        $_trade_no = $params['trade_no'];
-        $params['trade_no'] = $_out_trade_no;
-        $params['api_trade_no'] = $_trade_no;
-        $return_url = CheckoutService::GetReturnUrl($channel_id, $params);
+        BillService::UpdateTrade(array(
+            'data' => array(
+                'api_trade_no' => $params['trade_no'],
+            ),
+            'where' => array(
+                'trade_no' => $params['out_trade_no'],
+                'channel_id' => $channel_id,
+            ),
+        ));
+        $return_url = NotifyService::GetReturnUrl(NotifyService::GetNoitfyParams(array(
+            'where' => array(
+                'trade_no' => $params['out_trade_no'],
+            ),
+        )));
         if (empty($return_url)) {
             $this->export(array('status' => 403));
         }
@@ -77,22 +86,31 @@ class Alipay extends Common
         try {
             $response = $request->send();
             if ($response->isPaid()) {
-                $params['trade_status'] = TRADE_STATUS['TRADE_SUCCESS'];
+                $params['trade_status'] = TRADE_STATUS['CHECKOUT_SUCCESS'];
                 $body = 'success';
             } else {
-                $params['trade_status'] = TRADE_STATUS['WAIT_BUYER_PAY'];
+                $params['trade_status'] = TRADE_STATUS['CREATED'];
                 $body = 'fail';
             }
         } catch (Exception $e) {
-            $params['trade_status'] = TRADE_STATUS['TRADE_CLOSED'];
+            $params['trade_status'] = TRADE_STATUS['CHECKOUT_FAILED'];
             $body = 'fail';
         }
-        $_out_trade_no = $params['out_trade_no'];
-        unset($params['out_trade_no']);
-        $_trade_no = $params['trade_no'];
-        $params['trade_no'] = $_out_trade_no;
-        $params['api_trade_no'] = $_trade_no;
-        $params = CheckoutService::getNotifyParams($channel_id, $params);
+        BillService::UpdateTrade(array(
+            'data' => array(
+                'api_trade_no' => $params['trade_no'],
+                'trade_status' => $params['trade_status'],
+            ),
+            'where' => array(
+                'trade_no' => $params['out_trade_no'],
+                'channel_id' => $channel_id,
+            ),
+        ));
+        $return_url = NotifyService::Notify(NotifyService::GetNoitfyParams(array(
+            'where' => array(
+                'trade_no' => $params['out_trade_no'],
+            ),
+        )));
         $app_id = empty($params) ? 0 : $params['app_id'];
         $this->export(array(
             'body' => $body,

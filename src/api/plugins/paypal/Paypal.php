@@ -11,9 +11,9 @@ use PayPalSubscriptionsSdk\Catalog\ProductsCreateRequest;
 use PayPalSubscriptionsSdk\Plans\PlansCreateRequest;
 use PayPalSubscriptionsSdk\Subscriptions\SubscriptionsCaptureRequest;
 use PayPalSubscriptionsSdk\Subscriptions\SubscriptionsCreateRequest;
-use service\plugin\pay\CheckoutService;
+use service\plugin\pay\BillService;
+use service\plugin\pay\NotifyService;
 use service\plugin\PluginService;
-use service\PlanService;
 
 class Paypal extends Common
 {
@@ -90,7 +90,7 @@ class Paypal extends Common
         try {
             $response = $gateway->execute($request);
             if ($response->statusCode === 201) {
-                TradeService::Update(array(
+                BillService::UpdateTrade(array(
                     'data' => array('api_trade_no' => $response->result->id),
                     'where' => array('trade_no' => $params['trade_no'], 'app_id' => $params['app_id']),
                 ));
@@ -131,7 +131,7 @@ class Paypal extends Common
             $api_subscription_id = $response->result->id;
             $api_plan_id = $response->result->plan_id;
             $api_customer_id = $response->result->subscriber->payer_id;
-            TradeService::Update(array(
+            BillService::UpdateTrade(array(
                 'data' => array('api_subscription_id' => $api_subscription_id, 'api_plan_id' => $api_plan_id, 'api_customer_id' => $api_customer_id),
                 'where' => array('trade_no' => $params['trade_no'], 'app_id' => $params['app_id']),
             ));
@@ -158,27 +158,39 @@ class Paypal extends Common
         $params = getGets();
         $_token = $params['token'];
         $_PayerID = $params['PayerID'];
-        unset($params['token']);
-        unset($params['PayerID']);
         $request = new OrdersCaptureRequest($_token);
         $request->prefer('return=representation');
         try {
             $response = $gateway->execute($request);
             if ($response->result->status === 'COMPLETED') {
-                $params['trade_status'] = TRADE_STATUS['TRADE_SUCCESS'];
+                $params['trade_status'] = TRADE_STATUS['CHECKOUT_SUCCESS'];
                 $body = '';
             } else {
-                $params['trade_status'] = TRADE_STATUS['TRADE_CLOSED'];
+                $params['trade_status'] = TRADE_STATUS['CREATED'];
                 $body = $response->result;
             }
         } catch (HttpException $e) {
-            $params['trade_status'] = TRADE_STATUS['TRADE_CLOSED'];
+            $params['trade_status'] = TRADE_STATUS['CHECKOUT_FAILED'];
             $body = $e->getMessage();
         }
-        $params['api_trade_no'] = $_token;
-        $params['api_customer_id'] = $_PayerID;
-        CheckoutService::getNotifyParams($channel_id, $params);
-        $return_url = CheckoutService::GetReturnUrl($channel_id, $params);
+        BillService::UpdateTrade(array(
+            'data' => array(
+                'api_customer_id' => $_PayerID,
+                'trade_status' => $params['trade_status'],
+            ),
+            'where' => array(
+                'api_trade_no' => $_token,
+                'channel_id' => $channel_id,
+            ),
+        ));
+        $notify_params = NotifyService::GetNotifyParams(array(
+            'where' => array(
+                'api_trade_no' => $_token,
+                'channel_id' => $channel_id,
+            ),
+        ));
+        NotifyService::Notify($notify_params);
+        $return_url = NotifyService::GetReturnUrl($notify_params);
         if (empty($return_url)) {
             $this->export(array('status' => 403));
         }
@@ -197,9 +209,36 @@ class Paypal extends Common
         $params = getGets();
         $_subscription_id = $params['subscription_id'];
         $_token = $params['token'];
-        TradeService::Update(array(
-            'data' => array('api_trade_no' => $_token),
-            'where' => array('api_subscription_id' => $_subscription_id, 'channel_id' => $channel_id),
+        unset($params['subscription_id']);
+        unset($params['token']);
+        $params['api_trade_no'] = $_token;
+        $params['api_subscription_id'] = $_subscription_id;
+        $trade = BillService::GetTrade(array(
+            'field' => array('plan_id'),
+            'where' => array(
+                'api_subscription_id' => $_subscription_id,
+                'channel_id' => $channel_id,
+            ),
+        ));
+        if ($this->captureSubscription($gateway, $_subscription_id, $trade['plan_id'])) {
+            $notify_params = NotifyService::GetNotifyParams(array(
+                'where' => array(
+                    'api_subscription_id' => $_subscription_id,
+                    'channel_id' => $channel_id,
+                ),
+            ));
+            NotifyService::Notify($notify_params);
+            $return_url = NotifyService::GetReturnUrl($notify_params);
+        }
+        if (empty($return_url)) {
+            $this->export(array('status' => 403));
+        }
+        $this->export(array(
+            'status' => 302,
+            'header' => array(
+                'Location' => $return_url,
+            ),
+            'body' => $body,
         ));
     }
 
@@ -247,19 +286,30 @@ class Paypal extends Common
 
     public function captureSubscription($gateway, $subscription_id, $plan_id)
     {
-        PlanService::GetById($plan_id);
-        $extraCharge = array(
-            'note' => 'Charging as the balance reached the limit',
+        $plan = BillService::GetPlan(array(
+            'field' => array('name', 'billing_cycles'),
+            'where' => array('id' => $plan_id),
+        ));
+        $billing_cycles_first = BillService::GetBillingCyclesFirst($plan['billing_cycles']);
+        $_amount = $billing_cycles_first['amount'];
+        $_currency = $billing_cycles_first['currency'];
+        $_charge = array(
+            'note' => $plan['name'],
             'capture_type' => 'OUTSTANDING_BALANCE',
             'amount' => [
-                'currency_code' => 'USD',
-                'value' => '100',
+                'currency_code' => $_currency,
+                'value' => $_amount,
             ],
         );
-
         $request = new SubscriptionsCaptureRequest($subscription_id);
-        $request->setData($extraCharge);
-
-        SubscriptionsCaptureRequest();
+        $request->setData($_charge);
+        try {
+            return $gateway->execute($request);
+        } catch (HttpException $e) {
+            return array(
+                'statusCode' => $e->statusCode,
+                'message' => $e->getMessage(),
+            );
+        }
     }
 }

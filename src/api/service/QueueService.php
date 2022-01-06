@@ -18,7 +18,7 @@ class QueueService extends LoggerService
     {
         $params['controller'] = self::CONTROLLER_NAME;
         $params['status'] = self::STATUS_PENDING;
-        $this->log($params);
+        return $this->log($params);
     }
 
     public static function Run($params = array('limit' => 5))
