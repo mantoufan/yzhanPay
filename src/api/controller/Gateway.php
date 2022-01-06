@@ -82,9 +82,7 @@ class Gateway extends Trade
                 'customer_id' => $_customer_id,
             ),
         ));
-        $channel_plugin = $channel['plugin'];
-        $plugin_class_name = 'plugins\\' . $channel_plugin . '\\' . ucfirst($channel_plugin);
-        $gateway = new $plugin_class_name($_channel_id);
+        $gateway = ChannelService::GetGateway($channel['plugin']);
         if ($params['ability'] === 'checkout') {
             $gateway->checkout($_channel_id, $params);
         } else {

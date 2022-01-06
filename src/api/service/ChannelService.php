@@ -26,4 +26,10 @@ class ChannelService
         ));
         return $data['data'];
     }
+
+    public static function GetGateway($channel_plugin)
+    {
+        $plugin_class_name = 'plugins\\' . $channel_plugin . '\\' . ucfirst($channel_plugin);
+        return new $plugin_class_name();
+    }
 }

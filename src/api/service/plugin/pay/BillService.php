@@ -44,4 +44,25 @@ class BillService
             'currency' => $_currency,
         );
     }
+
+    public static function GetBillingCyclesInterval($billing_cycles, $plan_start_time, $check_time)
+    {
+        $time = $plan_start_time;
+        foreach ($billing_cycles as $billing_cycle) {
+            $total_cycles = $billing_cycle['total_cycles'];
+            $frequency = $billing_cycle['frequency'];
+            $interval_unit = $frequency['interval_unit'];
+            $interval_count = $frequency['interval_count'];
+            for ($i = 0; $i < $total_cycles; $i++) {
+                $time = strtotime('+ ' . $interval_count . ' ' . $interval_unit, $time);
+                if ($time >= $check_time) {
+                    return $time - $check_time < 86400 ? array(
+                        'amount' => $interval_count,
+                        'currency' => $interval_unit,
+                    ) : null;
+                }
+            }
+        }
+        return null;
+    }
 }

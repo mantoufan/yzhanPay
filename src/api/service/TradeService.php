@@ -37,4 +37,12 @@ class TradeService
             'where' => $params['where'],
         ));
     }
+
+    public static function GetAll($params)
+    {
+        return DbService::GetAll('trade', array(
+            'field' => $params['field'],
+            'where' => $params['where'],
+        ));
+    }
 }

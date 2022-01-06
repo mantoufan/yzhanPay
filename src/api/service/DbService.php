@@ -8,14 +8,18 @@ class DbService
 
     public static function Get($table, $params = array())
     {
-        return Db::get($table, $params['field'], $params['where']);
+        return empty($params['join']) ?
+        Db::get($table, $params['field'], $params['where']) :
+        Db::get($table, $params['join'], $params['field'], $params['where']);
     }
 
     public static function GetAll($table, $params = array())
     {
         return array(
             'total' => Db::count($table),
-            'data' => Db::select($table, $params['field'], $params['where'], $params['option']),
+            'data' => empty($params['join']) ?
+            Db::select($table, $params['field'], $params['where']) :
+            Db::select($table, $params['join'], $params['field'], $params['where']),
         );
     }
 
