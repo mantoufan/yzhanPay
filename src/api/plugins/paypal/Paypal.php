@@ -207,27 +207,19 @@ class Paypal extends Common
         $gateway = $this->getGateway($channel_id);
         $params = getGets();
         $_subscription_id = $params['subscription_id'];
-        $_token = $params['token'];
-        unset($params['subscription_id']);
-        unset($params['token']);
-        $params['api_trade_no'] = $_token;
-        $params['api_subscription_id'] = $_subscription_id;
-        $trade = BillService::GetTrade(array(
-            'field' => array('plan_id'),
+        BillService::UpdateTrade(array(
+            'data' => array('trade_status' => $trade_status['SUBSCRIPTION_WAIT_REMIND']),
             'where' => array(
                 'api_subscription_id' => $_subscription_id,
                 'channel_id' => $channel_id,
             ),
         ));
-        if ($this->captureSubscription($gateway, $_subscription_id, $trade['plan_id'])) {
-            $notify_params = NotifyService::GetNotifyParams(array(
-                'where' => array(
-                    'api_subscription_id' => $_subscription_id,
-                    'channel_id' => $channel_id,
-                ),
-            ));
-            $return_url = NotifyService::GetReturnUrl($notify_params);
-        }
+        $return_url = NotifyService::GetReturnUrl(NotifyService::GetNotifyParams(array(
+            'where' => array(
+                'api_subscription_id' => $_subscription_id,
+                'channel_id' => $channel_id,
+            ),
+        )));
         if (empty($return_url)) {
             $this->export(array('status' => 403));
         }
