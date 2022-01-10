@@ -25,7 +25,7 @@ export default {
       totalAmount: 'Total',
       channel:'Please select your payment channel',
       mindRate:'Mind giving a rate to your experience on our site',
-      totalTitle:"Here's your Total",
+      totalTitle:"Bill Summary",
       ability: {
         question: 'Please select your payment method',
         checkout: 'Checkout',

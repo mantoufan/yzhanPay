@@ -5,9 +5,9 @@ use service\DbService;
 
 class ProductService
 {
-    public static function Create($params)
+    public static function Create($data)
     {
-        return DbService::Create('product', $params);
+        return DbService::Create('product', array('data' => $data));
     }
 
     public static function GetById($id)

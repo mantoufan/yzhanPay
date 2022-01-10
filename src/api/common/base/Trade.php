@@ -24,7 +24,7 @@ class Trade extends Common
     private function getByParams($service, $params, $read_only = false)
     {
         if (empty($params['id'])) {
-            $id = $read_only ? null : $service::Create(array('data' => $params));
+            $id = $read_only ? null : $service::Create($params);
             return array_merge($params, array('id' => $id));
         } else {
             $_id = $params['id'];

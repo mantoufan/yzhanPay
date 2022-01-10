@@ -5,10 +5,12 @@ use service\DbService;
 
 class PlanService
 {
-    public static function Create($params)
+    public static function Create($data)
     {
-        $params['billing_cycles'] = json_encode(self::SortASCBillingCycles($params['billing_cycles']), true);
-        return DbService::Create('plan', $params);
+        if (!empty($data['billing_cycles'])) {
+            $data['billing_cycles'] = json_encode(self::SortASCBillingCycles($data['billing_cycles']), true);
+        }
+        return DbService::Create('plan', array('data' => $data));
     }
 
     public static function GetById($id)

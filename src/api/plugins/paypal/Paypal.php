@@ -53,9 +53,8 @@ class Paypal extends Common
                 );
             case 'customer':
                 return array(
-                    'name' => array('given_name' => $params['first_name'], 'surname' => $params['last_name']),
+                    'name' => array('given_name' => $params['name']['first_name'], 'surname' => $params['name']['last_name']),
                     'email_address' => $params['email'],
-                    'phone' => $params['phone'],
                 );
         }
     }
@@ -89,7 +88,6 @@ class Paypal extends Common
         );
         try {
             $response = $gateway->execute($request);
-            exit(503);
             if ($response->statusCode === 201) {
                 BillService::UpdateTrade(array(
                     'data' => array('api_trade_no' => $response->result->id),
@@ -136,7 +134,7 @@ class Paypal extends Common
                 'data' => array('api_subscription_id' => $api_subscription_id, 'api_plan_id' => $api_plan_id, 'api_customer_id' => $api_customer_id),
                 'where' => array('trade_no' => $params['trade_no'], 'app_id' => $params['app_id']),
             ));
-            $link = arrayFind($res_subscription->result->links, function ($link) {
+            $link = arrayFind($response->result->links, function ($link) {
                 return $link->rel === 'approve';
             });
             $return_url = $link->href;

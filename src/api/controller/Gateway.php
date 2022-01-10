@@ -49,9 +49,9 @@ class Gateway extends Trade
         if ($_ability === 'subscribe') {
             $params['product'] = $this->getProduct($_product, $_app_id, $_ability !== 'subscribe');
             $_product_id = $params['product']['id'];
-            $params['plan'] = $this->getProduct(json_decode($_plan, true), $_app_id, $_ability !== 'subscribe');
+            $params['plan'] = $this->getPlan(json_decode($_plan, true), $_app_id, $_ability !== 'subscribe');
             $_plan_id = $params['plan']['id'];
-            $params['customer'] = $this->getProduct(json_decode($_customer, true), $_app_id, $_ability !== 'subscribe');
+            $params['customer'] = $this->getCustomer(json_decode($_customer, true), $_app_id, $_ability !== 'subscribe');
             $_customer_id = $params['customer']['id'];
             $billing_cycles_first = BillService::GetBillingCyclesFirst($params['plan']['billing_cycles']);
             $_total_amount = $billing_cycles_first['amount'];
