@@ -8,10 +8,10 @@ use service\TradeService;
 
 class NotifyService
 {
-    public static function GetNoitfyParams($params = array('where' => array()))
+    public static function GetNotifyParams($params = array('where' => array()))
     {
         $data = TradeService::Get(array(
-            'field' => array('app_id', 'total_amount', 'currency', 'channel_id', 'trade_no', 'out_trade_no', 'subject', 'body', 'plan_id', 'return_url', 'notify_url'),
+            'field' => array('status', 'app_id', 'total_amount', 'currency', 'channel_id', 'trade_no', 'out_trade_no', 'subject', 'body', 'plan_id', 'return_url', 'notify_url'),
             'where' => $params['where'],
         ));
         if (empty($data)) {
@@ -27,7 +27,7 @@ class NotifyService
             'currency' => $data['currency'],
             'subject' => $data['subject'],
             'body' => $data['body'],
-            'trade_status' => $data['trade_status'],
+            'status' => $data['status'],
         );
         $params['sign'] = AuthService::Sign($params);
         return array(

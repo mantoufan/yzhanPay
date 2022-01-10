@@ -2,10 +2,11 @@
 namespace controller;
 
 use common\base\Common;
-use service\BillService;
+use service\ChannelService;
 use service\ConfigService;
 use service\DbService;
 use service\NotificationService;
+use service\plugin\pay\BillService;
 use service\TplService;
 use service\TradeService;
 
@@ -13,19 +14,22 @@ class Bill extends Common
 {
     public function check()
     {
-        $bills = DbService::GetAll(array(
-            'join' => array('[>]plan' => ['id' => 'plan_id'], '[>]channel' => ['id' => 'channel_id'], '[>]customer' => ['id' => 'customer_id']),
-            'field' => array('plan.billing_cycles [JSON]', 'plan.name', 'trade.plan_start_time', 'channel.plugin', 'trade.status', 'trade.plan_id', 'trade.channel_id', 'trade.api_subscription_id', 'trade.trade_no', 'customer.email', 'customer.phone', 'customer.first_name', 'customer.last_name'),
+        $bills = DbService::GetAll('trade', array(
+            'join' => array('[>]plan' => ['plan_id' => 'id'], '[>]channel' => ['channel_id' => 'id'], '[>]customer' => ['customer_id' => 'id']),
+            'field' => array('plan.billing_cycles [JSON]', 'plan.name', 'trade.plan_start_time', 'channel.plugin', 'trade.status', 'trade.plan_id', 'trade.channel_id', 'trade.api_subscription_id', 'trade.trade_no', 'customer.email', 'customer.first_name', 'customer.last_name'),
             'where' => array(
-                'status' => array('SUBSCRIPTION_WAIT_REMIND', 'SUBSCRIPTION_WAIT_CHARGE'),
+                'trade.status' => array('SUBSCRIPTION_WAIT_REMIND', 'SUBSCRIPTION_WAIT_CHARGE'),
             ),
         ));
+        if (empty($bills['data'])) {
+            return false;
+        }
         $now = time();
-        foreach ($bills as $bill) {
+        foreach ($bills['data'] as $bill) {
             $interval = BillService::GetBillingCyclesInterval(
                 $bill['billing_cycles'],
                 $bill['plan_start_time'],
-                $bill['status'] === TRADE_STATUS['SUBSCRIPTION_WAIT_REMIND'] ? $now - ADVANCE_REMINDER_TIME : $now
+                $bill['status'] === TRADE_STATUS['SUBSCRIPTION_WAIT_REMIND'] ? $now + ADVANCE_REMINDER_TIME : $now + ADVANCE_REMINDER_TIME
             );
             if ($interval) {
                 $tplParams = array(
@@ -37,7 +41,7 @@ class Bill extends Common
                 switch ($bill['status']) {
                     case TRADE_STATUS['SUBSCRIPTION_WAIT_REMIND']:
                         $config = ConfigService::Get();
-                        if (!emtpy($bill['email'])) {
+                        if (!empty($bill['email'])) {
                             NotificationService::email(array(
                                 'smtp' => array(
                                     'host' => $config['NOTIFICATION']['MAIL']['SMTP']['HOST'],
@@ -51,13 +55,13 @@ class Bill extends Common
                                 ),
                                 'send' => array(
                                     'mail' => $bill['email'],
-                                    'name' => $bill['first_name'] + $bill['last_name'],
+                                    'name' => $bill['first_name'] . $bill['last_name'],
                                 ),
                                 'subject' => TplService::parse($config['NOTIFICATION']['MAIL']['TPL']['AUTO_CHARGE']['SUBJECT'], $tplParams),
                                 'body' => TplService::parse($config['NOTIFICATION']['MAIL']['TPL']['AUTO_CHARGE']['BODY'], $tplParams),
                             ));
                         }
-                        if (!emtpy($bill['phone'])) {
+                        if (!empty($bill['phone'])) {
                             NotificationService::sms(array(
                                 'service_provider' => 'aliyun',
                                 'options' => array(
@@ -81,6 +85,7 @@ class Bill extends Common
                         ));
                         break;
                     case TRADE_STATUS['SUBSCRIPTION_WAIT_CHARGE']:
+                        $gateway = ChannelService::GetGateway($bill['plugin']);
                         $gateway->charge($bill['channel_id'], array(
                             'subscription_id' => $bill['api_subscription_id'],
                             'note' => $bill['name'],

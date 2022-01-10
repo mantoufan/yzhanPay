@@ -73,7 +73,7 @@ class Gateway extends Trade
                 'notify_url' => $_notify_url,
                 'cancel_url' => $_cancel_url,
                 'body' => $_body,
-                'status' => 'WAIT_BUYER_PAY',
+                'status' => TRADE_STATUS['CREATED'],
                 'notify_status' => 0,
                 'channel_id' => $_channel_id,
                 'app_id' => $_app_id,

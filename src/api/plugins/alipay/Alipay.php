@@ -99,7 +99,7 @@ class Alipay extends Common
         BillService::UpdateTrade(array(
             'data' => array(
                 'api_trade_no' => $params['trade_no'],
-                'trade_status' => $params['trade_status'],
+                'status' => $params['trade_status'],
             ),
             'where' => array(
                 'trade_no' => $params['out_trade_no'],

@@ -117,8 +117,9 @@ class Paypal extends Common
         $res_product = $this->createProduct($gateway, $product);
         $plan['product_id'] = $res_product->result->id;
         $res_plan = $this->createPlan($gateway, $plan);
+        $api_plan_id = $res_plan->result->id;
         $subscription = array(
-            'plan_id' => $res_plan->result->id,
+            'plan_id' => $api_plan_id,
             'subscriber' => $customer,
             'application_context' => array(
                 'cancel_url' => PluginService::GetCancelUrl('paypal', $channel_id),
@@ -128,10 +129,14 @@ class Paypal extends Common
         $response = $this->createSubscription($gateway, $subscription);
         if ($response->statusCode === 201) {
             $api_subscription_id = $response->result->id;
-            $api_plan_id = $response->result->plan_id;
             $api_customer_id = $response->result->subscriber->payer_id;
             BillService::UpdateTrade(array(
-                'data' => array('api_subscription_id' => $api_subscription_id, 'api_plan_id' => $api_plan_id, 'api_customer_id' => $api_customer_id),
+                'data' => array(
+                    'api_subscription_id' => $api_subscription_id,
+                    'api_plan_id' => $api_plan_id,
+                    'api_customer_id' => $api_customer_id,
+                    'api_product_id' => $plan['product_id'],
+                ),
                 'where' => array('trade_no' => $params['trade_no'], 'app_id' => $params['app_id']),
             ));
             $link = arrayFind($response->result->links, function ($link) {
@@ -175,7 +180,7 @@ class Paypal extends Common
         BillService::UpdateTrade(array(
             'data' => array(
                 'api_customer_id' => $_PayerID,
-                'trade_status' => $params['trade_status'],
+                'status' => $params['trade_status'],
             ),
             'where' => array(
                 'api_trade_no' => $_token,
@@ -206,7 +211,7 @@ class Paypal extends Common
         $params = getGets();
         $_subscription_id = $params['subscription_id'];
         BillService::UpdateTrade(array(
-            'data' => array('trade_status' => $trade_status['SUBSCRIPTION_WAIT_REMIND']),
+            'data' => array('status' => TRADE_STATUS['SUBSCRIPTION_WAIT_REMIND']),
             'where' => array(
                 'api_subscription_id' => $_subscription_id,
                 'channel_id' => $channel_id,
@@ -272,6 +277,23 @@ class Paypal extends Common
         }
     }
 
+    public function async($channel_id)
+    {
+        $gateway = $this->getGateway($channel_id);
+        $_params = getPosts();
+        $_event_type = $_params['event_type'];
+        $_api_trade_no = $params['resource']['id'];
+        if ($_event_type === 'PAYMENT.SALE.COMPLETED') {
+            BillService::UpdateTrade(array(
+                'data' => array('status' => TRADE_STATUS['SUBSCRIPTION_CHARGE_SUCCESS']),
+                'where' => array(
+                    'api_trade_no' => $_api_trade_no,
+                    'channel_id' => $channel_id,
+                ),
+            ));
+        }
+    }
+
     public function charge($channel_id, $params = array('subscription_id' => 0, 'note' => '', 'amount' => 0, 'currency' => ''))
     {
         $gateway = $this->getGateway($channel_id);
@@ -289,7 +311,6 @@ class Paypal extends Common
             $trade_status = TRADE_STATUS['SUBSCRIPTION_CHARGE_SUCCESS'];
         } catch (HttpException $e) {
             $trade_status = TRADE_STATUS['SUBSCRIPTION_CHARGE_FAILED'];
-
         }
         BillService::UpdateTrade(array(
             'data' => array('status' => $trade_status),
