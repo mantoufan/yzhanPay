@@ -6,18 +6,17 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7;
 use service\DbService;
+use \Expection;
 
 class QueueService extends LoggerService
 {
     const CONTROLLER_NAME = 'Queue';
-    const STATUS_PENDING = 0;
-    const STATUS_SUCCESS = 1;
-    const STATUS_FAIL = 2;
-    const MAX_TIMES = 9;
+    const MAX_RETRY_TIMES = 9;
+
     public function add($params = array())
     {
         $params['controller'] = self::CONTROLLER_NAME;
-        $params['status'] = self::STATUS_PENDING;
+        $params['queue_status'] = QUEUE_STATUS['PENDING'];
         return $this->log($params);
     }
 
@@ -25,10 +24,10 @@ class QueueService extends LoggerService
     {
         $_limit = empty($params['limit']) ? 5 : $params['limit'];
         $result = DbService::GetAll('log', array(
-            'field' => array('id', 'path', 'action', 'payload', 'method', 'expect', 'user_id', 'app_id', 'timeout', 'times'),
+            'field' => array('id', 'path', 'action', 'payload', 'method', 'user_id', 'app_id', 'queue_expect', 'queue_timeout', 'queue_retry_times'),
             'where' => array(
                 'controller' => self::CONTROLLER_NAME,
-                'status' => self::STATUS_PENDING,
+                'status' => QUEUE_STATUS['PENDING'],
             ),
             'option' => array(
                 "LIMIT" => $_limit,
@@ -43,15 +42,15 @@ class QueueService extends LoggerService
             $action = $data['action'];
             $payload = $data['payload'];
             $method = $data['method'];
-            $expect = $data['expect'];
             $user_id = $data['user_id'];
             $app_id = $data['app_id'];
-            $timeout = empty($data['timeout']) ? 3 : $data['timeout'];
-            $times = $data['times'];
+            $queue_expect = $data['queue_expect'];
+            $queue_timeout = empty($data['queue_timeout']) ? 3 : $data['queue_timeout'];
+            $queue_retry_times = $data['queue_retry_times'];
             try {
                 $response = $client->request($action, $path, array(
                     'form_params' => json_decode($payload, true),
-                    'timeout' => $timeout,
+                    'timeout' => $queue_timeout,
                 ));
                 $contents = $response->getBody()->getContents();
             } catch (ConnectException $e) {
@@ -62,13 +61,13 @@ class QueueService extends LoggerService
             DbService::Action(function ($db) use ($contents, $expect, $id, $times, $method, $path, $action, $payload, $user_id, $app_id, $timeout) {
                 try {
                     $db->update('log', array(
-                        'status' => $contents === $expect ? self::STATUS_SUCCESS : self::STATUS_FAIL,
+                        'queue_status' => $contents === $expect ? QUEUE_STATUS['SUCCEED'] : QUEUE_STATUS['FAIL'],
                         'res_body' => $contents,
                     ), array(
                         'id' => $id,
                     ));
                     if ($contents !== $expect) {
-                        if ($times < self::MAX_TIMES) {
+                        if ($times < self::MAX_RETRY_TIMES) {
                             $db->insert('log', array(
                                 'method' => $method,
                                 'path' => $path,
@@ -76,15 +75,15 @@ class QueueService extends LoggerService
                                 'payload' => $payload,
                                 'expect' => $expect,
                                 'controller' => self::CONTROLLER_NAME,
-                                'status' => self::STATUS_PENDING,
                                 'user_id' => $user_id,
                                 'app_id' => $app_id,
-                                'timeout' => $timeout,
-                                'times' => $times + 1,
+                                'queue_status' => QUEUE_STATUS['PENDING'],
+                                'queue_timeout' => $queue_timeout,
+                                'queue_retry_times' => $queue_retry_times + 1,
                             ));
                         }
                     }
-                } catch (Expection $e) {
+                } catch (\Expection $e) {
                     return false;
                 }
             });

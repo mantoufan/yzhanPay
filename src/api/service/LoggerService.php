@@ -17,31 +17,19 @@ class LoggerService
         return json_decode($string, true);
     }
 
-    public function log($params = array())
-    {
-        $_controller = $params['controller'];
-        $_method = $params['method'];
-        $_path = $params['path'];
-        $_action = $params['action'];
-        $_payload = self::stringify($params['payload']);
-        $_user_id = $params['user_id'];
-        $_app_id = $params['app_id'];
-        $_expect = $params['expect'];
-        $_status = $params['status'];
-        $_timeout = $params['timeout'];
+    public function log($params = array(
+        'controller' => '',
+        'method' => '',
+        'path' => '',
+        'action' => '',
+        'user_id' => '',
+        'app_id' => '',
+    )) {
+        if (!empty($params['payload'])) {
+            $params['payload'] = self::stringify($params['payload']);
+        }
         return $this->id = DbService::Create('log', array(
-            'data' => array(
-                'path' => $_path,
-                'action' => $_action,
-                'controller' => $_controller,
-                'method' => $_method,
-                'payload' => $_payload,
-                'user_id' => $_user_id,
-                'app_id' => $_app_id,
-                'expect' => $_expect,
-                'status' => $_status,
-                'timeout' => $_timeout,
-            ),
+            'data' => $params,
         ));
     }
 

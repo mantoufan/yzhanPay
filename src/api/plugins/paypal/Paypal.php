@@ -168,14 +168,14 @@ class Paypal extends Common
         try {
             $response = $gateway->execute($request);
             if ($response->result->status === 'COMPLETED') {
-                $params['trade_status'] = TRADE_STATUS['CHECKOUT_SUCCESS'];
+                $params['trade_status'] = TRADE_STATUS['CHECKOUT_SUCCEED'];
                 $body = '';
             } else {
                 $params['trade_status'] = TRADE_STATUS['CREATED'];
                 $body = $response->result;
             }
         } catch (HttpException $e) {
-            $params['trade_status'] = TRADE_STATUS['CHECKOUT_FAILED'];
+            $params['trade_status'] = TRADE_STATUS['CHECKOUT_FAIL'];
             $body = $e->getMessage();
         }
         BillService::UpdateTrade(array(
@@ -304,14 +304,13 @@ class Paypal extends Common
                 }
                 BillService::UpdateTrade(array(
                     'data' => array(
-                        'status' => ($_event_type === 'PAYMENT.SALE.COMPLETED' ?
-                            TRADE_STATUS['SUBSCRIPTION_CHARGE_SUCCESS'] :
-                            TRADE_STATUS['SUBSCRIPTION_CHARGE_FAILED']),
+                        'status' => TRADE_STATUS['SUBSCRIPTION_CHARGE_SUCCEED'],
                     ),
                     'where' => $where,
                 ));
                 $this->export(array(
                     'status' => 200,
+                    'body' => 'success',
                 ));
                 break;
         }

@@ -86,14 +86,14 @@ class Alipay extends Common
         try {
             $response = $request->send();
             if ($response->isPaid()) {
-                $params['trade_status'] = TRADE_STATUS['CHECKOUT_SUCCESS'];
+                $params['trade_status'] = TRADE_STATUS['CHECKOUT_SUCCEED'];
                 $body = 'success';
             } else {
                 $params['trade_status'] = TRADE_STATUS['CREATED'];
                 $body = 'fail';
             }
         } catch (Exception $e) {
-            $params['trade_status'] = TRADE_STATUS['CHECKOUT_FAILED'];
+            $params['trade_status'] = TRADE_STATUS['CHECKOUT_FAIL'];
             $body = 'fail';
         }
         BillService::UpdateTrade(array(
