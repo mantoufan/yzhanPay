@@ -22,7 +22,7 @@ class Test extends Common
     public function notifyUrl()
     {
         $this->export(array(
-            'body' => getParams(),
+            'body' => 'succeed',
         ));
     }
 }

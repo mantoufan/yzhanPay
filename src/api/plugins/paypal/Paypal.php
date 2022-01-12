@@ -157,6 +157,37 @@ class Paypal extends Common
         ));
     }
 
+    public function cancel($channel_id)
+    {
+        $params = getGets();
+        $where = array(
+            'channel_id' => $channel_id,
+        );
+        if (!empty($params['subscription_id'])) {
+            $where['api_subscription_id'] = $params['subscription_id'];
+        } else {
+            $where['api_trade_no'] = $params['token'];
+        }
+        $cancel_url = NotifyService::GetCancelUrl(NotifyService::GetNotifyParams(array(
+            'where' => $where,
+        )));
+        BillService::UpdateTrade(array(
+            'data' => array(
+                'status' => TRADE_STATUS['CLOSED'],
+            ),
+            'where' => array(
+                'api_trade_no' => $_token,
+                'channel_id' => $channel_id,
+            ),
+        ));
+        $this->export(array(
+            'status' => 302,
+            'header' => array(
+                'Location' => $cancel_url,
+            ),
+        ));
+    }
+
     public function sync($channel_id)
     {
         $gateway = $this->getGateway($channel_id);
@@ -297,20 +328,24 @@ class Paypal extends Common
         switch ($_event_type) {
             case 'PAYMENT.SALE.COMPLETED':
                 $where['channel_id'] = $channel_id;
-                if (empty($params['resource']['id'])) {
-                    $where['api_trade_no'] = $params['resource']['id'];
-                } else {
+                if (!empty($params['resource']['billing_agreement_id'])) {
                     $where['api_subscription_id'] = $params['resource']['billing_agreement_id'];
+                } else {
+                    $where['api_trade_no'] = $params['resource']['id'];
                 }
                 BillService::UpdateTrade(array(
                     'data' => array(
                         'status' => TRADE_STATUS['SUBSCRIPTION_CHARGE_SUCCEED'],
+                        'subscription_start_time' => date('Y-m-d H:i:s'),
                     ),
                     'where' => $where,
                 ));
                 $this->export(array(
                     'status' => 200,
                     'body' => 'success',
+                    'app_id' => NotiFyService::NotifyReturnAppId(
+                        NotifyService::GetNoitfyParams(array('where' => $where))
+                    ),
                 ));
                 break;
         }
@@ -338,36 +373,37 @@ class Paypal extends Common
         return true;
     }
 
+    /**
     public function charge($channel_id, $params = array('subscription_id' => 0, 'note' => '', 'amount' => 0, 'currency' => ''))
     {
-        $gateway = $this->getGateway($channel_id);
-        $request = new SubscriptionsCaptureRequest($params['subscription_id']);
-        $request->setData(array(
-            'note' => $params['note'],
-            'capture_type' => 'OUTSTANDING_BALANCE',
-            'amount' => [
-                'currency_code' => $params['currency'],
-                'value' => $params['amount'],
-            ],
-        ));
-        try {
-            $gateway->execute($request);
-            $trade_status = TRADE_STATUS['SUBSCRIPTION_CHARGE_SUCCESS'];
-        } catch (HttpException $e) {
-            $trade_status = TRADE_STATUS['SUBSCRIPTION_CHARGE_FAILED'];
-        }
-        BillService::UpdateTrade(array(
-            'data' => array('status' => $trade_status),
-            'where' => array(
-                'api_subscription_id' => $params['subscription_id'],
-                'channel_id' => $channel_id,
-            ),
-        ));
-        NotifyService::Notify(NotifyService::GetNotifyParams(array(
-            'where' => array(
-                'api_subscription_id' => $params['subscription_id'],
-                'channel_id' => $channel_id,
-            ),
-        )));
+    $gateway = $this->getGateway($channel_id);
+    $request = new SubscriptionsCaptureRequest($params['subscription_id']);
+    $request->setData(array(
+    'note' => $params['note'],
+    'capture_type' => 'OUTSTANDING_BALANCE',
+    'amount' => [
+    'currency_code' => $params['currency'],
+    'value' => $params['amount'],
+    ],
+    ));
+    try {
+    $gateway->execute($request);
+    $trade_status = TRADE_STATUS['SUBSCRIPTION_CHARGE_SUCCESS'];
+    } catch (HttpException $e) {
+    $trade_status = TRADE_STATUS['SUBSCRIPTION_CHARGE_FAILED'];
     }
+    BillService::UpdateTrade(array(
+    'data' => array('status' => $trade_status),
+    'where' => array(
+    'api_subscription_id' => $params['subscription_id'],
+    'channel_id' => $channel_id,
+    ),
+    ));
+    NotifyService::Notify(NotifyService::GetNotifyParams(array(
+    'where' => array(
+    'api_subscription_id' => $params['subscription_id'],
+    'channel_id' => $channel_id,
+    ),
+    )));
+    }*/
 }

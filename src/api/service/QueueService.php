@@ -27,7 +27,7 @@ class QueueService extends LoggerService
             'field' => array('id', 'path', 'action', 'payload', 'method', 'user_id', 'app_id', 'queue_expect', 'queue_timeout', 'queue_retry_times'),
             'where' => array(
                 'controller' => self::CONTROLLER_NAME,
-                'status' => QUEUE_STATUS['PENDING'],
+                'queue_status' => QUEUE_STATUS['PENDING'],
             ),
             'option' => array(
                 "LIMIT" => $_limit,
@@ -58,25 +58,25 @@ class QueueService extends LoggerService
             } catch (RequestException $e) {
                 $contents = Psr7\Message::toString($e->getResponse());
             }
-            DbService::Action(function ($db) use ($contents, $expect, $id, $times, $method, $path, $action, $payload, $user_id, $app_id, $timeout) {
+            DbService::Action(function ($db) use ($contents, $id, $method, $path, $action, $payload, $user_id, $app_id, $queue_expect, $queue_timeout, $queue_retry_times) {
                 try {
                     $db->update('log', array(
-                        'queue_status' => $contents === $expect ? QUEUE_STATUS['SUCCEED'] : QUEUE_STATUS['FAIL'],
+                        'queue_status' => $contents === $queue_expect ? QUEUE_STATUS['SUCCEED'] : QUEUE_STATUS['FAIL'],
                         'res_body' => $contents,
                     ), array(
                         'id' => $id,
                     ));
-                    if ($contents !== $expect) {
-                        if ($times < self::MAX_RETRY_TIMES) {
+                    if ($contents !== $queue_expect) {
+                        if ($queue_retry_times <= self::MAX_RETRY_TIMES) {
                             $db->insert('log', array(
                                 'method' => $method,
                                 'path' => $path,
                                 'action' => $action,
                                 'payload' => $payload,
-                                'expect' => $expect,
                                 'controller' => self::CONTROLLER_NAME,
                                 'user_id' => $user_id,
                                 'app_id' => $app_id,
+                                'queue_expect' => $queue_expect,
                                 'queue_status' => QUEUE_STATUS['PENDING'],
                                 'queue_timeout' => $queue_timeout,
                                 'queue_retry_times' => $queue_retry_times + 1,

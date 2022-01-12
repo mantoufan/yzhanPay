@@ -45,9 +45,9 @@ class BillService
         );
     }
 
-    public static function GetBillingCyclesInterval($billing_cycles, $plan_start_time, $check_time)
+    public static function GetBillingCyclesInterval($billing_cycles, $subscription_start_time, $check_time)
     {
-        $time = strtotime($plan_start_time);
+        $time = strtotime($subscription_start_time);
         foreach ($billing_cycles as $billing_cycle) {
             $total_cycles = $billing_cycle['total_cycles'];
             $frequency = $billing_cycle['frequency'];

@@ -61,7 +61,7 @@ class Alipay extends Common
                 'channel_id' => $channel_id,
             ),
         ));
-        $return_url = NotifyService::GetReturnUrl(NotifyService::GetNoitfyParams(array(
+        $return_url = NotifyService::GetReturnUrl(NotifyService::GetNotifyParams(array(
             'where' => array(
                 'trade_no' => $params['out_trade_no'],
             ),
@@ -106,15 +106,15 @@ class Alipay extends Common
                 'channel_id' => $channel_id,
             ),
         ));
-        $return_url = NotifyService::Notify(NotifyService::GetNoitfyParams(array(
-            'where' => array(
-                'trade_no' => $params['out_trade_no'],
-            ),
-        )));
-        $app_id = empty($params) ? 0 : $params['app_id'];
         $this->export(array(
             'body' => $body,
-            'app_id' => $app_id,
+            'app_id' => NotifyService::NotifyReturnAppId(
+                NotifyService::GetNotifyParams(array(
+                    'where' => array(
+                        'trade_no' => $params['out_trade_no'],
+                    ),
+                ))
+            ),
         ));
     }
 }

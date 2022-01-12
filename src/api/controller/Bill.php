@@ -16,7 +16,7 @@ class Bill extends Common
     {
         $bills = DbService::GetAll('trade', array(
             'join' => array('[>]plan' => ['plan_id' => 'id'], '[>]channel' => ['channel_id' => 'id'], '[>]customer' => ['customer_id' => 'id']),
-            'field' => array('plan.billing_cycles [JSON]', 'plan.name', 'trade.plan_start_time', 'channel.plugin', 'trade.status', 'trade.plan_id', 'trade.channel_id', 'trade.api_subscription_id', 'trade.trade_no', 'customer.email', 'customer.first_name', 'customer.last_name'),
+            'field' => array('plan.billing_cycles [JSON]', 'plan.name', 'trade.subscription_start_time', 'channel.plugin', 'trade.status', 'trade.plan_id', 'trade.channel_id', 'trade.api_subscription_id', 'trade.trade_no', 'customer.email', 'customer.first_name', 'customer.last_name'),
             'where' => array(
                 'trade.status' => array('SUBSCRIPTION_WAIT_REMIND', 'SUBSCRIPTION_WAIT_CHARGE'),
             ),
@@ -28,7 +28,7 @@ class Bill extends Common
         foreach ($bills['data'] as $bill) {
             $interval = BillService::GetBillingCyclesInterval(
                 $bill['billing_cycles'],
-                $bill['plan_start_time'],
+                $bill['subscription_start_time'],
                 $bill['status'] === TRADE_STATUS['SUBSCRIPTION_WAIT_REMIND'] ? $now + ADVANCE_REMINDER_TIME : $now + ADVANCE_REMINDER_TIME
             );
             if ($interval) {
@@ -86,12 +86,14 @@ class Bill extends Common
                         break;
                     case TRADE_STATUS['SUBSCRIPTION_WAIT_CHARGE']:
                         $gateway = ChannelService::GetGateway($bill['plugin']);
-                        $gateway->charge($bill['channel_id'], array(
-                            'subscription_id' => $bill['api_subscription_id'],
-                            'note' => $bill['name'],
-                            'amount' => $interval['amount'],
-                            'currency' => $interval['currency'],
-                        ));
+                        if (method_exists($gateway, 'charge')) {
+                            $gateway->charge($bill['channel_id'], array(
+                                'subscription_id' => $bill['api_subscription_id'],
+                                'note' => $bill['name'],
+                                'amount' => $interval['amount'],
+                                'currency' => $interval['currency'],
+                            ));
+                        }
                         break;
                 }
             }
