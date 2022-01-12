@@ -14,6 +14,7 @@ use PayPalSubscriptionsSdk\Subscriptions\SubscriptionsCreateRequest;
 use service\plugin\pay\BillService;
 use service\plugin\pay\NotifyService;
 use service\plugin\PluginService;
+use \Exception;
 
 class Paypal extends Common
 {
@@ -279,19 +280,63 @@ class Paypal extends Common
 
     public function async($channel_id)
     {
-        $gateway = $this->getGateway($channel_id);
-        $_params = getPosts();
-        $_event_type = $_params['event_type'];
-        $_api_trade_no = $params['resource']['id'];
-        if ($_event_type === 'PAYMENT.SALE.COMPLETED') {
-            BillService::UpdateTrade(array(
-                'data' => array('status' => TRADE_STATUS['SUBSCRIPTION_CHARGE_SUCCESS']),
-                'where' => array(
-                    'api_trade_no' => $_api_trade_no,
-                    'channel_id' => $channel_id,
+        try {
+            $this->checkSign();
+        } catch (\Exception $e) {
+            $this->export(array(
+                'status' => 403,
+                'body' => array(
+                    'code' => 403,
+                    'msg' => $e->getMessage(),
                 ),
             ));
         }
+        $gateway = $this->getGateway($channel_id);
+        $_params = getPosts();
+        $_event_type = $_params['event_type'];
+        switch ($_event_type) {
+            case 'PAYMENT.SALE.COMPLETED':
+                $where['channel_id'] = $channel_id;
+                if (empty($params['resource']['id'])) {
+                    $where['api_trade_no'] = $params['resource']['id'];
+                } else {
+                    $where['api_subscription_id'] = $params['resource']['billing_agreement_id'];
+                }
+                BillService::UpdateTrade(array(
+                    'data' => array(
+                        'status' => ($_event_type === 'PAYMENT.SALE.COMPLETED' ?
+                            TRADE_STATUS['SUBSCRIPTION_CHARGE_SUCCESS'] :
+                            TRADE_STATUS['SUBSCRIPTION_CHARGE_FAILED']),
+                    ),
+                    'where' => $where,
+                ));
+                $this->export(array(
+                    'status' => 200,
+                ));
+                break;
+        }
+
+    }
+
+    public function checkSign()
+    {
+        $headers = getallheaders();
+        $body = @file_get_contents('php://input');
+        if (empty($body)) {
+            $verifyResult = 0;
+        } else {
+            $json = json_decode($body);
+            $sigString = $headers['Paypal-Transmission-Id'] . '|' . $headers['Paypal-Transmission-Time'] . '|' . $json->id . '|' . crc32($body);
+            $pubKey = openssl_pkey_get_public(file_get_contents($headers['PAYPAL-CERT-URL']));
+            $details = openssl_pkey_get_details($pubKey);
+            $verifyResult = openssl_verify($sigString, base64_decode($headers['PAYPAL-TRANSMISSION-SIG']), $details['key'], 'sha256WithRSAEncryption');
+        }
+        if ($verifyResult === 0) {
+            throw new Exception('signature incorrect');
+        } elseif ($verifyResult === -1) {
+            throw new Exception('error checking signature');
+        }
+        return true;
     }
 
     public function charge($channel_id, $params = array('subscription_id' => 0, 'note' => '', 'amount' => 0, 'currency' => ''))
