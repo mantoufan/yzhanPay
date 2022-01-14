@@ -1,12 +1,12 @@
 {
-	"name": "alipay",
+	"name": "alipaychina",
 	"version": "1.0.0",
 	"displayname": "Alipay China",
 	"type": "pay",
 	"payment": "depositcard,alipay",
 	"ability": "checkout",
-	"author": "lokielse",
-	"link": "https://github.com/lokielse",
+	"author": "mantoufan",
+	"link": "https://github.com/mantoufan",
 	"input": [
 		{ "type":"text", "label":"App ID", "name":"app_id" },
 		{ "type":"text", "label":"App Private Key", "name":"app_private_key" },

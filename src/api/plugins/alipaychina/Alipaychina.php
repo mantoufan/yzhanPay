@@ -1,5 +1,5 @@
 <?php
-namespace plugins\alipay;
+namespace plugins\alipaychina;
 
 use common\base\Common;
 use Omnipay\Omnipay;
@@ -7,7 +7,7 @@ use service\plugin\pay\BillService;
 use service\plugin\pay\NotifyService;
 use service\plugin\PluginService;
 
-class Alipay extends Common
+class Alipaychina extends Common
 {
     public function getGateway($channel_id)
     {

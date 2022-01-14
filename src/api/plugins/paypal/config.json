@@ -5,8 +5,8 @@
 	"type": "pay",
 	"payment": "depositcard,paypal",
 	"ability": "checkout,subscription",
-	"author": "lokielse",
-	"link": "https://github.com/lokielse",
+	"author": "mantoufan",
+	"link": "https://github.com/mantoufan",
 	"input": [
 		{ "type":"text", "label":"Client ID", "name":"client_id" },
 		{ "type":"text", "label":"Secret", "name":"secret" },

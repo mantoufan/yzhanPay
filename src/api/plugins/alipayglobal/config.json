@@ -1,0 +1,23 @@
+{
+	"name": "alipayglobal",
+	"version": "1.0.0",
+	"displayname": "Alipay Global",
+	"type": "pay",
+	"payment": "depositcard,alipay",
+	"ability": "checkout",
+	"author": "mantoufan",
+	"link": "https://github.com/mantoufan",
+	"input": [
+		{ "type":"text", "label":"App ID", "name":"app_id" },
+		{ "type":"text", "label":"App Private Key", "name":"app_private_key" },
+		{ "type":"text", "label":"Alipay Public Key", "name":"app_public_key" },
+		{ "type":"text", "label":"Sign Type", "name":"sign_type" },
+		{ "type":"checkout", "label":"Sandbox", "name":"is_sandbox" }
+	],
+	"composer": {
+		"require": {
+			"league/omnipay": "^3",
+			"mantoufan/omnipay-alipay": "v3.1.2-beta1"
+		}
+	}
+}
