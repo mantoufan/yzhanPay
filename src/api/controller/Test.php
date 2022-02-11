@@ -8,14 +8,16 @@ class Test extends Common
     public function returnUrl()
     {
         $this->export(array(
-            'body' => getParams(),
+            'header' => array('Content-Type' => 'text/plain'),
+            'body' => json_encode(getParams(), JSON_PRETTY_PRINT),
         ));
     }
 
     public function cancelUrl()
     {
         $this->export(array(
-            'body' => getParams(),
+            'header' => array('Content-Type' => 'text/plain'),
+            'body' => json_encode(getParams(), JSON_PRETTY_PRINT),
         ));
     }
 

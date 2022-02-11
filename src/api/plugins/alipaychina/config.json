@@ -5,8 +5,8 @@
 	"type": "pay",
 	"payment": "depositcard,alipay",
 	"ability": "checkout",
-	"author": "mantoufan",
-	"link": "https://github.com/mantoufan",
+	"author": "shonwu",
+	"link": "https://github.com",
 	"input": [
 		{ "type":"text", "label":"App ID", "name":"app_id" },
 		{ "type":"text", "label":"App Private Key", "name":"app_private_key" },

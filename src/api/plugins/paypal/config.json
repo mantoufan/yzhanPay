@@ -5,8 +5,8 @@
 	"type": "pay",
 	"payment": "depositcard,paypal",
 	"ability": "checkout,subscription",
-	"author": "mantoufan",
-	"link": "https://github.com/mantoufan",
+	"author": "shonwu",
+	"link": "https://github.com",
 	"input": [
 		{ "type":"text", "label":"Client ID", "name":"client_id" },
 		{ "type":"text", "label":"Secret", "name":"secret" },

@@ -16,7 +16,7 @@ class Bill extends Common
     {
         $bills = DbService::GetAll('trade', array(
             'join' => array('[>]plan' => ['plan_id' => 'id'], '[>]channel' => ['channel_id' => 'id'], '[>]customer' => ['customer_id' => 'id']),
-            'field' => array('plan.billing_cycles [JSON]', 'plan.name', 'trade.subscription_start_time', 'channel.plugin', 'trade.status', 'trade.plan_id', 'trade.channel_id', 'trade.api_subscription_id', 'trade.trade_no', 'customer.email', 'customer.first_name', 'customer.last_name'),
+            'field' => array('plan.billing_cycles [JSON]', 'plan.name', 'trade.subscription_start_time', 'channel.plugin', 'trade.status', 'trade.plan_id', 'trade.channel_id', 'trade.api_subscription_id', 'trade.trade_no', 'trade.customer_id', 'customer.email', 'customer.first_name', 'customer.last_name'),
             'where' => array(
                 'trade.status' => array('SUBSCRIPTION_WAIT_REMIND', 'SUBSCRIPTION_WAIT_CHARGE'),
             ),
@@ -88,6 +88,8 @@ class Bill extends Common
                         $gateway = ChannelService::GetGateway($bill['plugin']);
                         if (method_exists($gateway, 'charge')) {
                             $gateway->charge($bill['channel_id'], array(
+                                'trade_no' => $bill['trade_no'],
+                                'customer_id' => $bill['customer_id'],
                                 'subscription_id' => $bill['api_subscription_id'],
                                 'note' => $bill['name'],
                                 'amount' => $interval['amount'],

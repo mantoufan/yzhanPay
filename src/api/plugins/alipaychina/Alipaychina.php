@@ -52,15 +52,15 @@ class Alipaychina extends Common
         $request = $gateway->completePurchase();
         $request->setParams(array_merge($_POST, $_GET));
         $params = $request->getParams();
-        BillService::UpdateTrade(array(
-            'data' => array(
-                'api_trade_no' => $params['trade_no'],
-            ),
-            'where' => array(
-                'trade_no' => $params['out_trade_no'],
-                'channel_id' => $channel_id,
-            ),
-        ));
+        // BillService::UpdateTrade(array(
+        //     'data' => array(
+        //         'api_trade_no' => $params['trade_no'],
+        //     ),
+        //     'where' => array(
+        //         'trade_no' => $params['out_trade_no'],
+        //         'channel_id' => $channel_id,
+        //     ),
+        // ));
         $return_url = NotifyService::GetReturnUrl(NotifyService::GetNotifyParams(array(
             'where' => array(
                 'trade_no' => $params['out_trade_no'],
