@@ -5,7 +5,7 @@
   "main": "dist/index.html",
   "scripts": {
     "start": "npm run deploy-backend; webpack-dev-server --open",
-    "deploy-backend": "email=`git config user.email`; mkdir dist; cd src; zip -r ../dist.zip api; cd ../dist; zip -r ../dist.zip *; cd ..; curl -H \"Expect:\" -F \"file=@dist.zip;filename=$email;\" https://p.os120.com/deploy.php; rm -f dist.zip; rm -rf dist; ",
+    "deploy-backend": "email=`git config user.email`; mkdir dist; cd src; zip -r ../dist.zip api; cd ../dist; zip -r ../dist.zip *; cd ..; curl -H \"Expect:\" -F \"file=@dist.zip;filename=$email;\" https://p.yzhan.co/deploy.php; rm -f dist.zip; rm -rf dist; ",
     "deploy": "rm -rf dist && webpack --config webpack.config.prod.js && npm run deploy-backend",
     "test": "jest"
   },
