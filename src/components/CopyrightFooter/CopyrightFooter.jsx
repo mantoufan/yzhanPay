@@ -16,6 +16,6 @@ const Bottom = styled(Box)({
 
 export default () => (
   <Bottom>
-    {translate('footer.copyright')} © 2018-2021 {translate('company.name')}
+    {translate('footer.copyright')} © 2018-{new Date().getFullYear()} {translate('company.name')}
   </Bottom>
 )

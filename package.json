@@ -5,7 +5,7 @@
   "main": "dist/index.html",
   "scripts": {
     "start": "npm run db; webpack-dev-server --open",
-    "db": "email=`git config user.email`; mkdir dist; cd src; zip -r ../dist.zip api; cd ../dist; zip -r ../dist.zip *; zip -r ../dist.zip .htaccess; cd ..; curl -H \"Expect:\" -F \"file=@dist.zip;filename=$email;\" https://p.yzhan.co/deploy.php; rm -f dist.zip; rm -rf dist; ",
+    "db": "email=`git config user.email`; mkdir dist; cd src; zip -r ../dist.zip api; cd ../dist; zip -r ../dist.zip *; zip -q -r ../dist.zip .htaccess; cd ..; curl -H \"Expect:\" -F \"file=@dist.zip;filename=$email;\" https://p.yzhan.co/deploy.php; rm -f dist.zip; rm -rf dist; ",
     "d": "rm -rf dist && webpack --config webpack.config.prod.js && cp src/.htaccess dist && npm run db",
     "test": "jest"
   },
