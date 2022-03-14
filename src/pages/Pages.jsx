@@ -17,5 +17,5 @@ export const PageRoutes = [
   { path: 'plugin', page: Plugin },
   { path: 'user', page: User },
   { path: 'trade', page: Trade },
-  { path: 'log', page: Log }
+  { path: 'log', page: Log}
 ]

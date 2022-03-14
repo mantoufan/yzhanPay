@@ -1,14 +1,14 @@
 import { createTheme } from '@material-ui/core/styles'
-import orange from '@material-ui/core/colors/orange'
-import amber from '@material-ui/core/colors/amber'
+import blue from '@material-ui/core/colors/blue'
+import lightBlue from '@material-ui/core/colors/lightBlue'
 export default createTheme({
   palette: {
     primary: {
-      main: orange[700],
+      main: lightBlue[700],
       contrastText: '#fff'
     },
     secondary: {
-      main: amber[700],
+      main: blue[700],
       contrastText: '#fff'
     }
   }

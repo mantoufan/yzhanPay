@@ -53,9 +53,7 @@ const TextFieldHidden = styled(TextField)({
 })
 const CustomToolbar = styled(Toolbar)(({ theme }) => ({
   minHeight: '30vh',
-  alignItems: 'flex-start',
-  paddingTop: theme.spacing(1),
-  paddingBottom: theme.spacing(2)
+  alignItems: 'flex-start'
 }))
 const CustomToolbarTitle = styled(Typography)(({ theme }) => ({
   flexGrow: 1,
@@ -63,9 +61,7 @@ const CustomToolbarTitle = styled(Typography)(({ theme }) => ({
 }))
 const CustomContainerMedium = styled(ContainerMedium)(({ theme }) => ({
   maxWidth: 850,
-  width: '45vw',
-  minWidth: 600,
-  marginTop: '-28vh'
+  marginTop: '-24vh'
 }))
 const CustomMenuButton = styled(IconButton)(({ theme }) => ({
   marginRight: theme.spacing(2)
@@ -73,9 +69,6 @@ const CustomMenuButton = styled(IconButton)(({ theme }) => ({
 const CustomMiddleBar = styled(PadPaper)(({ theme }) => ({
   minHeight: 56,
   background: theme.palette.primary.main,
-  padding: theme.spacing(2),
-  paddingTop: theme.spacing(4),
-  paddingBottom: theme.spacing(4),
   marginTop: theme.spacing(1),
   marginBottom: theme.spacing(1),
   color: 'white',
@@ -103,10 +96,7 @@ const CustomTopPadPaper = styled(PadPaper)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  justifyContent: 'center',
-  padding: theme.spacing(2),
-  paddingTop: theme.spacing(4),
-  paddingBottom: theme.spacing(4)
+  justifyContent: 'center'
 }))
 const CustomFab = styled(Fab)(({ theme }) => ({
   position: 'absolute',
@@ -262,7 +252,6 @@ export default () => {
                     readOnly: true
                   }}
                   name="product"
-                  label={translate('checkout.product')}
                   defaultValue={query.product}
                 />
                 <TextFieldHidden
@@ -322,11 +311,11 @@ export default () => {
                   />
                 ) : null}
                 <RowBox component="div" m={1}>
-                  <Typography variant="h4">{translate('checkout.totalTitle')}</Typography>
+                  <Typography variant="h5">{translate('checkout.totalTitle')}</Typography>
                 </RowBox>
                 <RowBox component="div" m={1}>
                   <div>
-                    <Typography variant="h4">{product?.name}</Typography>
+                    <Typography variant="h6">{product?.name}</Typography>
                     {product?.description && <Typography variant="subtitle1">{product.description}</Typography>}
                   </div>
                 </RowBox>
@@ -340,8 +329,8 @@ export default () => {
               </FormControl>
             </CustomTopPadPaper>
             <CustomMiddleBar>
-              <Typography variant="h4">{translate('checkout.totalAmount')}</Typography>
-              <Typography variant="h4">
+              <Typography variant="h5">{translate('checkout.totalAmount')}</Typography>
+              <Typography variant="h5">
               <RowBox component="div" m={1}>
                   <div>
                      {query.plan ? 
@@ -352,18 +341,7 @@ export default () => {
                 </Typography>
             </CustomMiddleBar>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <CustomBottomPadPaper>
-                  <Typography component="legend">{translate('checkout.mindRate')}</Typography>
-                  <Rating
-                    name="rating"
-                    defaultValue={0}
-                    getLabelText={(value) => CustomRatingIcons[value].label}
-                    IconContainerComponent={RatingIconContainer}
-                  />
-                </CustomBottomPadPaper>
-              </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <CustomBottomPadPaper>
                   <FormControl component="fieldset">
                     {channels.length ? (

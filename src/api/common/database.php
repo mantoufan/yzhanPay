@@ -1,9 +1,9 @@
 <?php
 return array(
     'database_type' => 'mysql',
-    'database_name' => 'pay',
+    'database_name' => 'url',
     'server' => '127.0.0.1',
     'prefix' => 'yzhanpay_',
-    'username' => 'pay',
-    'password' => '6Bmc7_5_Y',
+    'username' => 'url',
+    'password' => '1991925',
 );

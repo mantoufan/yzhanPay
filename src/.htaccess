@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteRule \.(js|css|svg|gif|png|jpg|jpeg|swf|ico|html|txt|webp|php)$ - [L]
+RewriteRule ^alipay-global-sdk-php/.*$ - [L]
+RewriteRule ^api/.*$ /api/index.php [L]
+RewriteRule ^(.*)$ /index.html

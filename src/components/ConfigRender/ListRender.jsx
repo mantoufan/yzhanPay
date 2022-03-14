@@ -14,7 +14,16 @@ function ListRender({ component: Component = List, config, ...props }) {
         <Component {...props}>
             <Datagrid>
                 {Object.entries(config).map(([key, v]) => {
-                    const { type, ...props } = v
+                    const { type, maxWidth, ...props } = v
+                    if (maxWidth) {
+                        props.style = Object.assign(props.style || {}, {
+                            "display": "inline-block",
+                            "maxWidth": maxWidth,
+                            "whiteSpace": "nowrap",
+                            "overflow": "hidden",
+                            "textOverflow": "ellipsis"
+                        })
+                    }  
                     let ItemComponent = null
                     switch (type) {
                         case 'json':

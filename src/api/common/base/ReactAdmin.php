@@ -34,7 +34,7 @@ class ReactAdmin extends Common
         $params = getGets();
         $where = array(
             'ORDER' => array($params['_sort'] => $params['_order']),
-            'LIMIT' => $params['_start'] . ',' . ($params['_end'] - $params['_start']),
+            'LIMIT' => array($params['_start'], $params['_end'] - $params['_start']),
         );
         $data = DbService::GetAll($this->table, array(
             'field' => $this->fields,

@@ -9,7 +9,7 @@ export default {
       }
     },
     company: {
-      name: 'Jungle Scout'
+      name: 'YZhan'
     },
     footer: {
       copyright: 'Copyright'
@@ -51,7 +51,7 @@ export default {
       }
     },
     company: {
-      name: '桨歌(深圳)科技有限公司'
+      name: 'Y 站'
     },
     footer: {
       copyright: '版权所有'

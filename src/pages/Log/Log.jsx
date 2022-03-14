@@ -10,7 +10,8 @@ const CONFIG = {
     type: 'text'
   },
   path: {
-    type: 'text'
+    type: 'text',
+    maxWidth: '100px',
   },
   method: {
     type: 'text'
@@ -22,7 +23,8 @@ const CONFIG = {
     type: 'text'
   },
   payload: {
-    type: 'text'
+    type: 'text',
+    maxWidth: '100px',
   },
   user_id: {
     type: 'text'
@@ -34,7 +36,6 @@ const CONFIG = {
 
 const PageIcon = AssignmentIcon
 const PageList = (props) => <ListRender config={CONFIG} {...props} />
-
 const PageEdit = (props) => <EditRender config={CONFIG} {...props} />
 const PageCreate = (props) => <CreateRender config={CONFIG} {...props} />
 

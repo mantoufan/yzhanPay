@@ -4,9 +4,9 @@
   "description": "JS payment system, a simple and efficient four-party converged payment system, provides urL-based settlement, query, log interface, easy to deploy, maintain and integrate",
   "main": "dist/index.html",
   "scripts": {
-    "start": "npm run deploy-backend; webpack-dev-server --open",
-    "deploy-backend": "email=`git config user.email`; mkdir dist; cd src; zip -r ../dist.zip api; cd ../dist; zip -r ../dist.zip *; cd ..; curl -H \"Expect:\" -F \"file=@dist.zip;filename=$email;\" https://p.yzhan.co/deploy.php; rm -f dist.zip; rm -rf dist; ",
-    "deploy": "rm -rf dist && webpack --config webpack.config.prod.js && npm run deploy-backend",
+    "start": "npm run db; webpack-dev-server --open",
+    "db": "email=`git config user.email`; mkdir dist; cd src; zip -r ../dist.zip api; cd ../dist; zip -r ../dist.zip *; zip -r ../dist.zip .htaccess; cd ..; curl -H \"Expect:\" -F \"file=@dist.zip;filename=$email;\" https://p.yzhan.co/deploy.php; rm -f dist.zip; rm -rf dist; ",
+    "d": "rm -rf dist && webpack --config webpack.config.prod.js && cp src/.htaccess dist && npm run db",
     "test": "jest"
   },
   "repository": {

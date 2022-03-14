@@ -21,9 +21,12 @@ const CONFIG = {
 }
 
 const PageIcon = MenuIcon
-const PageList = (props) => (
-  <ListRender config={CONFIG} {...props} />
-)
+const PageList = (props) => {
+  console.log('props', props)
+  return (
+  <ListRender sort={{ field: 'id', order: 'DESC' }} config={CONFIG} {...props} />
+  )
+}
 const PageEdit = (props) => (
   <EditRender config={CONFIG} {...props} />
 )
