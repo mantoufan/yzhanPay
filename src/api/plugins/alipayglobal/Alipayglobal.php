@@ -89,7 +89,7 @@ class Alipayglobal extends Common
             if ($rsqBody->result->resultStatus === 'S') {
                 $params['trade_status'] = TRADE_STATUS['CHECKOUT_SUCCEED'];
                 ob_start();
-                $gateway->sendNotifyResponseWithRSA();
+                $notify->sendNotifyResponseWithRSA();
                 $body = ob_get_contents();
                 ob_end_clean();
             } else {

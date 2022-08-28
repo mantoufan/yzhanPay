@@ -10,6 +10,6 @@
         "mantoufan/medoo": "^2.1",
         "phpmailer/phpmailer": "^6.5",
         "alibabacloud/sdk": "^1.8",
-        "mantoufan/alipay-global-sdk-php": "0.0.1"
+        "mantoufan/alipay-global-sdk-php": "0.0.3"
     }
 }
